@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Future School AI Lab</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #0f172a, #1e293b);
+      color: white;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 950px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 28px;
+      padding: 48px;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.25);
+      backdrop-filter: blur(12px);
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(59,130,246,0.18);
+      color: #93c5fd;
+      font-weight: 700;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      font-size: clamp(40px, 7vw, 72px);
+      margin: 0 0 14px;
+      line-height: 1;
+    }
+
+    .subtitle {
+      font-size: 20px;
+      line-height: 1.6;
+      color: #cbd5e1;
+      max-width: 720px;
+      margin-bottom: 36px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 30px;
+    }
+
+    .feature {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 20px;
+      border-radius: 18px;
+    }
+
+    .feature h3 {
+      margin: 0 0 8px;
+      font-size: 18px;
+    }
+
+    .feature p {
+      margin: 0;
+      color: #cbd5e1;
+      line-height: 1.5;
+      font-size: 14px;
+    }
+
+    .login-box {
+      margin-top: 18px;
+      background: white;
+      color: #0f172a;
+      border-radius: 22px;
+      padding: 24px;
+    }
+
+    .login-box h2 {
+      margin-top: 0;
+    }
+
+    input {
+      width: 100%;
+      padding: 15px;
+      margin-bottom: 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      font-size: 16px;
+    }
+
+    button {
+      width: 100%;
+      padding: 15px;
+      border: 0;
+      border-radius: 12px;
+      background: #2563eb;
+      color: white;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #1d4ed8;
+    }
+
+    .note {
+      margin-top: 10px;
+      font-size: 13px;
+      color: #64748b;
+      text-align: center;
+    }
+
+    @media (max-width: 700px) {
+      .card {
+        padding: 28px;
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="card">
+    <div class="badge">Future School</div>
+
+    <h1>AI Lab</h1>
+
+    <p class="subtitle">
+      Учебная лаборатория искусственного интеллекта.
+      Здесь ученики изучают AI Prompt Engineering,
+      создают собственного My AI и разрабатывают AI-проекты.
+    </p>
+
+    <section class="grid">
+      <div class="feature">
+        <h3>📘 Мои уроки</h3>
+        <p>Уроки AI Prompt Engineering и практические задания.</p>
+      </div>
+
+      <div class="feature">
+        <h3>🤖 My AI</h3>
+        <p>Создание и настройка собственного AI-помощника.</p>
+      </div>
+
+      <div class="feature">
+        <h3>🚀 Project Lab</h3>
+        <p>Командная разработка собственного AI-продукта.</p>
+      </div>
+    </section>
+
+    <section class="login-box">
+      <h2>Вход в AI Lab</h2>
+
+      <input
+        type="text"
+        placeholder="Логин"
+        disabled
+      >
+
+      <input
+        type="password"
+        placeholder="Пароль"
+        disabled
+      >
+
+      <button disabled>
+        Войти
+      </button>
+
+      <div class="note">
+        Авторизация будет подключена на следующем этапе.
+      </div>
+    </section>
+  </main>
+</body>
+</html>
