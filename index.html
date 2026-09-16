@@ -803,15 +803,14 @@ if (login.includes('@')) {
 
       if (error) {
 
-        console.error(error);
+  console.error('SUPABASE LOGIN ERROR:', error);
 
-        showError(
-          'Неверный логин или пароль.'
-        );
+  showError(
+    'Supabase: ' + error.message
+  );
 
-        return;
-      }
-
+  return;
+}
 
       await openDashboard(
         data.user
