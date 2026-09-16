@@ -313,11 +313,142 @@
       margin-top: 0;
       color: #9a3412;
     }
+.teacher-header {
+  margin-bottom: 20px;
+}
 
+.teacher-header h2 {
+  margin: 0 0 5px;
+}
+
+.teacher-header p {
+  margin: 0;
+  color: #9a3412;
+}
+
+.teacher-grid {
+  display: grid;
+  grid-template-columns: 1.2fr .8fr;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.teacher-card {
+  background: white;
+  border-radius: 18px;
+  padding: 22px;
+  border: 1px solid #fed7aa;
+}
+
+.teacher-card h3 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: #0f172a;
+}
+
+.teacher-card .input-group label {
+  color: #334155;
+}
+
+.teacher-card select {
+  width: 100%;
+  padding: 15px 16px;
+  border: 1px solid #cbd5e1;
+  border-radius: 13px;
+  background: white;
+  font-size: 16px;
+  outline: none;
+}
+
+.teacher-card select:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37,99,235,.1);
+}
+
+.field-hint {
+  margin-top: 6px;
+  color: #94a3b8;
+  font-size: 12px;
+}
+
+.password-row {
+  display: grid;
+  grid-template-columns: 1fr 55px;
+  gap: 8px;
+}
+
+.password-row input {
+  margin-bottom: 0;
+}
+
+.secondary-button {
+  border: none;
+  border-radius: 12px;
+  background: #e2e8f0;
+  color: #0f172a;
+  cursor: pointer;
+  font-size: 20px;
+}
+
+.secondary-button:hover {
+  background: #cbd5e1;
+}
+
+.teacher-card-text {
+  color: #64748b;
+  line-height: 1.6;
+}
+
+.student-counter {
+  background: #f8fafc;
+  border-radius: 16px;
+  padding: 20px;
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: #64748b;
+}
+
+.counter-number {
+  color: #2563eb;
+  font-size: 38px;
+  font-weight: bold;
+}
+
+.future-feature {
+  margin-top: 16px;
+  background: #f1f5f9;
+  color: #64748b;
+  padding: 13px;
+  border-radius: 12px;
+  font-size: 13px;
+}
+
+.student-message {
+  margin-top: 15px;
+  padding: 13px;
+  border-radius: 12px;
+  font-weight: bold;
+}
+
+.student-message.success {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.student-message.error {
+  background: #fee2e2;
+  color: #b91c1c;
+}
     @media(max-width: 760px) {
       .features,
       .dashboard-grid {
         grid-template-columns: 1fr;
+        .teacher-grid {
+  grid-template-columns: 1fr;
+}
+
       }
 
       .brand h1 {
@@ -563,22 +694,171 @@
 
     <!-- Панель показывается только учителю -->
 
-    <section
-      id="teacherPanel"
-      class="teacher-panel hidden"
-    >
+   <section
+  id="teacherPanel"
+  class="teacher-panel hidden"
+>
 
-      <h2>
-        👩‍🏫 Учительская панель
-      </h2>
-
+  <div class="teacher-header">
+    <div>
+      <h2>👩‍🏫 Учительская панель</h2>
       <p>
-        Вы вошли как учитель.
-        Здесь позже появятся классы,
-        ученики, проекты и статистика.
+        Управление учениками Future School AI Lab
+      </p>
+    </div>
+  </div>
+
+  <div class="teacher-grid">
+
+    <!-- СОЗДАНИЕ УЧЕНИКА -->
+
+    <div class="teacher-card">
+
+      <h3>➕ Добавить ученика</h3>
+
+      <form id="createStudentForm">
+
+        <div class="input-group">
+          <label for="newStudentName">
+            Имя и фамилия
+          </label>
+
+          <input
+            id="newStudentName"
+            type="text"
+            placeholder="Например: Алина Садыкова"
+            required
+          >
+        </div>
+
+
+        <div class="input-group">
+          <label for="newStudentClass">
+            Класс
+          </label>
+
+          <select
+            id="newStudentClass"
+            required
+          >
+            <option value="">
+              Выберите класс
+            </option>
+
+            <option value="5B">5B</option>
+            <option value="5C">5C</option>
+            <option value="5D">5D</option>
+            <option value="5I">5I</option>
+
+            <option value="6B">6B</option>
+            <option value="6C">6C</option>
+
+            <option value="7B">7B</option>
+
+          </select>
+        </div>
+
+
+        <div class="input-group">
+          <label for="newStudentLogin">
+            Логин
+          </label>
+
+          <input
+            id="newStudentLogin"
+            type="text"
+            placeholder="Например: alina.s"
+            autocomplete="off"
+            required
+          >
+
+          <div class="field-hint">
+            Без пробелов. Например: arman.k
+          </div>
+        </div>
+
+
+        <div class="input-group">
+
+          <label for="newStudentPassword">
+            Пароль
+          </label>
+
+          <div class="password-row">
+
+            <input
+              id="newStudentPassword"
+              type="text"
+              placeholder="Пароль ученика"
+              autocomplete="off"
+              required
+            >
+
+            <button
+              type="button"
+              id="generatePasswordButton"
+              class="secondary-button"
+            >
+              🎲
+            </button>
+
+          </div>
+
+        </div>
+
+
+        <button
+          id="createStudentButton"
+          type="submit"
+          class="primary-button"
+        >
+          Создать ученика
+        </button>
+
+      </form>
+
+
+      <div
+        id="createStudentMessage"
+        class="student-message hidden"
+      ></div>
+
+    </div>
+
+
+    <!-- ИНФОРМАЦИЯ -->
+
+    <div class="teacher-card">
+
+      <h3>🎓 Ученики</h3>
+
+      <p class="teacher-card-text">
+        Здесь появится список зарегистрированных
+        учеников, распределённых по классам.
       </p>
 
-    </section>
+      <div class="student-counter">
+
+        <span class="counter-number">
+          —
+        </span>
+
+        <span>
+          зарегистрировано
+        </span>
+
+      </div>
+
+      <div class="future-feature">
+        Следующий этап:
+        список классов и учеников
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
 
   </main>
 
