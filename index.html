@@ -1130,6 +1130,27 @@ const studentFormBox =
 const studentsList =
   document.getElementById('studentsList');
 
+  const createStudentForm =
+  document.getElementById('createStudentForm');
+
+const newStudentName =
+  document.getElementById('newStudentName');
+
+const newStudentLogin =
+  document.getElementById('newStudentLogin');
+
+const newStudentPassword =
+  document.getElementById('newStudentPassword');
+
+const generatePasswordButton =
+  document.getElementById('generatePasswordButton');
+
+const createStudentButton =
+  document.getElementById('createStudentButton');
+
+const createStudentMessage =
+  document.getElementById('createStudentMessage');
+
 let selectedClassId = null;
 let selectedClassName = null;
 
@@ -1423,6 +1444,314 @@ showStudentFormButton.addEventListener(
     studentFormBox
       .classList
       .toggle('hidden');
+
+  }
+);
+  // ==============================================
+// ГЕНЕРАЦИЯ ПАРОЛЯ
+// ==============================================
+
+generatePasswordButton.addEventListener(
+  'click',
+  function() {
+
+    const chars =
+      'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789';
+
+    let password = '';
+
+    for (let i = 0; i < 8; i++) {
+      password +=
+        chars.charAt(
+          Math.floor(
+            Math.random() * chars.length
+          )
+        );
+    }
+
+    password += '!';
+
+    newStudentPassword.value =
+      password;
+
+  }
+);
+
+
+// ==============================================
+// СОЗДАНИЕ УЧЕНИКА
+// ==============================================
+
+createStudentForm.addEventListener(
+  'submit',
+  async function(event) {
+
+    event.preventDefault();
+
+
+    createStudentMessage
+      .classList
+      .add('hidden');
+
+
+    if (!selectedClassId) {
+
+      createStudentMessage.textContent =
+        'Сначала выберите класс.';
+
+      createStudentMessage.className =
+        'student-message error';
+
+      return;
+    }
+
+
+    const fullName =
+      newStudentName
+        .value
+        .trim();
+
+    const login =
+      newStudentLogin
+        .value
+        .trim()
+        .toLowerCase();
+
+    const password =
+      newStudentPassword
+        .value
+        .trim();
+
+
+    if (
+      !fullName ||
+      !login ||
+      !password
+    ) {
+
+      createStudentMessage.textContent =
+        'Заполните все поля.';
+
+      createStudentMessage.className =
+        'student-message error';
+
+      return;
+    }
+
+
+    createStudentButton.disabled = true;
+
+    createStudentButton.textContent =
+      'Создаём...';
+
+
+    const {
+      data: sessionData
+    } =
+      await supabaseClient
+        .auth
+        .getSession();
+
+
+    const accessToken =
+      sessionData
+        ?.session
+        ?.access_token;
+
+
+    if (!accessToken) {
+
+      createStudentButton.disabled = false;
+
+      createStudentButton.textContent =
+        'Создать ученика';
+
+
+      createStudentMessage.textContent =
+        'Сессия учителя не найдена. Войдите заново.';
+
+      createStudentMessage.className =
+        'student-message error';
+
+      return;
+    }
+
+
+    try {
+
+      const response =
+        await fetch(
+          SUPABASE_URL +
+          '/functions/v1/create-student',
+          {
+            method: 'POST',
+
+            headers: {
+              'Content-Type':
+                'application/json',
+
+              'Authorization':
+                'Bearer ' + accessToken
+            },
+
+            body:
+              JSON.stringify({
+                fullName: fullName,
+                className: selectedClassName,
+                login: login,
+                password: password
+              })
+          }
+        );
+
+
+      const result =
+        await response.json();
+
+
+      createStudentButton.disabled = false;
+
+      createStudentButton.textContent =
+        'Создать ученика';
+
+
+      if (!response.ok) {
+
+        console.error(result);
+
+        createStudentMessage.textContent =
+          result.error ||
+          'Не удалось создать ученика.';
+
+        createStudentMessage.className =
+          'student-message error';
+
+        return;
+      }
+
+
+      /*
+      ==========================================
+      ВАЖНО:
+      Edge Function пока записывает class_name,
+      а class_id мы добавим отдельным запросом.
+      ==========================================
+      */
+
+
+      const {
+        data: createdProfile,
+        error: profileSearchError
+      } =
+        await supabaseClient
+          .from('profiles')
+          .select('id')
+          .eq(
+            'full_name',
+            fullName
+          )
+          .eq(
+            'role',
+            'student'
+          )
+          .order(
+            'created_at',
+            {
+              ascending: false
+            }
+          )
+          .limit(1)
+          .single();
+
+
+      if (
+        !profileSearchError &&
+        createdProfile
+      ) {
+
+        const {
+          error: classUpdateError
+        } =
+          await supabaseClient
+            .from('profiles')
+            .update({
+              class_id:
+                selectedClassId
+            })
+            .eq(
+              'id',
+              createdProfile.id
+            );
+
+
+        if (classUpdateError) {
+          console.error(
+            'Не удалось привязать class_id:',
+            classUpdateError
+          );
+        }
+
+      }
+
+
+      createStudentMessage.innerHTML =
+        `
+          <div>
+            Ученик создан ✅
+          </div>
+
+          <div style="margin-top:8px;font-weight:normal;">
+            Логин:
+            <strong>${login}</strong>
+          </div>
+
+          <div style="font-weight:normal;">
+            Пароль:
+            <strong>${password}</strong>
+          </div>
+        `;
+
+
+      createStudentMessage.className =
+        'student-message success';
+
+
+      newStudentName.value = '';
+      newStudentLogin.value = '';
+      newStudentPassword.value = '';
+
+
+      studentFormBox
+        .classList
+        .add('hidden');
+
+
+      await loadStudents(
+        selectedClassId
+      );
+
+      await loadClasses();
+
+    }
+
+    catch (error) {
+
+      console.error(error);
+
+
+      createStudentButton.disabled = false;
+
+      createStudentButton.textContent =
+        'Создать ученика';
+
+
+      createStudentMessage.textContent =
+        'Ошибка соединения с сервером.';
+
+      createStudentMessage.className =
+        'student-message error';
+
+    }
 
   }
 );
