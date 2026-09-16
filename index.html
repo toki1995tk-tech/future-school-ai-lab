@@ -528,6 +528,150 @@
       line-height: 1.35;
     }
 
+
+    .calendar-card {
+      margin-bottom: 20px;
+    }
+
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .quarter-date-card {
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 14px;
+      background: #f8fafc;
+    }
+
+    .quarter-date-card strong {
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    .date-pair {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .date-pair input,
+    .schedule-row select,
+    .schedule-row input,
+    .break-row input {
+      width: 100%;
+      padding: 11px 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      background: white;
+      font-size: 14px;
+    }
+
+    .calendar-actions,
+    .schedule-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+
+    .break-box {
+      margin-top: 18px;
+      padding-top: 16px;
+      border-top: 1px solid #e2e8f0;
+    }
+
+    .break-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1.4fr auto;
+      gap: 8px;
+      align-items: end;
+      margin-top: 10px;
+    }
+
+    .break-list {
+      margin-top: 12px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .break-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      background: #fff7ed;
+      border: 1px solid #fed7aa;
+      color: #9a3412;
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 13px;
+    }
+
+    .mini-delete {
+      border: none;
+      background: #fee2e2;
+      color: #b91c1c;
+      width: 32px;
+      height: 32px;
+      border-radius: 9px;
+      cursor: pointer;
+    }
+
+    .schedule-box {
+      margin-top: 18px;
+      padding: 16px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+    }
+
+    .schedule-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1.1fr;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .schedule-note {
+      color: #64748b;
+      font-size: 13px;
+      line-height: 1.5;
+      margin-top: 9px;
+    }
+
+    .lesson-release-date {
+      margin-top: 7px;
+      font-size: 13px;
+      color: #475569;
+      font-weight: 600;
+    }
+
+    .lesson-release-date.locked-date {
+      color: #7c3aed;
+    }
+
+    .calendar-message {
+      margin-top: 12px;
+      padding: 11px 12px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: bold;
+    }
+
+    .calendar-message.success {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .calendar-message.error {
+      background: #fee2e2;
+      color: #b91c1c;
+    }
+
     /* TEACHER PANEL */
     .teacher-panel {
       margin-top: 20px;
@@ -920,6 +1064,13 @@
         flex-direction: column;
         align-items: flex-start;
       }
+
+      .calendar-grid,
+      .date-pair,
+      .schedule-row,
+      .break-row {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
@@ -1066,6 +1217,79 @@
         <p>Управление классами и учениками AI Lab</p>
       </div>
 
+      <div class="teacher-card calendar-card">
+        <div class="classes-header">
+          <div>
+            <h3>📅 Учебный календарь</h3>
+            <p class="teacher-card-text">
+              Задай границы четвертей. Платформа использует их вместе с расписанием классов,
+              чтобы автоматически рассчитывать даты уроков.
+            </p>
+          </div>
+        </div>
+
+        <div class="input-group" style="max-width:260px;">
+          <label for="academicYearInput">Учебный год</label>
+          <input id="academicYearInput" type="text" value="2026-2027" placeholder="2026-2027">
+        </div>
+
+        <div class="calendar-grid">
+          <div class="quarter-date-card">
+            <strong>I четверть</strong>
+            <div class="date-pair">
+              <input id="q1Start" type="date" aria-label="Начало I четверти">
+              <input id="q1End" type="date" aria-label="Конец I четверти">
+            </div>
+          </div>
+
+          <div class="quarter-date-card">
+            <strong>II четверть</strong>
+            <div class="date-pair">
+              <input id="q2Start" type="date" aria-label="Начало II четверти">
+              <input id="q2End" type="date" aria-label="Конец II четверти">
+            </div>
+          </div>
+
+          <div class="quarter-date-card">
+            <strong>III четверть</strong>
+            <div class="date-pair">
+              <input id="q3Start" type="date" aria-label="Начало III четверти">
+              <input id="q3End" type="date" aria-label="Конец III четверти">
+            </div>
+          </div>
+
+          <div class="quarter-date-card">
+            <strong>IV четверть</strong>
+            <div class="date-pair">
+              <input id="q4Start" type="date" aria-label="Начало IV четверти">
+              <input id="q4End" type="date" aria-label="Конец IV четверти">
+            </div>
+          </div>
+        </div>
+
+        <div class="calendar-actions">
+          <button id="saveCalendarButton" class="small-primary-button" type="button">
+            Сохранить календарь
+          </button>
+        </div>
+
+        <div class="break-box">
+          <strong>Каникулы, праздники и другие дни без уроков</strong>
+          <div class="break-row">
+            <input id="breakStart" type="date" aria-label="Начало периода">
+            <input id="breakEnd" type="date" aria-label="Конец периода">
+            <input id="breakTitle" type="text" placeholder="Например: Осенние каникулы">
+            <button id="addBreakButton" class="secondary-action-button" type="button">
+              + Добавить
+            </button>
+          </div>
+
+          <div id="breakList" class="break-list"></div>
+        </div>
+
+        <div id="calendarMessage" class="calendar-message hidden"></div>
+      </div>
+
       <div class="teacher-card">
 
         <div class="classes-header">
@@ -1109,6 +1333,39 @@
               + Добавить ученика
             </button>
           </div>
+        </div>
+
+        <div class="schedule-box">
+          <strong>🕒 Расписание APE для этого класса</strong>
+
+          <div class="schedule-row">
+            <select id="classWeekdaySelect">
+              <option value="1">Понедельник</option>
+              <option value="2">Вторник</option>
+              <option value="3">Среда</option>
+              <option value="4">Четверг</option>
+              <option value="5">Пятница</option>
+              <option value="6">Суббота</option>
+              <option value="7">Воскресенье</option>
+            </select>
+
+            <input id="classLessonTimeInput" type="time" value="09:00">
+
+            <input id="classAcademicYearInput" type="text" value="2026-2027" placeholder="2026-2027">
+          </div>
+
+          <div class="schedule-note">
+            После сохранения платформа автоматически рассчитает дату каждой недели
+            по календарю четвертей и пропустит добавленные каникулы/праздники.
+          </div>
+
+          <div class="schedule-actions">
+            <button id="saveClassScheduleButton" class="secondary-action-button" type="button">
+              Сохранить расписание
+            </button>
+          </div>
+
+          <div id="scheduleMessage" class="calendar-message hidden"></div>
         </div>
 
         <div id="studentFormBox" class="student-form-box hidden">
@@ -1256,6 +1513,29 @@
   const studentClass = document.getElementById('studentClass');
   const teacherPanel = document.getElementById('teacherPanel');
 
+  const academicYearInput = document.getElementById('academicYearInput');
+  const q1Start = document.getElementById('q1Start');
+  const q1End = document.getElementById('q1End');
+  const q2Start = document.getElementById('q2Start');
+  const q2End = document.getElementById('q2End');
+  const q3Start = document.getElementById('q3Start');
+  const q3End = document.getElementById('q3End');
+  const q4Start = document.getElementById('q4Start');
+  const q4End = document.getElementById('q4End');
+  const saveCalendarButton = document.getElementById('saveCalendarButton');
+  const breakStart = document.getElementById('breakStart');
+  const breakEnd = document.getElementById('breakEnd');
+  const breakTitle = document.getElementById('breakTitle');
+  const addBreakButton = document.getElementById('addBreakButton');
+  const breakList = document.getElementById('breakList');
+  const calendarMessage = document.getElementById('calendarMessage');
+
+  const classWeekdaySelect = document.getElementById('classWeekdaySelect');
+  const classLessonTimeInput = document.getElementById('classLessonTimeInput');
+  const classAcademicYearInput = document.getElementById('classAcademicYearInput');
+  const saveClassScheduleButton = document.getElementById('saveClassScheduleButton');
+  const scheduleMessage = document.getElementById('scheduleMessage');
+
   const openLessonsButton = document.getElementById('openLessonsButton');
   const closeLessonsButton = document.getElementById('closeLessonsButton');
   const lessonsPanel = document.getElementById('lessonsPanel');
@@ -1304,6 +1584,7 @@
 
   let selectedClassId = null;
   let selectedClassName = null;
+  let currentProfile = null;
 
   // =========================================================
   // ВСПОМОГАТЕЛЬНОЕ
@@ -1324,6 +1605,298 @@
   }
 
 
+
+  // =========================================================
+  // УЧЕБНЫЙ КАЛЕНДАРЬ
+  // =========================================================
+
+  function showCalendarMessage(message, type = 'success') {
+    calendarMessage.textContent = message;
+    calendarMessage.className = `calendar-message ${type}`;
+  }
+
+  function showScheduleMessage(message, type = 'success') {
+    scheduleMessage.textContent = message;
+    scheduleMessage.className = `calendar-message ${type}`;
+  }
+
+  async function loadAcademicCalendar() {
+    const year = academicYearInput.value.trim();
+    if (!year) return;
+
+    const { data, error } = await supabaseClient
+      .from('academic_calendar')
+      .select('quarter, start_date, end_date')
+      .eq('academic_year', year)
+      .order('quarter');
+
+    if (error) {
+      console.error('calendar load error:', error);
+      return;
+    }
+
+    const map = new Map((data || []).map(item => [item.quarter, item]));
+
+    [
+      [1, q1Start, q1End],
+      [2, q2Start, q2End],
+      [3, q3Start, q3End],
+      [4, q4Start, q4End]
+    ].forEach(([quarter, startInput, endInput]) => {
+      startInput.value = map.get(quarter)?.start_date || '';
+      endInput.value = map.get(quarter)?.end_date || '';
+    });
+
+    await loadCalendarBreaks();
+  }
+
+  async function saveAcademicCalendar() {
+    const year = academicYearInput.value.trim();
+
+    const rows = [
+      { quarter: 1, start: q1Start.value, end: q1End.value },
+      { quarter: 2, start: q2Start.value, end: q2End.value },
+      { quarter: 3, start: q3Start.value, end: q3End.value },
+      { quarter: 4, start: q4Start.value, end: q4End.value }
+    ];
+
+    if (!year || rows.some(item => !item.start || !item.end)) {
+      showCalendarMessage(
+        'Укажи учебный год и даты начала/конца всех четырёх четвертей.',
+        'error'
+      );
+      return;
+    }
+
+    const payload = rows.map(item => ({
+      academic_year: year,
+      quarter: item.quarter,
+      start_date: item.start,
+      end_date: item.end
+    }));
+
+    saveCalendarButton.disabled = true;
+    saveCalendarButton.textContent = 'Сохраняем...';
+
+    const { error } = await supabaseClient
+      .from('academic_calendar')
+      .upsert(payload, { onConflict: 'academic_year,quarter' });
+
+    if (error) {
+      console.error('calendar save error:', error);
+      saveCalendarButton.disabled = false;
+      saveCalendarButton.textContent = 'Сохранить календарь';
+      showCalendarMessage('Не удалось сохранить календарь.', 'error');
+      return;
+    }
+
+    const { error: regenError } = await supabaseClient
+      .rpc('regenerate_all_class_releases');
+
+    saveCalendarButton.disabled = false;
+    saveCalendarButton.textContent = 'Сохранить календарь';
+
+    if (regenError) {
+      console.error('regenerate all error:', regenError);
+      showCalendarMessage(
+        'Календарь сохранён, но даты классов не удалось пересчитать.',
+        'error'
+      );
+      return;
+    }
+
+    showCalendarMessage(
+      'Календарь сохранён. Даты уроков для классов пересчитаны ✅'
+    );
+  }
+
+  async function loadCalendarBreaks() {
+    const year = academicYearInput.value.trim();
+    if (!year) return;
+
+    const { data, error } = await supabaseClient
+      .from('calendar_breaks')
+      .select('id, start_date, end_date, title')
+      .eq('academic_year', year)
+      .order('start_date');
+
+    if (error) {
+      console.error('break load error:', error);
+      return;
+    }
+
+    breakList.innerHTML = '';
+
+    (data || []).forEach(item => {
+      const row = document.createElement('div');
+      row.className = 'break-item';
+
+      row.innerHTML = `
+        <span>
+          <strong>${item.title}</strong><br>
+          ${formatDateOnly(item.start_date)} — ${formatDateOnly(item.end_date)}
+        </span>
+        <button class="mini-delete" type="button" title="Удалить">🗑️</button>
+      `;
+
+      row.querySelector('button').addEventListener('click', async function() {
+        const { error: deleteError } = await supabaseClient
+          .from('calendar_breaks')
+          .delete()
+          .eq('id', item.id);
+
+        if (deleteError) {
+          alert('Не удалось удалить период.');
+          return;
+        }
+
+        await supabaseClient.rpc('regenerate_all_class_releases');
+        await loadCalendarBreaks();
+      });
+
+      breakList.appendChild(row);
+    });
+  }
+
+  async function addCalendarBreak() {
+    const year = academicYearInput.value.trim();
+    const start = breakStart.value;
+    const end = breakEnd.value;
+    const title = breakTitle.value.trim();
+
+    if (!year || !start || !end || !title) {
+      showCalendarMessage('Заполни период и его название.', 'error');
+      return;
+    }
+
+    const { error } = await supabaseClient
+      .from('calendar_breaks')
+      .insert({
+        academic_year: year,
+        start_date: start,
+        end_date: end,
+        title
+      });
+
+    if (error) {
+      console.error('break insert error:', error);
+      showCalendarMessage('Не удалось добавить период.', 'error');
+      return;
+    }
+
+    breakStart.value = '';
+    breakEnd.value = '';
+    breakTitle.value = '';
+
+    await supabaseClient.rpc('regenerate_all_class_releases');
+    await loadCalendarBreaks();
+
+    showCalendarMessage('Период добавлен. Даты уроков пересчитаны ✅');
+  }
+
+  function formatDateOnly(dateString) {
+    if (!dateString) return '—';
+
+    const date = new Date(`${dateString}T12:00:00`);
+    return new Intl.DateTimeFormat('ru-RU', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    }).format(date);
+  }
+
+  saveCalendarButton.addEventListener('click', saveAcademicCalendar);
+  addBreakButton.addEventListener('click', addCalendarBreak);
+
+  academicYearInput.addEventListener('change', loadAcademicCalendar);
+
+  // =========================================================
+  // РАСПИСАНИЕ КЛАССА
+  // =========================================================
+
+  async function loadClassSchedule(classId) {
+    scheduleMessage.classList.add('hidden');
+
+    const { data, error } = await supabaseClient
+      .from('class_schedules')
+      .select('weekday, lesson_time, academic_year')
+      .eq('class_id', classId)
+      .maybeSingle();
+
+    if (error) {
+      console.error('schedule load error:', error);
+      return;
+    }
+
+    if (data) {
+      classWeekdaySelect.value = String(data.weekday);
+      classLessonTimeInput.value = String(data.lesson_time || '').slice(0, 5);
+      classAcademicYearInput.value = data.academic_year || academicYearInput.value;
+    } else {
+      classAcademicYearInput.value = academicYearInput.value || '2026-2027';
+    }
+  }
+
+  async function saveClassSchedule() {
+    if (!selectedClassId) {
+      showScheduleMessage('Сначала выбери класс.', 'error');
+      return;
+    }
+
+    const weekday = Number(classWeekdaySelect.value);
+    const lessonTime = classLessonTimeInput.value;
+    const academicYear = classAcademicYearInput.value.trim();
+
+    if (!weekday || !lessonTime || !academicYear) {
+      showScheduleMessage('Заполни день, время и учебный год.', 'error');
+      return;
+    }
+
+    saveClassScheduleButton.disabled = true;
+    saveClassScheduleButton.textContent = 'Сохраняем...';
+
+    const { error } = await supabaseClient
+      .from('class_schedules')
+      .upsert({
+        class_id: selectedClassId,
+        weekday,
+        lesson_time: lessonTime,
+        academic_year: academicYear,
+        timezone: 'Asia/Almaty'
+      }, { onConflict: 'class_id' });
+
+    if (error) {
+      console.error('schedule save error:', error);
+      saveClassScheduleButton.disabled = false;
+      saveClassScheduleButton.textContent = 'Сохранить расписание';
+      showScheduleMessage('Не удалось сохранить расписание.', 'error');
+      return;
+    }
+
+    const { error: regenError } = await supabaseClient
+      .rpc('regenerate_class_releases', {
+        p_class_id: selectedClassId
+      });
+
+    saveClassScheduleButton.disabled = false;
+    saveClassScheduleButton.textContent = 'Сохранить расписание';
+
+    if (regenError) {
+      console.error('release generation error:', regenError);
+      showScheduleMessage(
+        'Расписание сохранено, но даты уроков не удалось рассчитать.',
+        'error'
+      );
+      return;
+    }
+
+    showScheduleMessage(
+      `Расписание ${selectedClassName} сохранено. Даты уроков рассчитаны ✅`
+    );
+  }
+
+  saveClassScheduleButton.addEventListener('click', saveClassSchedule);
+
   // =========================================================
   // МОИ УРОКИ / ПРОГРЕСС
   // =========================================================
@@ -1337,6 +1910,19 @@
     if (status === 'completed') return 'Пройдено';
     if (status === 'in_progress') return 'В процессе';
     return 'Не начато';
+  }
+
+  function formatReleaseDate(value) {
+    if (!value) return 'Дата ещё не назначена';
+
+    return new Intl.DateTimeFormat('ru-RU', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      timeZone: 'Asia/Almaty'
+    }).format(new Date(value));
   }
 
   async function loadLessons() {
@@ -1374,6 +1960,26 @@
     if (progressError) {
       console.error('Ошибка загрузки прогресса:', progressError);
     }
+
+    let releases = [];
+
+    if (currentProfile?.class_id) {
+      const { data: releaseData, error: releaseError } =
+        await supabaseClient
+          .from('class_lesson_releases')
+          .select('lesson_id, release_at, manual_state')
+          .eq('class_id', currentProfile.class_id);
+
+      if (releaseError) {
+        console.error('Ошибка загрузки дат уроков:', releaseError);
+      } else {
+        releases = releaseData || [];
+      }
+    }
+
+    const releaseMap = new Map(
+      releases.map(item => [item.lesson_id, item])
+    );
 
     const progressMap = new Map(
       (progress || []).map(item => [item.lesson_id, item])
@@ -1452,9 +2058,28 @@
         card.className =
           `lesson-card ${status === 'completed' ? 'completed' : ''} ` +
           `${status === 'in_progress' ? 'in-progress' : ''} ` +
-          `${!lesson.is_published ? 'locked' : ''}`;
+          `${!isAvailable ? 'locked' : ''}`;
 
-        const actions = lesson.is_published
+        const release = releaseMap.get(lesson.id);
+
+        let isAvailable = false;
+
+        if (release) {
+          if (release.manual_state === 'open') {
+            isAvailable = true;
+          } else if (release.manual_state === 'closed') {
+            isAvailable = false;
+          } else {
+            isAvailable =
+              new Date() >= new Date(release.release_at);
+          }
+        }
+
+        const releaseDateText = release?.release_at
+          ? formatReleaseDate(release.release_at)
+          : 'Дата ещё не назначена';
+
+        const actions = isAvailable
           ? (
             status === 'completed'
               ? `<span class="lesson-done-badge">✓ Пройдено</span>`
@@ -1465,7 +2090,7 @@
                   data-id="${lesson.id}"
                   data-url="${lesson.lesson_url || ''}"
                 >
-                  Открыть
+                  ${status === 'in_progress' ? 'Продолжить' : 'Открыть'}
                 </button>
 
                 <button
@@ -1490,6 +2115,9 @@
             <div class="lesson-title">${lesson.title}</div>
             <div class="lesson-meta">
               ${statusLabel(status)}
+            </div>
+            <div class="lesson-release-date ${!isAvailable ? 'locked-date' : ''}">
+              📅 ${releaseDateText}
             </div>
           </div>
 
@@ -1637,6 +2265,7 @@
         studentFormBox.classList.add('hidden');
 
         await loadStudents(classItem.id);
+        await loadClassSchedule(classItem.id);
       });
 
       classesList.appendChild(card);
@@ -2210,6 +2839,7 @@
       return;
     }
 
+    currentProfile = profile;
     studentName.textContent = profile.full_name;
 
     if (profile.role === 'teacher') {
@@ -2217,6 +2847,7 @@
       studentClass.textContent = 'Учитель';
       teacherPanel.classList.remove('hidden');
       await loadClasses();
+      await loadAcademicCalendar();
 
     } else {
 
