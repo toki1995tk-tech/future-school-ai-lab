@@ -2054,12 +2054,6 @@
         const progressItem = progressMap.get(lesson.id);
         const status = progressItem?.status || 'not_started';
 
-        const card = document.createElement('div');
-        card.className =
-          `lesson-card ${status === 'completed' ? 'completed' : ''} ` +
-          `${status === 'in_progress' ? 'in-progress' : ''} ` +
-          `${!isAvailable ? 'locked' : ''}`;
-
         const release = releaseMap.get(lesson.id);
 
         let isAvailable = false;
@@ -2074,6 +2068,12 @@
               new Date() >= new Date(release.release_at);
           }
         }
+
+        const card = document.createElement('div');
+        card.className =
+          `lesson-card ${status === 'completed' ? 'completed' : ''} ` +
+          `${status === 'in_progress' ? 'in-progress' : ''} ` +
+          `${!isAvailable ? 'locked' : ''}`;
 
         const releaseDateText = release?.release_at
           ? formatReleaseDate(release.release_at)
