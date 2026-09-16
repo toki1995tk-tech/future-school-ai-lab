@@ -261,6 +261,258 @@
 
     .coming { background: #f1f5f9; color: #94a3b8; }
 
+
+    .card-button-real {
+      border: none;
+      cursor: pointer;
+    }
+
+    .lessons-panel {
+      margin-top: 22px;
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 22px;
+      padding: 24px;
+      box-shadow: 0 8px 25px rgba(15,23,42,.05);
+    }
+
+    .lessons-panel-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 20px;
+      margin-bottom: 22px;
+    }
+
+    .lessons-panel-header h2 {
+      margin: 3px 0 7px;
+      font-size: 30px;
+    }
+
+    .lessons-panel-header p {
+      color: #64748b;
+      margin: 0;
+      line-height: 1.5;
+    }
+
+    .progress-overview {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 18px;
+      padding: 18px;
+      margin-bottom: 22px;
+    }
+
+    .progress-caption {
+      color: #64748b;
+      font-size: 13px;
+    }
+
+    .progress-big {
+      font-size: 25px;
+      font-weight: bold;
+      margin-top: 3px;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 10px;
+      background: #e2e8f0;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: 13px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: #2563eb;
+      border-radius: inherit;
+      transition: width .25s ease;
+    }
+
+    .lessons-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .lesson-card {
+      border: 1px solid #e2e8f0;
+      border-radius: 17px;
+      padding: 18px;
+      display: grid;
+      grid-template-columns: 72px 1fr auto;
+      align-items: center;
+      gap: 16px;
+      background: #fff;
+    }
+
+    .lesson-card.completed {
+      border-color: #bbf7d0;
+      background: #f0fdf4;
+    }
+
+    .lesson-card.in-progress {
+      border-color: #bfdbfe;
+      background: #eff6ff;
+    }
+
+    .lesson-card.locked {
+      opacity: .62;
+      background: #f8fafc;
+    }
+
+    .lesson-week {
+      width: 58px;
+      height: 58px;
+      border-radius: 16px;
+      background: #0f172a;
+      color: white;
+      display: grid;
+      place-items: center;
+      font-weight: bold;
+      text-align: center;
+      line-height: 1.05;
+      font-size: 13px;
+    }
+
+    .lesson-card.completed .lesson-week {
+      background: #16a34a;
+    }
+
+    .lesson-card.in-progress .lesson-week {
+      background: #2563eb;
+    }
+
+    .lesson-title {
+      font-weight: bold;
+      font-size: 17px;
+      margin-bottom: 5px;
+    }
+
+    .lesson-meta {
+      color: #64748b;
+      font-size: 13px;
+    }
+
+    .lesson-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .lesson-action {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 13px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .lesson-open {
+      background: #dbeafe;
+      color: #1d4ed8;
+    }
+
+    .lesson-complete {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .lesson-done-badge {
+      color: #166534;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+
+
+    .lessons-panel {
+      position: relative;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at top right, rgba(37,99,235,.10), transparent 28%),
+        radial-gradient(circle at bottom left, rgba(59,130,246,.10), transparent 22%),
+        linear-gradient(180deg, #ffffff, #f8fbff);
+    }
+
+    .lessons-panel::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(circle, rgba(37,99,235,.11) 1.2px, transparent 1.2px),
+        linear-gradient(rgba(59,130,246,.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(59,130,246,.08) 1px, transparent 1px);
+      background-size: 34px 34px, 120px 120px, 120px 120px;
+      background-position: 0 0, 0 0, 0 0;
+      opacity: .34;
+      pointer-events: none;
+    }
+
+    .lessons-panel > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .quarter-section {
+      margin-bottom: 20px;
+      padding: 18px;
+      border-radius: 20px;
+      border: 1px solid #dbeafe;
+      background: rgba(255,255,255,.74);
+      backdrop-filter: blur(3px);
+    }
+
+    .quarter-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+
+    .quarter-title {
+      margin: 0;
+      font-size: 22px;
+      color: #0f172a;
+    }
+
+    .quarter-badge {
+      display: inline-block;
+      padding: 7px 12px;
+      background: #eff6ff;
+      color: #1d4ed8;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: bold;
+      border: 1px solid #bfdbfe;
+    }
+
+    .quarter-lessons {
+      display: grid;
+      gap: 12px;
+    }
+
+    .lesson-card {
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.95), rgba(248,250,252,.95));
+    }
+
+    .lesson-theme {
+      color: #64748b;
+      font-size: 13px;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      font-weight: bold;
+    }
+
+    .lesson-title {
+      line-height: 1.35;
+    }
+
     /* TEACHER PANEL */
     .teacher-panel {
       margin-top: 20px;
@@ -635,6 +887,24 @@
       .brand h1 { font-size: 55px; }
       .topbar { padding: 15px 18px; }
       .dashboard { padding: 28px 17px; }
+
+      .lessons-panel-header {
+        flex-direction: column;
+      }
+
+      .lesson-card {
+        grid-template-columns: 58px 1fr;
+      }
+
+      .lesson-actions {
+        grid-column: 1 / -1;
+        justify-content: flex-start;
+      }
+
+      .quarter-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
     }
   </style>
 </head>
@@ -723,7 +993,9 @@
         <div class="icon">📘</div>
         <h2>Мои уроки</h2>
         <p>Уроки AI Prompt Engineering, задания и твой учебный прогресс.</p>
-        <span class="card-button">Скоро</span>
+        <button id="openLessonsButton" class="card-button card-button-real" type="button">
+          Открыть уроки
+        </button>
       </article>
 
       <article class="dashboard-card">
@@ -740,6 +1012,36 @@
         <span class="card-button coming">Откроется позже</span>
       </article>
 
+    </section>
+
+
+    <section id="lessonsPanel" class="lessons-panel hidden">
+      <div class="lessons-panel-header">
+        <div>
+          <div class="welcome-small">AI Prompt Engineering</div>
+          <h2>Мои уроки</h2>
+          <p>Курс разделён по четвертям. В каждой карточке сразу видна тема урока, его статус и доступность.</p>
+        </div>
+
+        <button id="closeLessonsButton" class="secondary-action-button" type="button">
+          ← В кабинет
+        </button>
+      </div>
+
+      <div class="progress-overview">
+        <div>
+          <div class="progress-caption">Пройдено</div>
+          <div id="lessonsProgressText" class="progress-big">0 из 34</div>
+        </div>
+
+        <div class="progress-track">
+          <div id="lessonsProgressBar" class="progress-fill" style="width:0%"></div>
+        </div>
+      </div>
+
+      <div id="lessonsList" class="lessons-list">
+        <div class="loading-text">Загружаем уроки...</div>
+      </div>
     </section>
 
     <section id="teacherPanel" class="teacher-panel hidden">
@@ -939,6 +1241,13 @@
   const studentClass = document.getElementById('studentClass');
   const teacherPanel = document.getElementById('teacherPanel');
 
+  const openLessonsButton = document.getElementById('openLessonsButton');
+  const closeLessonsButton = document.getElementById('closeLessonsButton');
+  const lessonsPanel = document.getElementById('lessonsPanel');
+  const lessonsList = document.getElementById('lessonsList');
+  const lessonsProgressText = document.getElementById('lessonsProgressText');
+  const lessonsProgressBar = document.getElementById('lessonsProgressBar');
+
   const classesList = document.getElementById('classesList');
   const selectedClassPanel = document.getElementById('selectedClassPanel');
   const selectedClassTitle = document.getElementById('selectedClassTitle');
@@ -998,6 +1307,255 @@
     createStudentMessage.textContent = message;
     createStudentMessage.className = `student-message ${type}`;
   }
+
+
+  // =========================================================
+  // МОИ УРОКИ / ПРОГРЕСС
+  // =========================================================
+
+  async function getCurrentUserId() {
+    const { data } = await supabaseClient.auth.getUser();
+    return data?.user?.id || null;
+  }
+
+  function statusLabel(status) {
+    if (status === 'completed') return 'Пройдено';
+    if (status === 'in_progress') return 'В процессе';
+    return 'Не начато';
+  }
+
+  async function loadLessons() {
+
+    lessonsList.innerHTML =
+      '<div class="loading-text">Загружаем уроки...</div>';
+
+    const userId = await getCurrentUserId();
+
+    if (!userId) {
+      lessonsList.innerHTML =
+        '<div class="loading-text">Не удалось определить пользователя.</div>';
+      return;
+    }
+
+    const { data: lessons, error: lessonsError } =
+      await supabaseClient
+        .from('lessons')
+        .select('id, week_number, quarter, title, is_published, lesson_url')
+        .order('week_number');
+
+    if (lessonsError) {
+      console.error('Ошибка загрузки уроков:', lessonsError);
+      lessonsList.innerHTML =
+        '<div class="loading-text">Не удалось загрузить уроки.</div>';
+      return;
+    }
+
+    const { data: progress, error: progressError } =
+      await supabaseClient
+        .from('lesson_progress')
+        .select('lesson_id, status, score, completed_at')
+        .eq('user_id', userId);
+
+    if (progressError) {
+      console.error('Ошибка загрузки прогресса:', progressError);
+    }
+
+    const progressMap = new Map(
+      (progress || []).map(item => [item.lesson_id, item])
+    );
+
+    const completedCount =
+      (progress || []).filter(item => item.status === 'completed').length;
+
+    const total = lessons?.length || 34;
+    const percent = total ? Math.round((completedCount / total) * 100) : 0;
+
+    lessonsProgressText.textContent =
+      `${completedCount} из ${total}`;
+
+    lessonsProgressBar.style.width =
+      `${percent}%`;
+
+    const grouped = {
+      1: [],
+      2: [],
+      3: [],
+      4: []
+    };
+
+    (lessons || []).forEach(lesson => {
+      grouped[lesson.quarter].push(lesson);
+    });
+
+    const quarterLabels = {
+      1: 'I четверть',
+      2: 'II четверть',
+      3: 'III четверть',
+      4: 'IV четверть'
+    };
+
+    lessonsList.innerHTML = '';
+
+    Object.keys(grouped).forEach(key => {
+
+      const quarterNumber = Number(key);
+      const quarterLessons = grouped[quarterNumber];
+
+      if (!quarterLessons || quarterLessons.length === 0) return;
+
+      const section = document.createElement('section');
+      section.className = 'quarter-section';
+
+      const quarterCompleted =
+        quarterLessons.filter(lesson => {
+          const progressItem = progressMap.get(lesson.id);
+          return progressItem?.status === 'completed';
+        }).length;
+
+      section.innerHTML = `
+        <div class="quarter-header">
+          <div>
+            <h3 class="quarter-title">${quarterLabels[quarterNumber]}</h3>
+          </div>
+
+          <div class="quarter-badge">
+            ${quarterCompleted} / ${quarterLessons.length} пройдено
+          </div>
+        </div>
+
+        <div class="quarter-lessons"></div>
+      `;
+
+      const quarterContainer = section.querySelector('.quarter-lessons');
+
+      quarterLessons.forEach(lesson => {
+
+        const progressItem = progressMap.get(lesson.id);
+        const status = progressItem?.status || 'not_started';
+
+        const card = document.createElement('div');
+        card.className =
+          `lesson-card ${status === 'completed' ? 'completed' : ''} ` +
+          `${status === 'in_progress' ? 'in-progress' : ''} ` +
+          `${!lesson.is_published ? 'locked' : ''}`;
+
+        const actions = lesson.is_published
+          ? (
+            status === 'completed'
+              ? `<span class="lesson-done-badge">✓ Пройдено</span>`
+              : `
+                <button
+                  class="lesson-action lesson-open"
+                  data-action="open"
+                  data-id="${lesson.id}"
+                  data-url="${lesson.lesson_url || ''}"
+                >
+                  Открыть
+                </button>
+
+                <button
+                  class="lesson-action lesson-complete"
+                  data-action="complete"
+                  data-id="${lesson.id}"
+                >
+                  Завершить
+                </button>
+              `
+          )
+          : `<span class="lesson-meta">🔒 Скоро</span>`;
+
+        card.innerHTML = `
+          <div class="lesson-week">
+            НЕДЕЛЯ<br>${lesson.week_number}
+          </div>
+
+          <div>
+            <div class="lesson-theme">Тема урока</div>
+            <div class="lesson-title">${lesson.title}</div>
+            <div class="lesson-meta">
+              ${statusLabel(status)}
+            </div>
+          </div>
+
+          <div class="lesson-actions">
+            ${actions}
+          </div>
+        `;
+
+        quarterContainer.appendChild(card);
+      });
+
+      lessonsList.appendChild(section);
+    });
+
+    lessonsList.querySelectorAll('[data-action="open"]').forEach(button => {
+      button.addEventListener('click', async function() {
+        const lessonId = button.dataset.id;
+        const lessonUrl = button.dataset.url;
+
+        await setLessonStatus(lessonId, 'in_progress');
+
+        if (lessonUrl) {
+          window.location.href = lessonUrl;
+        } else {
+          alert(
+            'Карточка урока уже подключена к прогрессу. Сам материал перенесём на следующем этапе.'
+          );
+          await loadLessons();
+        }
+      });
+    });
+
+    lessonsList.querySelectorAll('[data-action="complete"]').forEach(button => {
+      button.addEventListener('click', async function() {
+        await setLessonStatus(button.dataset.id, 'completed');
+        await loadLessons();
+      });
+    });
+  }
+
+  async function setLessonStatus(lessonId, status) {
+
+    const userId = await getCurrentUserId();
+
+    if (!userId) return;
+
+    const payload = {
+      user_id: userId,
+      lesson_id: lessonId,
+      status,
+      completed_at:
+        status === 'completed'
+          ? new Date().toISOString()
+          : null
+    };
+
+    const { error } = await supabaseClient
+      .from('lesson_progress')
+      .upsert(
+        payload,
+        { onConflict: 'user_id,lesson_id' }
+      );
+
+    if (error) {
+      console.error('Ошибка сохранения прогресса:', error);
+      alert('Не удалось сохранить прогресс урока.');
+    }
+  }
+
+  openLessonsButton.addEventListener('click', async function() {
+    lessonsPanel.classList.remove('hidden');
+    await loadLessons();
+
+    lessonsPanel.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start'
+    });
+  });
+
+  closeLessonsButton.addEventListener('click', function() {
+    lessonsPanel.classList.add('hidden');
+  });
 
   // =========================================================
   // КЛАССЫ
@@ -1719,6 +2277,7 @@
 
     teacherPanel.classList.add('hidden');
     selectedClassPanel.classList.add('hidden');
+    lessonsPanel.classList.add('hidden');
 
     dashboardPage.classList.add('hidden');
     loginPage.classList.remove('hidden');
