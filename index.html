@@ -801,12 +801,12 @@ if (login.includes('@')) {
         'Войти';
 
 
-      if (error) {
+     if (error) {
 
-  console.error('SUPABASE LOGIN ERROR:', error);
+  console.error(error);
 
   showError(
-    'Supabase: ' + error.message
+    'Неверный логин или пароль.'
   );
 
   return;
