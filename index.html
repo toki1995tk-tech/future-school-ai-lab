@@ -362,17 +362,32 @@
     }
 
     .lesson-week {
-      width: 58px;
-      height: 58px;
+      width: 62px;
+      height: 62px;
       border-radius: 16px;
       background: #0f172a;
       color: white;
-      display: grid;
-      place-items: center;
-      font-weight: bold;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       text-align: center;
-      line-height: 1.05;
-      font-size: 13px;
+      line-height: 1;
+      padding: 7px 5px;
+    }
+
+    .lesson-week-label {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      opacity: .72;
+      margin-bottom: 4px;
+    }
+
+    .lesson-week-number {
+      font-size: 23px;
+      font-weight: 800;
+      line-height: 1;
     }
 
     .lesson-card.completed .lesson-week {
@@ -893,7 +908,7 @@
       }
 
       .lesson-card {
-        grid-template-columns: 58px 1fr;
+        grid-template-columns: 62px 1fr;
       }
 
       .lesson-actions {
@@ -1466,7 +1481,8 @@
 
         card.innerHTML = `
           <div class="lesson-week">
-            НЕДЕЛЯ<br>${lesson.week_number}
+            <span class="lesson-week-label">НЕДЕЛЯ</span>
+            <span class="lesson-week-number">${lesson.week_number}</span>
           </div>
 
           <div>
