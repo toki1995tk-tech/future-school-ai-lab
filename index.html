@@ -3,15 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>Future School AI Lab</title>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -23,17 +20,10 @@
       min-height: 100vh;
     }
 
-    button,
-    input {
-      font-family: inherit;
-    }
-
-    .hidden {
-      display: none !important;
-    }
+    button, input, select { font-family: inherit; }
+    .hidden { display: none !important; }
 
     /* LOGIN */
-
     #loginPage {
       min-height: 100vh;
       display: flex;
@@ -47,9 +37,7 @@
       max-width: 1000px;
     }
 
-    .brand {
-      margin-bottom: 30px;
-    }
+    .brand { margin-bottom: 30px; }
 
     .school-badge {
       display: inline-block;
@@ -94,9 +82,7 @@
       margin-bottom: 10px;
     }
 
-    .feature h3 {
-      margin: 0 0 7px;
-    }
+    .feature h3 { margin: 0 0 7px; }
 
     .feature p {
       color: #cbd5e1;
@@ -123,9 +109,7 @@
       color: #64748b;
     }
 
-    .input-group {
-      margin-bottom: 15px;
-    }
+    .input-group { margin-bottom: 15px; }
 
     .input-group label {
       display: block;
@@ -134,16 +118,19 @@
       font-size: 14px;
     }
 
-    .input-group input {
+    .input-group input,
+    .input-group select {
       width: 100%;
       padding: 15px 16px;
       border: 1px solid #cbd5e1;
       border-radius: 13px;
       font-size: 16px;
       outline: none;
+      background: white;
     }
 
-    .input-group input:focus {
+    .input-group input:focus,
+    .input-group select:focus {
       border-color: #2563eb;
       box-shadow: 0 0 0 3px rgba(37,99,235,.1);
     }
@@ -160,14 +147,8 @@
       cursor: pointer;
     }
 
-    .primary-button:hover {
-      background: #1d4ed8;
-    }
-
-    .primary-button:disabled {
-      opacity: .65;
-      cursor: wait;
-    }
+    .primary-button:hover { background: #1d4ed8; }
+    .primary-button:disabled { opacity: .65; cursor: wait; }
 
     #loginError {
       margin-top: 14px;
@@ -179,7 +160,6 @@
     }
 
     /* DASHBOARD */
-
     #dashboardPage {
       min-height: 100vh;
       background: #f1f5f9;
@@ -227,15 +207,8 @@
       padding: 38px 24px;
     }
 
-    .welcome {
-      margin-bottom: 28px;
-    }
-
-    .welcome-small {
-      color: #64748b;
-      font-size: 15px;
-      margin-bottom: 6px;
-    }
+    .welcome { margin-bottom: 28px; }
+    .welcome-small { color: #64748b; font-size: 15px; margin-bottom: 6px; }
 
     .welcome h1 {
       margin: 0 0 7px;
@@ -265,19 +238,10 @@
       min-height: 210px;
       box-shadow: 0 8px 25px rgba(15,23,42,.06);
       border: 1px solid #e2e8f0;
-      position: relative;
-      overflow: hidden;
     }
 
-    .dashboard-card .icon {
-      font-size: 37px;
-      margin-bottom: 16px;
-    }
-
-    .dashboard-card h2 {
-      margin: 0 0 9px;
-      font-size: 21px;
-    }
+    .dashboard-card .icon { font-size: 37px; margin-bottom: 16px; }
+    .dashboard-card h2 { margin: 0 0 9px; font-size: 21px; }
 
     .dashboard-card p {
       color: #64748b;
@@ -291,16 +255,13 @@
       background: #eff6ff;
       color: #1d4ed8;
       border-radius: 10px;
-      text-decoration: none;
       font-weight: bold;
       font-size: 14px;
     }
 
-    .coming {
-      background: #f1f5f9;
-      color: #94a3b8;
-    }
+    .coming { background: #f1f5f9; color: #94a3b8; }
 
+    /* TEACHER PANEL */
     .teacher-panel {
       margin-top: 20px;
       padding: 24px;
@@ -309,859 +270,477 @@
       border-radius: 20px;
     }
 
-    .teacher-panel h2 {
-      margin-top: 0;
-      color: #9a3412;
+    .teacher-panel h2 { margin-top: 0; color: #9a3412; }
+
+    .teacher-header { margin-bottom: 20px; }
+    .teacher-header h2 { margin: 0 0 5px; }
+    .teacher-header p { margin: 0; color: #9a3412; }
+
+    .teacher-card {
+      background: white;
+      border-radius: 18px;
+      padding: 22px;
+      border: 1px solid #fed7aa;
     }
-.teacher-header {
-  margin-bottom: 20px;
-}
 
-.teacher-header h2 {
-  margin: 0 0 5px;
-}
+    .teacher-card h3 {
+      margin-top: 0;
+      margin-bottom: 20px;
+      color: #0f172a;
+    }
 
-.teacher-header p {
-  margin: 0;
-  color: #9a3412;
-}
+    .teacher-card .input-group label { color: #334155; }
 
-.teacher-grid {
-  display: grid;
-  grid-template-columns: 1.2fr .8fr;
-  gap: 20px;
-  margin-top: 20px;
-}
+    .teacher-card-text {
+      color: #64748b;
+      line-height: 1.6;
+    }
 
-.teacher-card {
-  background: white;
-  border-radius: 18px;
-  padding: 22px;
-  border: 1px solid #fed7aa;
-}
-
-.teacher-card h3 {
-  margin-top: 0;
-  margin-bottom: 20px;
-  color: #0f172a;
-}
-
-.teacher-card .input-group label {
-  color: #334155;
-}
-
-.teacher-card select {
-  width: 100%;
-  padding: 15px 16px;
-  border: 1px solid #cbd5e1;
-  border-radius: 13px;
-  background: white;
-  font-size: 16px;
-  outline: none;
-}
-
-.teacher-card select:focus {
-  border-color: #2563eb;
-  box-shadow: 0 0 0 3px rgba(37,99,235,.1);
-}
-
-.field-hint {
-  margin-top: 6px;
-  color: #94a3b8;
-  font-size: 12px;
-}
-
-.password-row {
-  display: grid;
-  grid-template-columns: 1fr 55px;
-  gap: 8px;
-}
-
-.password-row input {
-  margin-bottom: 0;
-}
-
-.secondary-button {
-  border: none;
-  border-radius: 12px;
-  background: #e2e8f0;
-  color: #0f172a;
-  cursor: pointer;
-  font-size: 20px;
-}
-
-.secondary-button:hover {
-  background: #cbd5e1;
-}
-
-.teacher-card-text {
-  color: #64748b;
-  line-height: 1.6;
-}
-
-.student-counter {
-  background: #f8fafc;
-  border-radius: 16px;
-  padding: 20px;
-  margin-top: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  color: #64748b;
-}
-
-.counter-number {
-  color: #2563eb;
-  font-size: 38px;
-  font-weight: bold;
-}
-
-.future-feature {
-  margin-top: 16px;
-  background: #f1f5f9;
-  color: #64748b;
-  padding: 13px;
-  border-radius: 12px;
-  font-size: 13px;
-}
-
-.student-message {
-  margin-top: 15px;
-  padding: 13px;
-  border-radius: 12px;
-  font-weight: bold;
-}
-
-.student-message.success {
-  background: #dcfce7;
-  color: #166534;
-}
-
-.student-message.error {
-  background: #fee2e2;
-  color: #b91c1c;
-}
     .classes-header,
-.selected-class-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 15px;
-}
+    .selected-class-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+    }
 
-.small-primary-button {
-  border: none;
-  background: #2563eb;
-  color: white;
-  padding: 11px 16px;
-  border-radius: 11px;
-  font-weight: bold;
-  cursor: pointer;
-}
+    .small-primary-button {
+      border: none;
+      background: #2563eb;
+      color: white;
+      padding: 11px 16px;
+      border-radius: 11px;
+      font-weight: bold;
+      cursor: pointer;
+    }
 
-.small-primary-button:hover {
-  background: #1d4ed8;
-}
+    .small-primary-button:hover { background: #1d4ed8; }
 
-.create-class-box {
-  display: grid;
-  grid-template-columns: 1fr 140px;
-  gap: 10px;
-  margin: 18px 0;
-}
+    .create-class-box {
+      display: grid;
+      grid-template-columns: 1fr 140px;
+      gap: 10px;
+      margin: 18px 0;
+    }
 
-.create-class-box input {
-  width: 100%;
-  padding: 14px 15px;
-  border: 1px solid #cbd5e1;
-  border-radius: 12px;
-  font-size: 16px;
-}
+    .create-class-box input {
+      width: 100%;
+      padding: 14px 15px;
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      font-size: 16px;
+    }
 
-.classes-list {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-  margin-top: 18px;
-}
+    .classes-list {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 18px;
+    }
 
-.class-card {
-  border: 1px solid #e2e8f0;
-  background: #f8fafc;
-  border-radius: 16px;
-  padding: 18px;
-  cursor: pointer;
-  transition: .15s ease;
-}
+    .class-card {
+      border: 1px solid #e2e8f0;
+      background: #f8fafc;
+      border-radius: 16px;
+      padding: 18px;
+      cursor: pointer;
+      transition: .15s ease;
+    }
 
-.class-card:hover {
-  transform: translateY(-2px);
-  border-color: #93c5fd;
-  background: #eff6ff;
-}
+    .class-card:hover {
+      transform: translateY(-2px);
+      border-color: #93c5fd;
+      background: #eff6ff;
+    }
 
-.class-card.active {
-  border-color: #2563eb;
-  background: #dbeafe;
-}
+    .class-card.active {
+      border-color: #2563eb;
+      background: #dbeafe;
+    }
 
-.class-name {
-  font-size: 24px;
-  font-weight: bold;
-  margin-bottom: 5px;
-}
+    .class-name {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
 
-.class-count {
-  color: #64748b;
-  font-size: 13px;
-}
+    .class-count {
+      color: #64748b;
+      font-size: 13px;
+    }
 
-.teacher-label {
-  color: #64748b;
-  font-size: 12px;
-  text-transform: uppercase;
-  letter-spacing: .08em;
-}
+    .teacher-label {
+      color: #64748b;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
 
-.selected-class-header h3 {
-  margin: 4px 0 0;
-  font-size: 30px;
-}
+    .selected-class-header h3 {
+      margin: 4px 0 0;
+      font-size: 30px;
+    }
 
-.student-form-box {
-  margin-top: 20px;
-  background: #f8fafc;
-  padding: 20px;
-  border-radius: 16px;
-}
+    .student-form-box {
+      margin-top: 20px;
+      background: #f8fafc;
+      padding: 20px;
+      border-radius: 16px;
+    }
 
-.students-list {
-  margin-top: 20px;
-}
+    .password-row {
+      display: grid;
+      grid-template-columns: 1fr 55px;
+      gap: 8px;
+    }
 
-.student-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  padding: 14px 4px;
-  border-bottom: 1px solid #e2e8f0;
-}
+    .password-row input { margin-bottom: 0; }
 
-.student-row:last-child {
-  border-bottom: none;
-}
+    .secondary-button {
+      border: none;
+      border-radius: 12px;
+      background: #e2e8f0;
+      color: #0f172a;
+      cursor: pointer;
+      font-size: 20px;
+    }
 
-.student-name {
-  font-weight: bold;
-}
+    .secondary-button:hover { background: #cbd5e1; }
 
-.student-login {
-  color: #64748b;
-  font-size: 13px;
-}
+    .students-list { margin-top: 20px; }
 
-.loading-text {
-  color: #94a3b8;
-  font-size: 14px;
-}
-    @media(max-width: 760px) {
-      
+    .student-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 4px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .student-row:last-child { border-bottom: none; }
+    .student-name { font-weight: bold; }
+
+    .student-message {
+      margin-top: 15px;
+      padding: 13px;
+      border-radius: 12px;
+      font-weight: bold;
+    }
+
+    .student-message.success {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .student-message.error {
+      background: #fee2e2;
+      color: #b91c1c;
+    }
+
+    .loading-text {
+      color: #94a3b8;
+      font-size: 14px;
+    }
+
+    @media (max-width: 760px) {
       .features,
-      .dashboard-grid {
+      .dashboard-grid,
+      .classes-list {
         grid-template-columns: 1fr;
-        .teacher-grid {
-  grid-template-columns: 1fr;
-}
-
-      }
-.classes-list {
-  grid-template-columns: 1fr;
-}
-
-.create-class-box {
-  grid-template-columns: 1fr;
-}
-
-.classes-header,
-.selected-class-header {
-  align-items: flex-start;
-  flex-direction: column;
-}
-      .brand h1 {
-        font-size: 55px;
       }
 
-      .topbar {
-        padding: 15px 18px;
+      .create-class-box {
+        grid-template-columns: 1fr;
       }
 
-      .dashboard {
-        padding: 28px 17px;
+      .classes-header,
+      .selected-class-header {
+        align-items: flex-start;
+        flex-direction: column;
       }
+
+      .brand h1 { font-size: 55px; }
+      .topbar { padding: 15px 18px; }
+      .dashboard { padding: 28px 17px; }
     }
   </style>
 </head>
 
 <body>
 
-<!-- ========================= -->
-<!-- СТРАНИЦА ВХОДА -->
-<!-- ========================= -->
-
 <section id="loginPage">
-
   <div class="login-container">
 
     <div class="brand">
-
-      <div class="school-badge">
-        FUTURE SCHOOL
-      </div>
-
+      <div class="school-badge">FUTURE SCHOOL</div>
       <h1>AI Lab</h1>
-
       <p>
         Пространство AI Prompt Engineering,
         создания собственных AI-помощников
         и разработки AI-проектов.
       </p>
-
     </div>
 
     <div class="features">
-
       <div class="feature">
         <div class="feature-icon">📘</div>
         <h3>Мои уроки</h3>
-        <p>
-          Изучай AI Prompt Engineering
-          и выполняй практические задания.
-        </p>
+        <p>Изучай AI Prompt Engineering и выполняй практические задания.</p>
       </div>
 
       <div class="feature">
         <div class="feature-icon">🤖</div>
         <h3>My AI</h3>
-        <p>
-          Постепенно создай и настрой
-          собственного AI.
-        </p>
+        <p>Постепенно создай и настрой собственного AI.</p>
       </div>
 
       <div class="feature">
         <div class="feature-icon">🚀</div>
         <h3>Project Lab</h3>
-        <p>
-          Разрабатывай собственные
-          AI-продукты индивидуально или в команде.
-        </p>
+        <p>Разрабатывай собственные AI-продукты индивидуально или в команде.</p>
       </div>
-
     </div>
 
     <div class="login-box">
-
       <h2>Вход в AI Lab</h2>
-
-      <p class="login-description">
-        Используй логин и пароль, выданные учителем.
-      </p>
+      <p class="login-description">Используй логин и пароль, выданные учителем.</p>
 
       <form id="loginForm">
-
         <div class="input-group">
-          <label for="login">
-            Логин
-          </label>
-
-          <input
-            id="login"
-            type="text"
-            autocomplete="username"
-            placeholder="Например: alina.test"
-            required
-          >
+          <label for="login">Логин</label>
+          <input id="login" type="text" autocomplete="username" placeholder="Например: alina.test" required>
         </div>
 
         <div class="input-group">
-          <label for="password">
-            Пароль
-          </label>
-
-          <input
-            id="password"
-            type="password"
-            autocomplete="current-password"
-            placeholder="Введите пароль"
-            required
-          >
+          <label for="password">Пароль</label>
+          <input id="password" type="password" autocomplete="current-password" placeholder="Введите пароль" required>
         </div>
 
-        <button
-          id="loginButton"
-          class="primary-button"
-          type="submit"
-        >
-          Войти
-        </button>
-
+        <button id="loginButton" class="primary-button" type="submit">Войти</button>
       </form>
 
-      <div
-        id="loginError"
-        class="hidden"
-      ></div>
-
+      <div id="loginError" class="hidden"></div>
     </div>
 
   </div>
-
 </section>
 
-
-<!-- ========================= -->
-<!-- ЛИЧНЫЙ КАБИНЕТ -->
-<!-- ========================= -->
-
-<section
-  id="dashboardPage"
-  class="hidden"
->
+<section id="dashboardPage" class="hidden">
 
   <header class="topbar">
-
     <div class="topbar-brand">
       <span>AI</span>
       <span>Future School AI Lab</span>
     </div>
 
-    <button
-      id="logoutButton"
-      class="logout-button"
-    >
-      Выйти
-    </button>
-
+    <button id="logoutButton" class="logout-button">Выйти</button>
   </header>
 
   <main class="dashboard">
 
     <section class="welcome">
-
-      <div class="welcome-small">
-        Добро пожаловать в AI Lab
-      </div>
-
-      <h1 id="studentName">
-        Ученик
-      </h1>
-
-      <span
-        id="studentClass"
-        class="class-badge"
-      >
-      </span>
-
+      <div class="welcome-small">Добро пожаловать в AI Lab</div>
+      <h1 id="studentName">Ученик</h1>
+      <span id="studentClass" class="class-badge"></span>
     </section>
 
     <section class="dashboard-grid">
 
       <article class="dashboard-card">
-
         <div class="icon">📘</div>
-
-        <h2>
-          Мои уроки
-        </h2>
-
-        <p>
-          Уроки AI Prompt Engineering,
-          задания и твой учебный прогресс.
-        </p>
-
-        <span class="card-button">
-          Скоро
-        </span>
-
+        <h2>Мои уроки</h2>
+        <p>Уроки AI Prompt Engineering, задания и твой учебный прогресс.</p>
+        <span class="card-button">Скоро</span>
       </article>
 
-
       <article class="dashboard-card">
-
         <div class="icon">🤖</div>
-
-        <h2>
-          My AI
-        </h2>
-
-        <p>
-          Здесь появится твой собственный
-          AI-помощник.
-        </p>
-
-        <span class="card-button coming">
-          Пока не создан
-        </span>
-
+        <h2>My AI</h2>
+        <p>Здесь появится твой собственный AI-помощник.</p>
+        <span class="card-button coming">Пока не создан</span>
       </article>
 
-
       <article class="dashboard-card">
-
         <div class="icon">🚀</div>
-
-        <h2>
-          Project Lab
-        </h2>
-
-        <p>
-          Пространство для разработки
-          собственных AI-проектов.
-        </p>
-
-        <span class="card-button coming">
-          Откроется позже
-        </span>
-
+        <h2>Project Lab</h2>
+        <p>Пространство для разработки собственных AI-проектов.</p>
+        <span class="card-button coming">Откроется позже</span>
       </article>
 
     </section>
 
+    <section id="teacherPanel" class="teacher-panel hidden">
 
-    <!-- Панель показывается только учителю -->
-
-   <section
-  id="teacherPanel"
-  class="teacher-panel hidden"
->
-
-  <div class="teacher-header">
-    <div>
-      <h2>👩‍🏫 Учительская панель</h2>
-      <p>Управление классами и учениками AI Lab</p>
-    </div>
-  </div>
-
-  <!-- БЛОК КЛАССОВ -->
-
-  <div class="teacher-card">
-
-    <div class="classes-header">
-      <div>
-        <h3>Классы</h3>
-        <p class="teacher-card-text">
-          Создавай классы и добавляй в них учеников.
-        </p>
+      <div class="teacher-header">
+        <h2>👩‍🏫 Учительская панель</h2>
+        <p>Управление классами и учениками AI Lab</p>
       </div>
 
-      <button
-        id="showCreateClassButton"
-        class="small-primary-button"
-        type="button"
-      >
-        + Добавить класс
-      </button>
-    </div>
+      <div class="teacher-card">
 
-    <div
-      id="createClassBox"
-      class="create-class-box hidden"
-    >
-
-      <input
-        id="newClassName"
-        type="text"
-        placeholder="Например: 6C"
-        maxlength="10"
-      >
-
-      <button
-        id="createClassButton"
-        type="button"
-        class="primary-button"
-      >
-        Создать
-      </button>
-
-    </div>
-
-    <div
-      id="classMessage"
-      class="student-message hidden"
-    ></div>
-
-    <div
-      id="classesList"
-      class="classes-list"
-    >
-      <div class="loading-text">
-        Загружаем классы...
-      </div>
-    </div>
-
-  </div>
-
-
-  <!-- ВЫБРАННЫЙ КЛАСС -->
-
-  <div
-    id="selectedClassPanel"
-    class="teacher-card hidden"
-    style="margin-top:20px;"
-  >
-
-    <div class="selected-class-header">
-
-      <div>
-        <div class="teacher-label">
-          Выбранный класс
-        </div>
-
-        <h3 id="selectedClassTitle">
-          6C
-        </h3>
-      </div>
-
-      <button
-        id="showStudentFormButton"
-        type="button"
-        class="small-primary-button"
-      >
-        + Добавить ученика
-      </button>
-
-    </div>
-
-
-    <!-- ФОРМА СОЗДАНИЯ УЧЕНИКА -->
-
-    <div
-      id="studentFormBox"
-      class="student-form-box hidden"
-    >
-
-      <form id="createStudentForm">
-
-        <div class="input-group">
-
-          <label for="newStudentName">
-            Имя и фамилия
-          </label>
-
-          <input
-            id="newStudentName"
-            type="text"
-            placeholder="Например: Алина Садыкова"
-            required
-          >
-
-        </div>
-
-
-        <div class="input-group">
-
-          <label for="newStudentLogin">
-            Логин
-          </label>
-
-          <input
-            id="newStudentLogin"
-            type="text"
-            placeholder="Например: alina.s"
-            autocomplete="off"
-            required
-          >
-
-        </div>
-
-
-        <div class="input-group">
-
-          <label for="newStudentPassword">
-            Пароль
-          </label>
-
-          <div class="password-row">
-
-            <input
-              id="newStudentPassword"
-              type="text"
-              placeholder="Пароль ученика"
-              autocomplete="off"
-              required
-            >
-
-            <button
-              id="generatePasswordButton"
-              type="button"
-              class="secondary-button"
-            >
-              🎲
-            </button>
-
+        <div class="classes-header">
+          <div>
+            <h3>Классы</h3>
+            <p class="teacher-card-text">Создавай классы и добавляй в них учеников.</p>
           </div>
 
+          <button id="showCreateClassButton" class="small-primary-button" type="button">
+            + Добавить класс
+          </button>
         </div>
 
+        <div id="createClassBox" class="create-class-box hidden">
+          <input id="newClassName" type="text" placeholder="Например: 6C" maxlength="10">
+          <button id="createClassButton" type="button" class="primary-button">Создать</button>
+        </div>
 
-        <button
-          id="createStudentButton"
-          class="primary-button"
-          type="submit"
-        >
-          Создать ученика
-        </button>
+        <div id="classMessage" class="student-message hidden"></div>
 
-      </form>
+        <div id="classesList" class="classes-list">
+          <div class="loading-text">Загружаем классы...</div>
+        </div>
 
-      <div
-        id="createStudentMessage"
-        class="student-message hidden"
-      ></div>
-
-    </div>
-
-
-    <!-- СПИСОК УЧЕНИКОВ -->
-
-    <div
-      id="studentsList"
-      class="students-list"
-    >
-
-      <div class="loading-text">
-        Выберите класс
       </div>
 
-    </div>
+      <div id="selectedClassPanel" class="teacher-card hidden" style="margin-top:20px;">
 
-  </div>
+        <div class="selected-class-header">
+          <div>
+            <div class="teacher-label">Выбранный класс</div>
+            <h3 id="selectedClassTitle">Класс</h3>
+          </div>
 
+          <button id="showStudentFormButton" type="button" class="small-primary-button">
+            + Добавить ученика
+          </button>
+        </div>
+
+        <div id="studentFormBox" class="student-form-box hidden">
+
+          <form id="createStudentForm">
+
+            <div class="input-group">
+              <label for="newStudentName">Имя и фамилия</label>
+              <input id="newStudentName" type="text" placeholder="Например: Алина Садыкова" required>
+            </div>
+
+            <div class="input-group">
+              <label for="newStudentLogin">Логин</label>
+              <input id="newStudentLogin" type="text" placeholder="Например: alina.s" autocomplete="off" required>
+            </div>
+
+            <div class="input-group">
+              <label for="newStudentPassword">Пароль</label>
+
+              <div class="password-row">
+                <input id="newStudentPassword" type="text" placeholder="Пароль ученика" autocomplete="off" required>
+
+                <button id="generatePasswordButton" type="button" class="secondary-button" title="Сгенерировать пароль">
+                  🎲
+                </button>
+              </div>
+            </div>
+
+            <button id="createStudentButton" class="primary-button" type="submit">
+              Создать ученика
+            </button>
+
+          </form>
+
+          <div id="createStudentMessage" class="student-message hidden"></div>
+
+        </div>
+
+        <div id="studentsList" class="students-list">
+          <div class="loading-text">Выберите класс</div>
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
 </section>
 
-
 <script>
+  // =========================================================
+  // SUPABASE
+  // =========================================================
 
-  /*
-  ==============================================
-  SUPABASE
-  ==============================================
-  ВСТАВЬ СЮДА СВОИ ДАННЫЕ
-  */
+  const SUPABASE_URL = 'https://ovjpqjnjceuloakqnwsm.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_W5s9Gkrb76hPoR7iu9Cf4A_uhyF7uCQ';
 
-  const SUPABASE_URL =
-    'https://ovjpqjnjceuloakqnwsm.supabase.co';
+  const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
 
-  const SUPABASE_KEY =
-    'sb_publishable_W5s9Gkrb76hPoR7iu9Cf4A_uhyF7uCQ';
+  // =========================================================
+  // ЭЛЕМЕНТЫ
+  // =========================================================
 
+  const loginPage = document.getElementById('loginPage');
+  const dashboardPage = document.getElementById('dashboardPage');
+  const loginForm = document.getElementById('loginForm');
+  const loginButton = document.getElementById('loginButton');
+  const loginError = document.getElementById('loginError');
+  const logoutButton = document.getElementById('logoutButton');
 
-  const supabaseClient =
-    window.supabase.createClient(
-      SUPABASE_URL,
-      SUPABASE_KEY
-    );
+  const studentName = document.getElementById('studentName');
+  const studentClass = document.getElementById('studentClass');
+  const teacherPanel = document.getElementById('teacherPanel');
 
+  const classesList = document.getElementById('classesList');
+  const selectedClassPanel = document.getElementById('selectedClassPanel');
+  const selectedClassTitle = document.getElementById('selectedClassTitle');
 
-  /*
-  ==============================================
-  ЭЛЕМЕНТЫ СТРАНИЦЫ
-  ==============================================
-  */
+  const showCreateClassButton = document.getElementById('showCreateClassButton');
+  const createClassBox = document.getElementById('createClassBox');
+  const newClassName = document.getElementById('newClassName');
+  const createClassButton = document.getElementById('createClassButton');
+  const classMessage = document.getElementById('classMessage');
 
-  const loginPage =
-    document.getElementById('loginPage');
+  const showStudentFormButton = document.getElementById('showStudentFormButton');
+  const studentFormBox = document.getElementById('studentFormBox');
+  const studentsList = document.getElementById('studentsList');
 
-  const dashboardPage =
-    document.getElementById('dashboardPage');
+  const createStudentForm = document.getElementById('createStudentForm');
+  const newStudentName = document.getElementById('newStudentName');
+  const newStudentLogin = document.getElementById('newStudentLogin');
+  const newStudentPassword = document.getElementById('newStudentPassword');
+  const generatePasswordButton = document.getElementById('generatePasswordButton');
+  const createStudentButton = document.getElementById('createStudentButton');
+  const createStudentMessage = document.getElementById('createStudentMessage');
 
-  const loginForm =
-    document.getElementById('loginForm');
+  let selectedClassId = null;
+  let selectedClassName = null;
 
-  const loginButton =
-    document.getElementById('loginButton');
+  // =========================================================
+  // ВСПОМОГАТЕЛЬНОЕ
+  // =========================================================
 
-  const loginError =
-    document.getElementById('loginError');
+  function showLoginError(message) {
+    loginError.textContent = message;
+    loginError.classList.remove('hidden');
+  }
 
-  const logoutButton =
-    document.getElementById('logoutButton');
+  function hideLoginError() {
+    loginError.classList.add('hidden');
+  }
 
-  const studentName =
-    document.getElementById('studentName');
+  function showStudentMessage(message, type = 'success') {
+    createStudentMessage.textContent = message;
+    createStudentMessage.className = `student-message ${type}`;
+  }
 
-  const studentClass =
-    document.getElementById('studentClass');
+  // =========================================================
+  // КЛАССЫ
+  // =========================================================
 
-  const teacherPanel =
-    document.getElementById('teacherPanel');
+  async function loadClasses() {
 
-const classesList =
-  document.getElementById('classesList');
-
-const selectedClassPanel =
-  document.getElementById('selectedClassPanel');
-
-const selectedClassTitle =
-  document.getElementById('selectedClassTitle');
-
-const showCreateClassButton =
-  document.getElementById('showCreateClassButton');
-
-const createClassBox =
-  document.getElementById('createClassBox');
-
-const newClassName =
-  document.getElementById('newClassName');
-
-const createClassButton =
-  document.getElementById('createClassButton');
-
-const classMessage =
-  document.getElementById('classMessage');
-
-const showStudentFormButton =
-  document.getElementById('showStudentFormButton');
-
-const studentFormBox =
-  document.getElementById('studentFormBox');
-
-const studentsList =
-  document.getElementById('studentsList');
-
-  const createStudentForm =
-  document.getElementById('createStudentForm');
-
-const newStudentName =
-  document.getElementById('newStudentName');
-
-const newStudentLogin =
-  document.getElementById('newStudentLogin');
-
-const newStudentPassword =
-  document.getElementById('newStudentPassword');
-
-const generatePasswordButton =
-  document.getElementById('generatePasswordButton');
-
-const createStudentButton =
-  document.getElementById('createStudentButton');
-
-const createStudentMessage =
-  document.getElementById('createStudentMessage');
-
-let selectedClassId = null;
-let selectedClassName = null;
-
-  // ==============================================
-// КЛАССЫ
-// ==============================================
-
-async function loadClasses() {
-
-  const { data: classes, error } =
-    await supabaseClient
+    const { data: classes, error } = await supabaseClient
       .from('classes')
       .select(`
         id,
@@ -1172,288 +751,155 @@ async function loadClasses() {
       `)
       .order('name');
 
-
-  if (error) {
-
-    console.error(error);
-
-    classesList.innerHTML =
-      '<div class="loading-text">Не удалось загрузить классы</div>';
-
-    return;
-  }
-
-
-  if (!classes || classes.length === 0) {
-
-    classesList.innerHTML =
-      '<div class="loading-text">Классов пока нет</div>';
-
-    return;
-  }
-
-
-  classesList.innerHTML = '';
-
-
-  classes.forEach(classItem => {
-
-    const card =
-      document.createElement('div');
-
-    card.className =
-      'class-card';
-
-    card.dataset.id =
-      classItem.id;
-
-
-    const count =
-      classItem.profiles
-        ? classItem.profiles.length
-        : 0;
-
-
-    card.innerHTML = `
-      <div class="class-name">
-        ${classItem.name}
-      </div>
-
-      <div class="class-count">
-        ${count} учеников
-      </div>
-    `;
-
-
-    card.addEventListener(
-      'click',
-      function() {
-
-        document
-          .querySelectorAll('.class-card')
-          .forEach(item =>
-            item.classList.remove('active')
-          );
-
-
-        card.classList.add('active');
-
-
-        selectedClassId =
-          classItem.id;
-
-        selectedClassName =
-          classItem.name;
-
-
-        selectedClassTitle.textContent =
-          classItem.name;
-
-
-        selectedClassPanel
-          .classList
-          .remove('hidden');
-
-
-        studentFormBox
-          .classList
-          .add('hidden');
-
-
-        loadStudents(
-          classItem.id
-        );
-
-      }
-    );
-
-
-    classesList.appendChild(card);
-
-  });
-
-}
-
-
-// ==============================================
-// СОЗДАНИЕ КЛАССА
-// ==============================================
-
-showCreateClassButton.addEventListener(
-  'click',
-  function() {
-
-    createClassBox
-      .classList
-      .toggle('hidden');
-
-    newClassName.focus();
-
-  }
-);
-
-
-createClassButton.addEventListener(
-  'click',
-  async function() {
-
-    const name =
-      newClassName
-        .value
-        .trim()
-        .toUpperCase();
-
-
-    classMessage
-      .classList
-      .add('hidden');
-
-
-    if (!name) {
+    if (error) {
+      console.error('Ошибка загрузки классов:', error);
+      classesList.innerHTML =
+        '<div class="loading-text">Не удалось загрузить классы</div>';
       return;
     }
 
+    if (!classes || classes.length === 0) {
+      classesList.innerHTML =
+        '<div class="loading-text">Классов пока нет</div>';
+      return;
+    }
+
+    classesList.innerHTML = '';
+
+    classes.forEach(classItem => {
+
+      const card = document.createElement('div');
+      card.className = 'class-card';
+      card.dataset.id = classItem.id;
+
+      const count = classItem.profiles ? classItem.profiles.length : 0;
+
+      card.innerHTML = `
+        <div class="class-name">${classItem.name}</div>
+        <div class="class-count">${count} учеников</div>
+      `;
+
+      card.addEventListener('click', async function() {
+
+        document
+          .querySelectorAll('.class-card')
+          .forEach(item => item.classList.remove('active'));
+
+        card.classList.add('active');
+
+        selectedClassId = classItem.id;
+        selectedClassName = classItem.name;
+
+        selectedClassTitle.textContent = classItem.name;
+
+        selectedClassPanel.classList.remove('hidden');
+        studentFormBox.classList.add('hidden');
+
+        await loadStudents(classItem.id);
+      });
+
+      classesList.appendChild(card);
+    });
+  }
+
+  showCreateClassButton.addEventListener('click', function() {
+    createClassBox.classList.toggle('hidden');
+    if (!createClassBox.classList.contains('hidden')) {
+      newClassName.focus();
+    }
+  });
+
+  createClassButton.addEventListener('click', async function() {
+
+    const name = newClassName.value.trim().toUpperCase();
+    classMessage.classList.add('hidden');
+
+    if (!name) return;
 
     createClassButton.disabled = true;
     createClassButton.textContent = 'Создаём...';
 
-
-    const { error } =
-      await supabaseClient
-        .from('classes')
-        .insert({
-          name: name
-        });
-
+    const { error } = await supabaseClient
+      .from('classes')
+      .insert({ name });
 
     createClassButton.disabled = false;
     createClassButton.textContent = 'Создать';
 
-
     if (error) {
-
-      console.error(error);
+      console.error('Ошибка создания класса:', error);
 
       classMessage.textContent =
         error.code === '23505'
           ? 'Такой класс уже существует.'
           : 'Не удалось создать класс.';
 
-      classMessage.className =
-        'student-message error';
-
+      classMessage.className = 'student-message error';
       return;
     }
 
-
-    classMessage.textContent =
-      'Класс ' + name + ' создан.';
-
-    classMessage.className =
-      'student-message success';
-
+    classMessage.textContent = `Класс ${name} создан.`;
+    classMessage.className = 'student-message success';
 
     newClassName.value = '';
-
-    createClassBox
-      .classList
-      .add('hidden');
-
+    createClassBox.classList.add('hidden');
 
     await loadClasses();
+  });
 
-  }
-);
+  // =========================================================
+  // УЧЕНИКИ В КЛАССЕ
+  // =========================================================
 
+  async function loadStudents(classId) {
 
-// ==============================================
-// УЧЕНИКИ ВНУТРИ КЛАССА
-// ==============================================
+    studentsList.innerHTML =
+      '<div class="loading-text">Загружаем учеников...</div>';
 
-async function loadStudents(classId) {
-
-  studentsList.innerHTML =
-    '<div class="loading-text">Загружаем учеников...</div>';
-
-
-  const { data: students, error } =
-    await supabaseClient
+    const { data: students, error } = await supabaseClient
       .from('profiles')
       .select('id, full_name')
       .eq('class_id', classId)
       .eq('role', 'student')
       .order('full_name');
 
+    if (error) {
+      console.error('Ошибка загрузки учеников:', error);
+      studentsList.innerHTML =
+        '<div class="loading-text">Не удалось загрузить учеников</div>';
+      return;
+    }
 
-  if (error) {
+    if (!students || students.length === 0) {
+      studentsList.innerHTML =
+        '<div class="loading-text">В этом классе пока нет учеников</div>';
+      return;
+    }
 
-    console.error(error);
+    studentsList.innerHTML = '';
 
-    studentsList.innerHTML =
-      '<div class="loading-text">Не удалось загрузить учеников</div>';
+    students.forEach(student => {
+      const row = document.createElement('div');
+      row.className = 'student-row';
 
-    return;
+      row.innerHTML = `
+        <div class="student-name">${student.full_name}</div>
+      `;
+
+      studentsList.appendChild(row);
+    });
   }
 
-
-  if (!students || students.length === 0) {
-
-    studentsList.innerHTML =
-      '<div class="loading-text">В этом классе пока нет учеников</div>';
-
-    return;
-  }
-
-
-  studentsList.innerHTML = '';
-
-
-  students.forEach(student => {
-
-    const row =
-      document.createElement('div');
-
-    row.className =
-      'student-row';
-
-
-    row.innerHTML = `
-      <div>
-        <div class="student-name">
-          ${student.full_name}
-        </div>
-      </div>
-    `;
-
-
-    studentsList.appendChild(row);
-
+  showStudentFormButton.addEventListener('click', function() {
+    studentFormBox.classList.toggle('hidden');
+    createStudentMessage.classList.add('hidden');
   });
 
-}
+  // =========================================================
+  // ГЕНЕРАЦИЯ ПАРОЛЯ
+  // =========================================================
 
-
-// ==============================================
-// ПОКАЗАТЬ ФОРМУ УЧЕНИКА
-// ==============================================
-
-showStudentFormButton.addEventListener(
-  'click',
-  function() {
-
-    studentFormBox
-      .classList
-      .toggle('hidden');
-
-  }
-);
-  // ==============================================
-// ГЕНЕРАЦИЯ ПАРОЛЯ
-// ==============================================
-
-generatePasswordButton.addEventListener(
-  'click',
-  function() {
+  generatePasswordButton.addEventListener('click', function() {
 
     const chars =
       'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789';
@@ -1461,490 +907,248 @@ generatePasswordButton.addEventListener(
     let password = '';
 
     for (let i = 0; i < 8; i++) {
-      password +=
-        chars.charAt(
-          Math.floor(
-            Math.random() * chars.length
-          )
-        );
+      password += chars.charAt(
+        Math.floor(Math.random() * chars.length)
+      );
     }
 
     password += '!';
+    newStudentPassword.value = password;
+  });
 
-    newStudentPassword.value =
-      password;
+  // =========================================================
+  // СОЗДАНИЕ УЧЕНИКА
+  // =========================================================
 
-  }
-);
-
-
-// ==============================================
-// СОЗДАНИЕ УЧЕНИКА
-// ==============================================
-
-createStudentForm.addEventListener(
-  'submit',
-  async function(event) {
+  createStudentForm.addEventListener('submit', async function(event) {
 
     event.preventDefault();
+    createStudentMessage.classList.add('hidden');
 
-
-    createStudentMessage
-      .classList
-      .add('hidden');
-
-
-    if (!selectedClassId) {
-
-      createStudentMessage.textContent =
-        'Сначала выберите класс.';
-
-      createStudentMessage.className =
-        'student-message error';
-
+    if (!selectedClassId || !selectedClassName) {
+      showStudentMessage('Сначала выберите класс.', 'error');
       return;
     }
 
+    const fullName = newStudentName.value.trim();
+    const login = newStudentLogin.value.trim().toLowerCase();
+    const password = newStudentPassword.value.trim();
 
-    const fullName =
-      newStudentName
-        .value
-        .trim();
-
-    const login =
-      newStudentLogin
-        .value
-        .trim()
-        .toLowerCase();
-
-    const password =
-      newStudentPassword
-        .value
-        .trim();
-
-
-    if (
-      !fullName ||
-      !login ||
-      !password
-    ) {
-
-      createStudentMessage.textContent =
-        'Заполните все поля.';
-
-      createStudentMessage.className =
-        'student-message error';
-
+    if (!fullName || !login || !password) {
+      showStudentMessage('Заполните все поля.', 'error');
       return;
     }
-
 
     createStudentButton.disabled = true;
-
-    createStudentButton.textContent =
-      'Создаём...';
-
-
-    const {
-      data: sessionData
-    } =
-      await supabaseClient
-        .auth
-        .getSession();
-
-
-    const accessToken =
-      sessionData
-        ?.session
-        ?.access_token;
-
-
-    if (!accessToken) {
-
-      createStudentButton.disabled = false;
-
-      createStudentButton.textContent =
-        'Создать ученика';
-
-
-      createStudentMessage.textContent =
-        'Сессия учителя не найдена. Войдите заново.';
-
-      createStudentMessage.className =
-        'student-message error';
-
-      return;
-    }
-
+    createStudentButton.textContent = 'Создаём...';
 
     try {
 
-      const response =
-        await fetch(
-          SUPABASE_URL +
-          '/functions/v1/create-student',
-          {
-            method: 'POST',
+      const payload = {
+        fullName,
+        className: selectedClassName,
+        classId: selectedClassId,
+        login,
+        password
+      };
 
-            headers: {
-              'Content-Type':
-                'application/json',
+      console.log('create-student payload:', payload);
 
-              'Authorization':
-                'Bearer ' + accessToken
-            },
-
-            body:
-  JSON.stringify({
-    fullName: fullName,
-    className: selectedClassName,
-    classId: selectedClassId,
-    login: login,
-    password: password
-  })
-          }
-        );
-
-
-      const result =
-        await response.json();
-
+      const { data, error } = await supabaseClient.functions.invoke(
+        'create-student',
+        {
+          body: payload
+        }
+      );
 
       createStudentButton.disabled = false;
+      createStudentButton.textContent = 'Создать ученика';
 
-      createStudentButton.textContent =
-        'Создать ученика';
+      if (error) {
+        console.error('Edge Function error:', error);
 
+        let message = error.message || 'Не удалось создать ученика.';
 
-      if (!response.ok) {
+        if (error.context) {
+          try {
+            const body = await error.context.json();
+            if (body?.error) message = body.error;
+          } catch (_) {}
+        }
 
-        console.error(result);
-
-        createStudentMessage.textContent =
-          result.error ||
-          'Не удалось создать ученика.';
-
-        createStudentMessage.className =
-          'student-message error';
-
+        showStudentMessage(message, 'error');
         return;
       }
 
+      if (data?.error) {
+        showStudentMessage(data.error, 'error');
+        return;
+      }
 
-      /*
-      ==========================================
-      ВАЖНО:
-      Edge Function пока записывает class_name,
-      а class_id мы добавим отдельным запросом.
-      ==========================================
-      */
-
-
-
-
-      createStudentMessage.innerHTML =
-        `
-          <div>
-            Ученик создан ✅
-          </div>
-
-          <div style="margin-top:8px;font-weight:normal;">
-            Логин:
-            <strong>${login}</strong>
-          </div>
-
-          <div style="font-weight:normal;">
-            Пароль:
-            <strong>${password}</strong>
-          </div>
-        `;
-
-
-      createStudentMessage.className =
-        'student-message success';
-
+      createStudentMessage.innerHTML = `
+        <div>Ученик создан ✅</div>
+        <div style="margin-top:8px;font-weight:normal;">
+          Логин: <strong>${login}</strong>
+        </div>
+        <div style="font-weight:normal;">
+          Пароль: <strong>${password}</strong>
+        </div>
+      `;
+      createStudentMessage.className = 'student-message success';
 
       newStudentName.value = '';
       newStudentLogin.value = '';
       newStudentPassword.value = '';
 
-
-      studentFormBox
-        .classList
-        .add('hidden');
-
-
-      await loadStudents(
-        selectedClassId
-      );
-
+      await loadStudents(selectedClassId);
       await loadClasses();
 
-    }
+    } catch (error) {
 
-    catch (error) {
-
-      console.error(error);
-
+      console.error('Ошибка создания ученика:', error);
 
       createStudentButton.disabled = false;
+      createStudentButton.textContent = 'Создать ученика';
 
-      createStudentButton.textContent =
-        'Создать ученика';
-
-
-      createStudentMessage.textContent =
-        'Ошибка соединения с сервером.';
-
-      createStudentMessage.className =
-        'student-message error';
-
+      showStudentMessage('Ошибка соединения с сервером.', 'error');
     }
+  });
 
-  }
-);
-  /*
-  ==============================================
-  ПОКАЗАТЬ ОШИБКУ
-  ==============================================
-  */
-
-  function showError(message) {
-
-    loginError.textContent = message;
-
-    loginError.classList.remove('hidden');
-
-  }
-
-
-  function hideError() {
-
-    loginError.classList.add('hidden');
-
-  }
-
-
-  /*
-  ==============================================
-  ОТКРЫВАЕМ ЛИЧНЫЙ КАБИНЕТ
-  ==============================================
-  */
+  // =========================================================
+  // ОТКРЫТИЕ ЛИЧНОГО КАБИНЕТА
+  // =========================================================
 
   async function openDashboard(user) {
 
-    const { data: profile, error } =
-      await supabaseClient
-        .from('profiles')
-        .select('*')
-        .eq('id', user.id)
-        .single();
-
+    const { data: profile, error } = await supabaseClient
+      .from('profiles')
+      .select(`
+        *,
+        classes (
+          name
+        )
+      `)
+      .eq('id', user.id)
+      .single();
 
     if (error || !profile) {
-
-      console.error(error);
+      console.error('Ошибка профиля:', error);
 
       await supabaseClient.auth.signOut();
 
-      showError(
+      showLoginError(
         'Профиль пользователя не найден. Обратитесь к учителю.'
       );
 
       loginPage.classList.remove('hidden');
       dashboardPage.classList.add('hidden');
-
       return;
     }
 
-
-    studentName.textContent =
-      profile.full_name;
-
+    studentName.textContent = profile.full_name;
 
     if (profile.role === 'teacher') {
 
-      studentClass.textContent =
-        'Учитель';
-
+      studentClass.textContent = 'Учитель';
       teacherPanel.classList.remove('hidden');
       await loadClasses();
 
     } else {
 
       studentClass.textContent =
-        profile.class_name || 'Класс не указан';
+        profile.classes?.name ||
+        profile.class_name ||
+        'Класс не указан';
 
       teacherPanel.classList.add('hidden');
-
     }
-
 
     loginPage.classList.add('hidden');
-
     dashboardPage.classList.remove('hidden');
-
   }
 
+  // =========================================================
+  // ВХОД
+  // =========================================================
 
-  /*
-  ==============================================
-  ВХОД
-  ==============================================
-  */
+  loginForm.addEventListener('submit', async function(event) {
 
-  loginForm.addEventListener(
-    'submit',
-    async function(event) {
+    event.preventDefault();
+    hideLoginError();
 
-      event.preventDefault();
+    const login = document
+      .getElementById('login')
+      .value
+      .trim()
+      .toLowerCase();
 
-      hideError();
+    const password = document
+      .getElementById('password')
+      .value;
 
-
-      const login =
-        document
-          .getElementById('login')
-          .value
-          .trim()
-          .toLowerCase();
-
-
-      const password =
-        document
-          .getElementById('password')
-          .value;
-
-
-      if (!login || !password) {
-
-        showError(
-          'Введите логин и пароль.'
-        );
-
-        return;
-      }
-
-
-      loginButton.disabled = true;
-
-      loginButton.textContent =
-        'Входим...';
-
-
-      /*
-      Ученик вводит:
-      alina.test
-
-      А Supabase получает:
-      alina.test@students.aiclassfs.kz
-      */
-
-      let email;
-
-if (login.includes('@')) {
-  email = login;
-} else {
-  email = login + '@students.aiclassfs.kz';
-}
-
-      const { data, error } =
-        await supabaseClient
-          .auth
-          .signInWithPassword({
-            email: email,
-            password: password
-          });
-
-
-      loginButton.disabled = false;
-
-      loginButton.textContent =
-        'Войти';
-
-
-     if (error) {
-
-  console.error(error);
-
-  showError(
-    'Неверный логин или пароль.'
-  );
-
-  return;
-}
-
-      await openDashboard(
-        data.user
-      );
-
+    if (!login || !password) {
+      showLoginError('Введите логин и пароль.');
+      return;
     }
-  );
 
+    loginButton.disabled = true;
+    loginButton.textContent = 'Входим...';
 
-  /*
-  ==============================================
-  ВЫХОД
-  ==============================================
-  */
+    const email = login.includes('@')
+      ? login
+      : `${login}@students.aiclassfs.kz`;
 
-  logoutButton.addEventListener(
-    'click',
-    async function() {
+    const { data, error } = await supabaseClient.auth.signInWithPassword({
+      email,
+      password
+    });
 
-      await supabaseClient
-        .auth
-        .signOut();
+    loginButton.disabled = false;
+    loginButton.textContent = 'Войти';
 
-
-      dashboardPage.classList.add(
-        'hidden'
-      );
-
-      loginPage.classList.remove(
-        'hidden'
-      );
-
-
-      document
-        .getElementById('password')
-        .value = '';
-
+    if (error) {
+      console.error('Ошибка входа:', error);
+      showLoginError('Неверный логин или пароль.');
+      return;
     }
-  );
 
+    await openDashboard(data.user);
+  });
 
-  /*
-  ==============================================
-  ЕСЛИ ПОЛЬЗОВАТЕЛЬ УЖЕ ВХОДИЛ
-  ==============================================
-  */
+  // =========================================================
+  // ВЫХОД
+  // =========================================================
+
+  logoutButton.addEventListener('click', async function() {
+
+    await supabaseClient.auth.signOut();
+
+    selectedClassId = null;
+    selectedClassName = null;
+
+    teacherPanel.classList.add('hidden');
+    selectedClassPanel.classList.add('hidden');
+
+    dashboardPage.classList.add('hidden');
+    loginPage.classList.remove('hidden');
+
+    document.getElementById('password').value = '';
+  });
+
+  // =========================================================
+  // ВОССТАНОВЛЕНИЕ СЕССИИ
+  // =========================================================
 
   async function checkSession() {
 
-    const { data } =
-      await supabaseClient
-        .auth
-        .getSession();
+    const { data } = await supabaseClient.auth.getSession();
 
-
-    if (
-      data &&
-      data.session &&
-      data.session.user
-    ) {
-
-      await openDashboard(
-        data.session.user
-      );
-
+    if (data?.session?.user) {
+      await openDashboard(data.session.user);
     }
-
   }
 
-
   checkSession();
-
 </script>
 
 </body>
