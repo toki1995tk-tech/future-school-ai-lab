@@ -441,7 +441,132 @@
   background: #fee2e2;
   color: #b91c1c;
 }
+    .classes-header,
+.selected-class-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.small-primary-button {
+  border: none;
+  background: #2563eb;
+  color: white;
+  padding: 11px 16px;
+  border-radius: 11px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.small-primary-button:hover {
+  background: #1d4ed8;
+}
+
+.create-class-box {
+  display: grid;
+  grid-template-columns: 1fr 140px;
+  gap: 10px;
+  margin: 18px 0;
+}
+
+.create-class-box input {
+  width: 100%;
+  padding: 14px 15px;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  font-size: 16px;
+}
+
+.classes-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.class-card {
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  border-radius: 16px;
+  padding: 18px;
+  cursor: pointer;
+  transition: .15s ease;
+}
+
+.class-card:hover {
+  transform: translateY(-2px);
+  border-color: #93c5fd;
+  background: #eff6ff;
+}
+
+.class-card.active {
+  border-color: #2563eb;
+  background: #dbeafe;
+}
+
+.class-name {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.class-count {
+  color: #64748b;
+  font-size: 13px;
+}
+
+.teacher-label {
+  color: #64748b;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+
+.selected-class-header h3 {
+  margin: 4px 0 0;
+  font-size: 30px;
+}
+
+.student-form-box {
+  margin-top: 20px;
+  background: #f8fafc;
+  padding: 20px;
+  border-radius: 16px;
+}
+
+.students-list {
+  margin-top: 20px;
+}
+
+.student-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 4px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.student-row:last-child {
+  border-bottom: none;
+}
+
+.student-name {
+  font-weight: bold;
+}
+
+.student-login {
+  color: #64748b;
+  font-size: 13px;
+}
+
+.loading-text {
+  color: #94a3b8;
+  font-size: 14px;
+}
     @media(max-width: 760px) {
+      
       .features,
       .dashboard-grid {
         grid-template-columns: 1fr;
@@ -450,7 +575,19 @@
 }
 
       }
+.classes-list {
+  grid-template-columns: 1fr;
+}
 
+.create-class-box {
+  grid-template-columns: 1fr;
+}
+
+.classes-header,
+.selected-class-header {
+  align-items: flex-start;
+  flex-direction: column;
+}
       .brand h1 {
         font-size: 55px;
       }
@@ -702,23 +839,112 @@
   <div class="teacher-header">
     <div>
       <h2>👩‍🏫 Учительская панель</h2>
-      <p>
-        Управление учениками Future School AI Lab
-      </p>
+      <p>Управление классами и учениками AI Lab</p>
     </div>
   </div>
 
-  <div class="teacher-grid">
+  <!-- БЛОК КЛАССОВ -->
 
-    <!-- СОЗДАНИЕ УЧЕНИКА -->
+  <div class="teacher-card">
 
-    <div class="teacher-card">
+    <div class="classes-header">
+      <div>
+        <h3>Классы</h3>
+        <p class="teacher-card-text">
+          Создавай классы и добавляй в них учеников.
+        </p>
+      </div>
 
-      <h3>➕ Добавить ученика</h3>
+      <button
+        id="showCreateClassButton"
+        class="small-primary-button"
+        type="button"
+      >
+        + Добавить класс
+      </button>
+    </div>
+
+    <div
+      id="createClassBox"
+      class="create-class-box hidden"
+    >
+
+      <input
+        id="newClassName"
+        type="text"
+        placeholder="Например: 6C"
+        maxlength="10"
+      >
+
+      <button
+        id="createClassButton"
+        type="button"
+        class="primary-button"
+      >
+        Создать
+      </button>
+
+    </div>
+
+    <div
+      id="classMessage"
+      class="student-message hidden"
+    ></div>
+
+    <div
+      id="classesList"
+      class="classes-list"
+    >
+      <div class="loading-text">
+        Загружаем классы...
+      </div>
+    </div>
+
+  </div>
+
+
+  <!-- ВЫБРАННЫЙ КЛАСС -->
+
+  <div
+    id="selectedClassPanel"
+    class="teacher-card hidden"
+    style="margin-top:20px;"
+  >
+
+    <div class="selected-class-header">
+
+      <div>
+        <div class="teacher-label">
+          Выбранный класс
+        </div>
+
+        <h3 id="selectedClassTitle">
+          6C
+        </h3>
+      </div>
+
+      <button
+        id="showStudentFormButton"
+        type="button"
+        class="small-primary-button"
+      >
+        + Добавить ученика
+      </button>
+
+    </div>
+
+
+    <!-- ФОРМА СОЗДАНИЯ УЧЕНИКА -->
+
+    <div
+      id="studentFormBox"
+      class="student-form-box hidden"
+    >
 
       <form id="createStudentForm">
 
         <div class="input-group">
+
           <label for="newStudentName">
             Имя и фамилия
           </label>
@@ -729,37 +955,12 @@
             placeholder="Например: Алина Садыкова"
             required
           >
+
         </div>
 
 
         <div class="input-group">
-          <label for="newStudentClass">
-            Класс
-          </label>
 
-          <select
-            id="newStudentClass"
-            required
-          >
-            <option value="">
-              Выберите класс
-            </option>
-
-            <option value="5B">5B</option>
-            <option value="5C">5C</option>
-            <option value="5D">5D</option>
-            <option value="5I">5I</option>
-
-            <option value="6B">6B</option>
-            <option value="6C">6C</option>
-
-            <option value="7B">7B</option>
-
-          </select>
-        </div>
-
-
-        <div class="input-group">
           <label for="newStudentLogin">
             Логин
           </label>
@@ -772,9 +973,6 @@
             required
           >
 
-          <div class="field-hint">
-            Без пробелов. Например: arman.k
-          </div>
         </div>
 
 
@@ -795,8 +993,8 @@
             >
 
             <button
-              type="button"
               id="generatePasswordButton"
+              type="button"
               class="secondary-button"
             >
               🎲
@@ -809,14 +1007,13 @@
 
         <button
           id="createStudentButton"
-          type="submit"
           class="primary-button"
+          type="submit"
         >
           Создать ученика
         </button>
 
       </form>
-
 
       <div
         id="createStudentMessage"
@@ -826,41 +1023,20 @@
     </div>
 
 
-    <!-- ИНФОРМАЦИЯ -->
+    <!-- СПИСОК УЧЕНИКОВ -->
 
-    <div class="teacher-card">
+    <div
+      id="studentsList"
+      class="students-list"
+    >
 
-      <h3>🎓 Ученики</h3>
-
-      <p class="teacher-card-text">
-        Здесь появится список зарегистрированных
-        учеников, распределённых по классам.
-      </p>
-
-      <div class="student-counter">
-
-        <span class="counter-number">
-          —
-        </span>
-
-        <span>
-          зарегистрировано
-        </span>
-
-      </div>
-
-      <div class="future-feature">
-        Следующий этап:
-        список классов и учеников
+      <div class="loading-text">
+        Выберите класс
       </div>
 
     </div>
 
   </div>
-
-</section>
-
-  </main>
 
 </section>
 
@@ -921,7 +1097,335 @@
   const teacherPanel =
     document.getElementById('teacherPanel');
 
+const classesList =
+  document.getElementById('classesList');
 
+const selectedClassPanel =
+  document.getElementById('selectedClassPanel');
+
+const selectedClassTitle =
+  document.getElementById('selectedClassTitle');
+
+const showCreateClassButton =
+  document.getElementById('showCreateClassButton');
+
+const createClassBox =
+  document.getElementById('createClassBox');
+
+const newClassName =
+  document.getElementById('newClassName');
+
+const createClassButton =
+  document.getElementById('createClassButton');
+
+const classMessage =
+  document.getElementById('classMessage');
+
+const showStudentFormButton =
+  document.getElementById('showStudentFormButton');
+
+const studentFormBox =
+  document.getElementById('studentFormBox');
+
+const studentsList =
+  document.getElementById('studentsList');
+
+let selectedClassId = null;
+let selectedClassName = null;
+
+  // ==============================================
+// КЛАССЫ
+// ==============================================
+
+async function loadClasses() {
+
+  const { data: classes, error } =
+    await supabaseClient
+      .from('classes')
+      .select(`
+        id,
+        name,
+        profiles (
+          id
+        )
+      `)
+      .order('name');
+
+
+  if (error) {
+
+    console.error(error);
+
+    classesList.innerHTML =
+      '<div class="loading-text">Не удалось загрузить классы</div>';
+
+    return;
+  }
+
+
+  if (!classes || classes.length === 0) {
+
+    classesList.innerHTML =
+      '<div class="loading-text">Классов пока нет</div>';
+
+    return;
+  }
+
+
+  classesList.innerHTML = '';
+
+
+  classes.forEach(classItem => {
+
+    const card =
+      document.createElement('div');
+
+    card.className =
+      'class-card';
+
+    card.dataset.id =
+      classItem.id;
+
+
+    const count =
+      classItem.profiles
+        ? classItem.profiles.length
+        : 0;
+
+
+    card.innerHTML = `
+      <div class="class-name">
+        ${classItem.name}
+      </div>
+
+      <div class="class-count">
+        ${count} учеников
+      </div>
+    `;
+
+
+    card.addEventListener(
+      'click',
+      function() {
+
+        document
+          .querySelectorAll('.class-card')
+          .forEach(item =>
+            item.classList.remove('active')
+          );
+
+
+        card.classList.add('active');
+
+
+        selectedClassId =
+          classItem.id;
+
+        selectedClassName =
+          classItem.name;
+
+
+        selectedClassTitle.textContent =
+          classItem.name;
+
+
+        selectedClassPanel
+          .classList
+          .remove('hidden');
+
+
+        studentFormBox
+          .classList
+          .add('hidden');
+
+
+        loadStudents(
+          classItem.id
+        );
+
+      }
+    );
+
+
+    classesList.appendChild(card);
+
+  });
+
+}
+
+
+// ==============================================
+// СОЗДАНИЕ КЛАССА
+// ==============================================
+
+showCreateClassButton.addEventListener(
+  'click',
+  function() {
+
+    createClassBox
+      .classList
+      .toggle('hidden');
+
+    newClassName.focus();
+
+  }
+);
+
+
+createClassButton.addEventListener(
+  'click',
+  async function() {
+
+    const name =
+      newClassName
+        .value
+        .trim()
+        .toUpperCase();
+
+
+    classMessage
+      .classList
+      .add('hidden');
+
+
+    if (!name) {
+      return;
+    }
+
+
+    createClassButton.disabled = true;
+    createClassButton.textContent = 'Создаём...';
+
+
+    const { error } =
+      await supabaseClient
+        .from('classes')
+        .insert({
+          name: name
+        });
+
+
+    createClassButton.disabled = false;
+    createClassButton.textContent = 'Создать';
+
+
+    if (error) {
+
+      console.error(error);
+
+      classMessage.textContent =
+        error.code === '23505'
+          ? 'Такой класс уже существует.'
+          : 'Не удалось создать класс.';
+
+      classMessage.className =
+        'student-message error';
+
+      return;
+    }
+
+
+    classMessage.textContent =
+      'Класс ' + name + ' создан.';
+
+    classMessage.className =
+      'student-message success';
+
+
+    newClassName.value = '';
+
+    createClassBox
+      .classList
+      .add('hidden');
+
+
+    await loadClasses();
+
+  }
+);
+
+
+// ==============================================
+// УЧЕНИКИ ВНУТРИ КЛАССА
+// ==============================================
+
+async function loadStudents(classId) {
+
+  studentsList.innerHTML =
+    '<div class="loading-text">Загружаем учеников...</div>';
+
+
+  const { data: students, error } =
+    await supabaseClient
+      .from('profiles')
+      .select('id, full_name')
+      .eq('class_id', classId)
+      .eq('role', 'student')
+      .order('full_name');
+
+
+  if (error) {
+
+    console.error(error);
+
+    studentsList.innerHTML =
+      '<div class="loading-text">Не удалось загрузить учеников</div>';
+
+    return;
+  }
+
+
+  if (!students || students.length === 0) {
+
+    studentsList.innerHTML =
+      '<div class="loading-text">В этом классе пока нет учеников</div>';
+
+    return;
+  }
+
+
+  studentsList.innerHTML = '';
+
+
+  students.forEach(student => {
+
+    const row =
+      document.createElement('div');
+
+    row.className =
+      'student-row';
+
+
+    row.innerHTML = `
+      <div>
+        <div class="student-name">
+          ${student.full_name}
+        </div>
+      </div>
+    `;
+
+
+    studentsList.appendChild(row);
+
+  });
+
+}
+
+
+// ==============================================
+// ПОКАЗАТЬ ФОРМУ УЧЕНИКА
+// ==============================================
+
+showStudentFormButton.addEventListener(
+  'click',
+  function() {
+
+    studentFormBox
+      .classList
+      .toggle('hidden');
+
+  }
+);
   /*
   ==============================================
   ПОКАЗАТЬ ОШИБКУ
@@ -987,6 +1491,7 @@
         'Учитель';
 
       teacherPanel.classList.remove('hidden');
+      await loadClasses();
 
     } else {
 
