@@ -778,10 +778,13 @@
       alina.test@students.aiclassfs.kz
       */
 
-      const email =
-        login +
-        '@students.aiclassfs.kz';
+      let email;
 
+if (login.includes('@')) {
+  email = login;
+} else {
+  email = login + '@students.aiclassfs.kz';
+}
 
       const { data, error } =
         await supabaseClient
