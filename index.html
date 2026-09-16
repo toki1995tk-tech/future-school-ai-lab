@@ -1,9 +1,12 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>Future School AI Lab</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
     * {
@@ -13,8 +16,25 @@
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #0f172a, #1e293b);
+      background:
+        radial-gradient(circle at top left, rgba(37,99,235,.22), transparent 35%),
+        linear-gradient(135deg, #0f172a, #111827);
       color: white;
+      min-height: 100vh;
+    }
+
+    button,
+    input {
+      font-family: inherit;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* LOGIN */
+
+    #loginPage {
       min-height: 100vh;
       display: flex;
       align-items: center;
@@ -22,175 +42,846 @@
       padding: 24px;
     }
 
-    .card {
+    .login-container {
       width: 100%;
-      max-width: 950px;
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.15);
-      border-radius: 28px;
-      padding: 48px;
-      box-shadow: 0 25px 60px rgba(0,0,0,0.25);
-      backdrop-filter: blur(12px);
+      max-width: 1000px;
     }
 
-    .badge {
-      display: inline-block;
-      padding: 8px 14px;
-      border-radius: 999px;
-      background: rgba(59,130,246,0.18);
-      color: #93c5fd;
-      font-weight: 700;
-      margin-bottom: 18px;
-    }
-
-    h1 {
-      font-size: clamp(40px, 7vw, 72px);
-      margin: 0 0 14px;
-      line-height: 1;
-    }
-
-    .subtitle {
-      font-size: 20px;
-      line-height: 1.6;
-      color: #cbd5e1;
-      max-width: 720px;
-      margin-bottom: 36px;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
+    .brand {
       margin-bottom: 30px;
     }
 
+    .school-badge {
+      display: inline-block;
+      padding: 8px 15px;
+      background: rgba(59,130,246,.15);
+      border: 1px solid rgba(147,197,253,.25);
+      color: #93c5fd;
+      border-radius: 999px;
+      font-weight: bold;
+      margin-bottom: 16px;
+    }
+
+    .brand h1 {
+      font-size: clamp(48px, 8vw, 82px);
+      margin: 0;
+      line-height: .95;
+    }
+
+    .brand p {
+      color: #cbd5e1;
+      max-width: 680px;
+      font-size: 19px;
+      line-height: 1.6;
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+
     .feature {
-      background: rgba(255,255,255,0.07);
-      border: 1px solid rgba(255,255,255,0.1);
       padding: 20px;
-      border-radius: 18px;
+      border-radius: 20px;
+      background: rgba(255,255,255,.07);
+      border: 1px solid rgba(255,255,255,.1);
+    }
+
+    .feature-icon {
+      font-size: 30px;
+      margin-bottom: 10px;
     }
 
     .feature h3 {
-      margin: 0 0 8px;
-      font-size: 18px;
+      margin: 0 0 7px;
     }
 
     .feature p {
-      margin: 0;
       color: #cbd5e1;
-      line-height: 1.5;
+      margin: 0;
       font-size: 14px;
+      line-height: 1.45;
     }
 
     .login-box {
-      margin-top: 18px;
       background: white;
       color: #0f172a;
-      border-radius: 22px;
-      padding: 24px;
+      padding: 28px;
+      border-radius: 24px;
+      box-shadow: 0 25px 80px rgba(0,0,0,.28);
     }
 
     .login-box h2 {
-      margin-top: 0;
+      margin: 0 0 7px;
+      font-size: 27px;
     }
 
-    input {
+    .login-description {
+      margin: 0 0 22px;
+      color: #64748b;
+    }
+
+    .input-group {
+      margin-bottom: 15px;
+    }
+
+    .input-group label {
+      display: block;
+      margin-bottom: 7px;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .input-group input {
       width: 100%;
-      padding: 15px;
-      margin-bottom: 12px;
+      padding: 15px 16px;
       border: 1px solid #cbd5e1;
-      border-radius: 12px;
+      border-radius: 13px;
       font-size: 16px;
+      outline: none;
     }
 
-    button {
+    .input-group input:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37,99,235,.1);
+    }
+
+    .primary-button {
       width: 100%;
       padding: 15px;
-      border: 0;
-      border-radius: 12px;
       background: #2563eb;
+      border: none;
       color: white;
+      border-radius: 13px;
       font-size: 16px;
-      font-weight: 700;
+      font-weight: bold;
       cursor: pointer;
     }
 
-    button:hover {
+    .primary-button:hover {
       background: #1d4ed8;
     }
 
-    .note {
-      margin-top: 10px;
-      font-size: 13px;
-      color: #64748b;
-      text-align: center;
+    .primary-button:disabled {
+      opacity: .65;
+      cursor: wait;
     }
 
-    @media (max-width: 700px) {
-      .card {
-        padding: 28px;
+    #loginError {
+      margin-top: 14px;
+      padding: 12px;
+      border-radius: 10px;
+      background: #fee2e2;
+      color: #b91c1c;
+      font-size: 14px;
+    }
+
+    /* DASHBOARD */
+
+    #dashboardPage {
+      min-height: 100vh;
+      background: #f1f5f9;
+      color: #0f172a;
+    }
+
+    .topbar {
+      background: #0f172a;
+      color: white;
+      padding: 18px 30px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .topbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: bold;
+      font-size: 20px;
+    }
+
+    .topbar-brand span:first-child {
+      width: 40px;
+      height: 40px;
+      display: grid;
+      place-items: center;
+      border-radius: 12px;
+      background: #2563eb;
+    }
+
+    .logout-button {
+      border: 1px solid rgba(255,255,255,.25);
+      background: transparent;
+      color: white;
+      padding: 10px 16px;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    .dashboard {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 38px 24px;
+    }
+
+    .welcome {
+      margin-bottom: 28px;
+    }
+
+    .welcome-small {
+      color: #64748b;
+      font-size: 15px;
+      margin-bottom: 6px;
+    }
+
+    .welcome h1 {
+      margin: 0 0 7px;
+      font-size: 38px;
+    }
+
+    .class-badge {
+      display: inline-block;
+      padding: 6px 12px;
+      background: #dbeafe;
+      color: #1d4ed8;
+      border-radius: 999px;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .dashboard-card {
+      background: white;
+      padding: 24px;
+      border-radius: 20px;
+      min-height: 210px;
+      box-shadow: 0 8px 25px rgba(15,23,42,.06);
+      border: 1px solid #e2e8f0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .dashboard-card .icon {
+      font-size: 37px;
+      margin-bottom: 16px;
+    }
+
+    .dashboard-card h2 {
+      margin: 0 0 9px;
+      font-size: 21px;
+    }
+
+    .dashboard-card p {
+      color: #64748b;
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+
+    .card-button {
+      display: inline-block;
+      padding: 10px 15px;
+      background: #eff6ff;
+      color: #1d4ed8;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .coming {
+      background: #f1f5f9;
+      color: #94a3b8;
+    }
+
+    .teacher-panel {
+      margin-top: 20px;
+      padding: 24px;
+      background: #fff7ed;
+      border: 1px solid #fed7aa;
+      border-radius: 20px;
+    }
+
+    .teacher-panel h2 {
+      margin-top: 0;
+      color: #9a3412;
+    }
+
+    @media(max-width: 760px) {
+      .features,
+      .dashboard-grid {
+        grid-template-columns: 1fr;
       }
 
-      .grid {
-        grid-template-columns: 1fr;
+      .brand h1 {
+        font-size: 55px;
+      }
+
+      .topbar {
+        padding: 15px 18px;
+      }
+
+      .dashboard {
+        padding: 28px 17px;
       }
     }
   </style>
 </head>
 
 <body>
-  <main class="card">
-    <div class="badge">Future School</div>
 
-    <h1>AI Lab</h1>
+<!-- ========================= -->
+<!-- СТРАНИЦА ВХОДА -->
+<!-- ========================= -->
 
-    <p class="subtitle">
-      Учебная лаборатория искусственного интеллекта.
-      Здесь ученики изучают AI Prompt Engineering,
-      создают собственного My AI и разрабатывают AI-проекты.
-    </p>
+<section id="loginPage">
 
-    <section class="grid">
+  <div class="login-container">
+
+    <div class="brand">
+
+      <div class="school-badge">
+        FUTURE SCHOOL
+      </div>
+
+      <h1>AI Lab</h1>
+
+      <p>
+        Пространство AI Prompt Engineering,
+        создания собственных AI-помощников
+        и разработки AI-проектов.
+      </p>
+
+    </div>
+
+    <div class="features">
+
       <div class="feature">
-        <h3>📘 Мои уроки</h3>
-        <p>Уроки AI Prompt Engineering и практические задания.</p>
+        <div class="feature-icon">📘</div>
+        <h3>Мои уроки</h3>
+        <p>
+          Изучай AI Prompt Engineering
+          и выполняй практические задания.
+        </p>
       </div>
 
       <div class="feature">
-        <h3>🤖 My AI</h3>
-        <p>Создание и настройка собственного AI-помощника.</p>
+        <div class="feature-icon">🤖</div>
+        <h3>My AI</h3>
+        <p>
+          Постепенно создай и настрой
+          собственного AI.
+        </p>
       </div>
 
       <div class="feature">
-        <h3>🚀 Project Lab</h3>
-        <p>Командная разработка собственного AI-продукта.</p>
+        <div class="feature-icon">🚀</div>
+        <h3>Project Lab</h3>
+        <p>
+          Разрабатывай собственные
+          AI-продукты индивидуально или в команде.
+        </p>
       </div>
-    </section>
 
-    <section class="login-box">
+    </div>
+
+    <div class="login-box">
+
       <h2>Вход в AI Lab</h2>
 
-      <input
-        type="text"
-        placeholder="Логин"
-        disabled
-      >
+      <p class="login-description">
+        Используй логин и пароль, выданные учителем.
+      </p>
 
-      <input
-        type="password"
-        placeholder="Пароль"
-        disabled
-      >
+      <form id="loginForm">
 
-      <button disabled>
-        Войти
-      </button>
+        <div class="input-group">
+          <label for="login">
+            Логин
+          </label>
 
-      <div class="note">
-        Авторизация будет подключена на следующем этапе.
+          <input
+            id="login"
+            type="text"
+            autocomplete="username"
+            placeholder="Например: alina.test"
+            required
+          >
+        </div>
+
+        <div class="input-group">
+          <label for="password">
+            Пароль
+          </label>
+
+          <input
+            id="password"
+            type="password"
+            autocomplete="current-password"
+            placeholder="Введите пароль"
+            required
+          >
+        </div>
+
+        <button
+          id="loginButton"
+          class="primary-button"
+          type="submit"
+        >
+          Войти
+        </button>
+
+      </form>
+
+      <div
+        id="loginError"
+        class="hidden"
+      ></div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- ========================= -->
+<!-- ЛИЧНЫЙ КАБИНЕТ -->
+<!-- ========================= -->
+
+<section
+  id="dashboardPage"
+  class="hidden"
+>
+
+  <header class="topbar">
+
+    <div class="topbar-brand">
+      <span>AI</span>
+      <span>Future School AI Lab</span>
+    </div>
+
+    <button
+      id="logoutButton"
+      class="logout-button"
+    >
+      Выйти
+    </button>
+
+  </header>
+
+  <main class="dashboard">
+
+    <section class="welcome">
+
+      <div class="welcome-small">
+        Добро пожаловать в AI Lab
       </div>
+
+      <h1 id="studentName">
+        Ученик
+      </h1>
+
+      <span
+        id="studentClass"
+        class="class-badge"
+      >
+      </span>
+
     </section>
+
+    <section class="dashboard-grid">
+
+      <article class="dashboard-card">
+
+        <div class="icon">📘</div>
+
+        <h2>
+          Мои уроки
+        </h2>
+
+        <p>
+          Уроки AI Prompt Engineering,
+          задания и твой учебный прогресс.
+        </p>
+
+        <span class="card-button">
+          Скоро
+        </span>
+
+      </article>
+
+
+      <article class="dashboard-card">
+
+        <div class="icon">🤖</div>
+
+        <h2>
+          My AI
+        </h2>
+
+        <p>
+          Здесь появится твой собственный
+          AI-помощник.
+        </p>
+
+        <span class="card-button coming">
+          Пока не создан
+        </span>
+
+      </article>
+
+
+      <article class="dashboard-card">
+
+        <div class="icon">🚀</div>
+
+        <h2>
+          Project Lab
+        </h2>
+
+        <p>
+          Пространство для разработки
+          собственных AI-проектов.
+        </p>
+
+        <span class="card-button coming">
+          Откроется позже
+        </span>
+
+      </article>
+
+    </section>
+
+
+    <!-- Панель показывается только учителю -->
+
+    <section
+      id="teacherPanel"
+      class="teacher-panel hidden"
+    >
+
+      <h2>
+        👩‍🏫 Учительская панель
+      </h2>
+
+      <p>
+        Вы вошли как учитель.
+        Здесь позже появятся классы,
+        ученики, проекты и статистика.
+      </p>
+
+    </section>
+
   </main>
+
+</section>
+
+
+<script>
+
+  /*
+  ==============================================
+  SUPABASE
+  ==============================================
+  ВСТАВЬ СЮДА СВОИ ДАННЫЕ
+  */
+
+  const SUPABASE_URL =
+    'https://ovjpqjnjceuloakqnwsm.supabase.co';
+
+  const SUPABASE_KEY =
+    'sb_publishable_W5s9Gkrb76hPoR7iu9Cf4A_uhyF7uCQ';
+
+
+  const supabaseClient =
+    window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
+
+
+  /*
+  ==============================================
+  ЭЛЕМЕНТЫ СТРАНИЦЫ
+  ==============================================
+  */
+
+  const loginPage =
+    document.getElementById('loginPage');
+
+  const dashboardPage =
+    document.getElementById('dashboardPage');
+
+  const loginForm =
+    document.getElementById('loginForm');
+
+  const loginButton =
+    document.getElementById('loginButton');
+
+  const loginError =
+    document.getElementById('loginError');
+
+  const logoutButton =
+    document.getElementById('logoutButton');
+
+  const studentName =
+    document.getElementById('studentName');
+
+  const studentClass =
+    document.getElementById('studentClass');
+
+  const teacherPanel =
+    document.getElementById('teacherPanel');
+
+
+  /*
+  ==============================================
+  ПОКАЗАТЬ ОШИБКУ
+  ==============================================
+  */
+
+  function showError(message) {
+
+    loginError.textContent = message;
+
+    loginError.classList.remove('hidden');
+
+  }
+
+
+  function hideError() {
+
+    loginError.classList.add('hidden');
+
+  }
+
+
+  /*
+  ==============================================
+  ОТКРЫВАЕМ ЛИЧНЫЙ КАБИНЕТ
+  ==============================================
+  */
+
+  async function openDashboard(user) {
+
+    const { data: profile, error } =
+      await supabaseClient
+        .from('profiles')
+        .select('*')
+        .eq('id', user.id)
+        .single();
+
+
+    if (error || !profile) {
+
+      console.error(error);
+
+      await supabaseClient.auth.signOut();
+
+      showError(
+        'Профиль пользователя не найден. Обратитесь к учителю.'
+      );
+
+      loginPage.classList.remove('hidden');
+      dashboardPage.classList.add('hidden');
+
+      return;
+    }
+
+
+    studentName.textContent =
+      profile.full_name;
+
+
+    if (profile.role === 'teacher') {
+
+      studentClass.textContent =
+        'Учитель';
+
+      teacherPanel.classList.remove('hidden');
+
+    } else {
+
+      studentClass.textContent =
+        profile.class_name || 'Класс не указан';
+
+      teacherPanel.classList.add('hidden');
+
+    }
+
+
+    loginPage.classList.add('hidden');
+
+    dashboardPage.classList.remove('hidden');
+
+  }
+
+
+  /*
+  ==============================================
+  ВХОД
+  ==============================================
+  */
+
+  loginForm.addEventListener(
+    'submit',
+    async function(event) {
+
+      event.preventDefault();
+
+      hideError();
+
+
+      const login =
+        document
+          .getElementById('login')
+          .value
+          .trim()
+          .toLowerCase();
+
+
+      const password =
+        document
+          .getElementById('password')
+          .value;
+
+
+      if (!login || !password) {
+
+        showError(
+          'Введите логин и пароль.'
+        );
+
+        return;
+      }
+
+
+      loginButton.disabled = true;
+
+      loginButton.textContent =
+        'Входим...';
+
+
+      /*
+      Ученик вводит:
+      alina.test
+
+      А Supabase получает:
+      alina.test@students.aiclassfs.kz
+      */
+
+      const email =
+        login +
+        '@students.aiclassfs.kz';
+
+
+      const { data, error } =
+        await supabaseClient
+          .auth
+          .signInWithPassword({
+            email: email,
+            password: password
+          });
+
+
+      loginButton.disabled = false;
+
+      loginButton.textContent =
+        'Войти';
+
+
+      if (error) {
+
+        console.error(error);
+
+        showError(
+          'Неверный логин или пароль.'
+        );
+
+        return;
+      }
+
+
+      await openDashboard(
+        data.user
+      );
+
+    }
+  );
+
+
+  /*
+  ==============================================
+  ВЫХОД
+  ==============================================
+  */
+
+  logoutButton.addEventListener(
+    'click',
+    async function() {
+
+      await supabaseClient
+        .auth
+        .signOut();
+
+
+      dashboardPage.classList.add(
+        'hidden'
+      );
+
+      loginPage.classList.remove(
+        'hidden'
+      );
+
+
+      document
+        .getElementById('password')
+        .value = '';
+
+    }
+  );
+
+
+  /*
+  ==============================================
+  ЕСЛИ ПОЛЬЗОВАТЕЛЬ УЖЕ ВХОДИЛ
+  ==============================================
+  */
+
+  async function checkSession() {
+
+    const { data } =
+      await supabaseClient
+        .auth
+        .getSession();
+
+
+    if (
+      data &&
+      data.session &&
+      data.session.user
+    ) {
+
+      await openDashboard(
+        data.session.user
+      );
+
+    }
+
+  }
+
+
+  checkSession();
+
+</script>
+
 </body>
 </html>
