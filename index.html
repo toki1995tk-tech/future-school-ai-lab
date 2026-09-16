@@ -568,6 +568,53 @@
       color: #b91c1c;
     }
 
+
+    .selected-class-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .secondary-action-button {
+      border: 1px solid #cbd5e1;
+      background: white;
+      color: #334155;
+      padding: 11px 16px;
+      border-radius: 11px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .secondary-action-button:hover {
+      background: #f8fafc;
+    }
+
+    .modal-select {
+      width: 100%;
+      padding: 14px 15px;
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      background: white;
+      font-size: 16px;
+      outline: none;
+    }
+
+    .modal-select:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37,99,235,.1);
+    }
+
+    .danger-note {
+      background: #fff7ed;
+      border: 1px solid #fed7aa;
+      color: #9a3412;
+      padding: 12px;
+      border-radius: 12px;
+      font-size: 13px;
+      line-height: 1.5;
+      margin-top: 12px;
+    }
+
     @media (max-width: 760px) {
       .features,
       .dashboard-grid,
@@ -736,9 +783,15 @@
             <h3 id="selectedClassTitle">Класс</h3>
           </div>
 
-          <button id="showStudentFormButton" type="button" class="small-primary-button">
-            + Добавить ученика
-          </button>
+          <div class="selected-class-actions">
+            <button id="exportClassAccessButton" type="button" class="secondary-action-button">
+              ⬇️ Доступы класса
+            </button>
+
+            <button id="showStudentFormButton" type="button" class="small-primary-button">
+              + Добавить ученика
+            </button>
+          </div>
         </div>
 
         <div id="studentFormBox" class="student-form-box hidden">
@@ -796,16 +849,32 @@
     <div class="modal-header">
       <div>
         <div class="teacher-label">Ученик</div>
-        <h3 id="editStudentName">Ученик</h3>
+        <h3 id="editStudentTitle">Редактирование</h3>
       </div>
 
       <button id="closeStudentModalButton" class="modal-close" type="button">×</button>
     </div>
 
     <div class="input-group">
+      <label for="editStudentFullName">Имя и фамилия</label>
+      <input id="editStudentFullName" type="text">
+    </div>
+
+    <div class="input-group">
       <label>Логин</label>
       <div id="editStudentLogin" class="readonly-box">—</div>
     </div>
+
+    <div class="input-group">
+      <label for="editStudentClass">Класс</label>
+      <select id="editStudentClass" class="modal-select"></select>
+    </div>
+
+    <button id="saveStudentChangesButton" class="primary-button" type="button">
+      Сохранить изменения
+    </button>
+
+    <hr style="border:none;border-top:1px solid #e2e8f0;margin:24px 0;">
 
     <div class="input-group">
       <label for="resetPasswordInput">Новый пароль</label>
@@ -833,7 +902,7 @@
       </div>
     </div>
 
-    <button id="resetStudentPasswordButton" class="primary-button" type="button">
+    <button id="resetStudentPasswordButton" class="secondary-action-button" style="width:100%;" type="button">
       Сбросить пароль
     </button>
 
@@ -893,8 +962,12 @@
   const createStudentMessage = document.getElementById('createStudentMessage');
 
   const studentEditModal = document.getElementById('studentEditModal');
-  const editStudentName = document.getElementById('editStudentName');
+  const editStudentTitle = document.getElementById('editStudentTitle');
+  const editStudentFullName = document.getElementById('editStudentFullName');
   const editStudentLogin = document.getElementById('editStudentLogin');
+  const editStudentClass = document.getElementById('editStudentClass');
+  const saveStudentChangesButton = document.getElementById('saveStudentChangesButton');
+  const exportClassAccessButton = document.getElementById('exportClassAccessButton');
   const closeStudentModalButton = document.getElementById('closeStudentModalButton');
   const resetPasswordInput = document.getElementById('resetPasswordInput');
   const generateResetPasswordButton = document.getElementById('generateResetPasswordButton');
@@ -902,6 +975,8 @@
   const studentEditMessage = document.getElementById('studentEditMessage');
 
   let editingStudentId = null;
+  let editingStudent = null;
+  let loadedClasses = [];
 
   let selectedClassId = null;
   let selectedClassName = null;
@@ -947,6 +1022,8 @@
         '<div class="loading-text">Не удалось загрузить классы</div>';
       return;
     }
+
+    loadedClasses = classes || [];
 
     if (!classes || classes.length === 0) {
       classesList.innerHTML =
@@ -1048,7 +1125,7 @@
 
     const { data: students, error } = await supabaseClient
       .from('profiles')
-      .select('id, full_name, login')
+      .select('id, full_name, login, class_id')
       .eq('class_id', classId)
       .eq('role', 'student')
       .order('full_name');
@@ -1240,11 +1317,31 @@
     return password + '!';
   }
 
+  function fillClassSelect(selectedId) {
+    editStudentClass.innerHTML = '';
+
+    loadedClasses.forEach(item => {
+      const option = document.createElement('option');
+      option.value = item.id;
+      option.textContent = item.name;
+
+      if (item.id === selectedId) {
+        option.selected = true;
+      }
+
+      editStudentClass.appendChild(option);
+    });
+  }
+
   function openStudentModal(student) {
     editingStudentId = student.id;
+    editingStudent = student;
 
-    editStudentName.textContent = student.full_name;
+    editStudentTitle.textContent = student.full_name;
+    editStudentFullName.value = student.full_name;
     editStudentLogin.textContent = student.login || 'Логин не указан';
+
+    fillClassSelect(student.class_id);
 
     resetPasswordInput.value = '';
     studentEditMessage.classList.add('hidden');
@@ -1254,6 +1351,7 @@
 
   function closeStudentModal() {
     editingStudentId = null;
+    editingStudent = null;
     studentEditModal.classList.add('hidden');
     resetPasswordInput.value = '';
     studentEditMessage.classList.add('hidden');
@@ -1265,6 +1363,61 @@
     if (event.target === studentEditModal) {
       closeStudentModal();
     }
+  });
+
+  saveStudentChangesButton.addEventListener('click', async function() {
+
+    if (!editingStudentId) return;
+
+    const fullName = editStudentFullName.value.trim();
+    const classId = editStudentClass.value;
+
+    if (!fullName || !classId) {
+      studentEditMessage.textContent =
+        'Укажите имя и класс.';
+      studentEditMessage.className = 'modal-message error';
+      return;
+    }
+
+    saveStudentChangesButton.disabled = true;
+    saveStudentChangesButton.textContent = 'Сохраняем...';
+
+    const { data, error } = await supabaseClient.functions.invoke(
+      'manage-student',
+      {
+        body: {
+          action: 'update_profile',
+          studentId: editingStudentId,
+          fullName,
+          classId
+        }
+      }
+    );
+
+    saveStudentChangesButton.disabled = false;
+    saveStudentChangesButton.textContent = 'Сохранить изменения';
+
+    if (error) {
+      console.error('manage-student update error:', error);
+      studentEditMessage.textContent =
+        error.message || 'Не удалось сохранить изменения.';
+      studentEditMessage.className = 'modal-message error';
+      return;
+    }
+
+    if (data?.error) {
+      studentEditMessage.textContent = data.error;
+      studentEditMessage.className = 'modal-message error';
+      return;
+    }
+
+    studentEditMessage.textContent = 'Изменения сохранены ✅';
+    studentEditMessage.className = 'modal-message success';
+
+    await loadClasses();
+    await loadStudents(selectedClassId);
+
+    setTimeout(closeStudentModal, 700);
   });
 
   generateResetPasswordButton.addEventListener('click', function() {
@@ -1303,17 +1456,8 @@
 
     if (error) {
       console.error('manage-student reset error:', error);
-
-      let message = error.message || 'Не удалось сбросить пароль.';
-
-      if (error.context) {
-        try {
-          const body = await error.context.json();
-          if (body?.error) message = body.error;
-        } catch (_) {}
-      }
-
-      studentEditMessage.textContent = message;
+      studentEditMessage.textContent =
+        error.message || 'Не удалось сбросить пароль.';
       studentEditMessage.className = 'modal-message error';
       return;
     }
@@ -1351,17 +1495,7 @@
 
     if (error) {
       console.error('manage-student delete error:', error);
-
-      let message = error.message || 'Не удалось удалить ученика.';
-
-      if (error.context) {
-        try {
-          const body = await error.context.json();
-          if (body?.error) message = body.error;
-        } catch (_) {}
-      }
-
-      alert(message);
+      alert(error.message || 'Не удалось удалить ученика.');
       return;
     }
 
@@ -1373,6 +1507,103 @@
     await loadStudents(selectedClassId);
     await loadClasses();
   }
+
+  // =========================================================
+  // ДОСТУПЫ КЛАССА
+  // =========================================================
+
+  function downloadCsv(filename, rows) {
+
+    const escapeCsv = value => {
+      const text = String(value ?? '');
+      return '"' + text.replaceAll('"', '""') + '"';
+    };
+
+    const csv = '\uFEFF' + rows
+      .map(row => row.map(escapeCsv).join(';'))
+      .join('\n');
+
+    const blob = new Blob(
+      [csv],
+      { type: 'text/csv;charset=utf-8;' }
+    );
+
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+
+    URL.revokeObjectURL(url);
+  }
+
+  exportClassAccessButton.addEventListener('click', async function() {
+
+    if (!selectedClassId || !selectedClassName) return;
+
+    const confirmed = window.confirm(
+      `Сгенерировать новые пароли для всего класса ${selectedClassName}?\n\n` +
+      'Старые пароли учеников перестанут работать. После этого будет скачан CSV со списком новых доступов.'
+    );
+
+    if (!confirmed) return;
+
+    exportClassAccessButton.disabled = true;
+    exportClassAccessButton.textContent = 'Готовим доступы...';
+
+    const { data, error } = await supabaseClient.functions.invoke(
+      'manage-student',
+      {
+        body: {
+          action: 'bulk_reset_class_passwords',
+          classId: selectedClassId
+        }
+      }
+    );
+
+    exportClassAccessButton.disabled = false;
+    exportClassAccessButton.textContent = '⬇️ Доступы класса';
+
+    if (error) {
+      console.error('bulk reset error:', error);
+      alert(error.message || 'Не удалось подготовить доступы класса.');
+      return;
+    }
+
+    if (data?.error) {
+      alert(data.error);
+      return;
+    }
+
+    const accessList = data?.students || [];
+
+    if (accessList.length === 0) {
+      alert('В этом классе пока нет учеников.');
+      return;
+    }
+
+    const rows = [
+      ['ФИО', 'Логин', 'Новый пароль'],
+      ...accessList.map(item => [
+        item.fullName,
+        item.login,
+        item.password
+      ])
+    ];
+
+    downloadCsv(
+      `Future-School-AI-Lab-${selectedClassName}-access.csv`,
+      rows
+    );
+
+    alert(
+      `Готово. Новые пароли выданы ${accessList.length} ученикам. CSV скачан.`
+    );
+  });
 
   // =========================================================
   // ОТКРЫТИЕ ЛИЧНОГО КАБИНЕТА
