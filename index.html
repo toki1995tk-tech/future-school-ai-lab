@@ -1595,12 +1595,13 @@ createStudentForm.addEventListener(
             },
 
             body:
-              JSON.stringify({
-                fullName: fullName,
-                className: selectedClassName,
-                login: login,
-                password: password
-              })
+  JSON.stringify({
+    fullName: fullName,
+    className: selectedClassName,
+    classId: selectedClassId,
+    login: login,
+    password: password
+  })
           }
         );
 
@@ -1639,59 +1640,6 @@ createStudentForm.addEventListener(
       */
 
 
-      const {
-        data: createdProfile,
-        error: profileSearchError
-      } =
-        await supabaseClient
-          .from('profiles')
-          .select('id')
-          .eq(
-            'full_name',
-            fullName
-          )
-          .eq(
-            'role',
-            'student'
-          )
-          .order(
-            'created_at',
-            {
-              ascending: false
-            }
-          )
-          .limit(1)
-          .single();
-
-
-      if (
-        !profileSearchError &&
-        createdProfile
-      ) {
-
-        const {
-          error: classUpdateError
-        } =
-          await supabaseClient
-            .from('profiles')
-            .update({
-              class_id:
-                selectedClassId
-            })
-            .eq(
-              'id',
-              createdProfile.id
-            );
-
-
-        if (classUpdateError) {
-          console.error(
-            'Не удалось привязать class_id:',
-            classUpdateError
-          );
-        }
-
-      }
 
 
       createStudentMessage.innerHTML =
