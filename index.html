@@ -443,6 +443,131 @@
       font-size: 14px;
     }
 
+
+    .student-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .icon-button {
+      width: 38px;
+      height: 38px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 17px;
+      display: grid;
+      place-items: center;
+    }
+
+    .edit-button {
+      background: #dbeafe;
+      color: #1d4ed8;
+    }
+
+    .edit-button:hover {
+      background: #bfdbfe;
+    }
+
+    .delete-button {
+      background: #fee2e2;
+      color: #b91c1c;
+    }
+
+    .delete-button:hover {
+      background: #fecaca;
+    }
+
+    .student-login {
+      color: #64748b;
+      font-size: 13px;
+      margin-top: 3px;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, .62);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 9999;
+    }
+
+    .modal-card {
+      width: 100%;
+      max-width: 520px;
+      background: white;
+      color: #0f172a;
+      border-radius: 22px;
+      padding: 24px;
+      box-shadow: 0 30px 90px rgba(0,0,0,.28);
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .modal-header h3 {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    .modal-close {
+      width: 38px;
+      height: 38px;
+      border: none;
+      border-radius: 10px;
+      background: #f1f5f9;
+      cursor: pointer;
+      font-size: 20px;
+    }
+
+    .readonly-box {
+      padding: 13px 15px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      color: #334155;
+      font-weight: bold;
+    }
+
+    .modal-note {
+      color: #64748b;
+      font-size: 13px;
+      line-height: 1.5;
+      margin-top: 8px;
+    }
+
+    .modal-password-row {
+      display: grid;
+      grid-template-columns: 1fr 55px;
+      gap: 8px;
+    }
+
+    .modal-message {
+      margin-top: 15px;
+      padding: 12px;
+      border-radius: 12px;
+      font-size: 14px;
+    }
+
+    .modal-message.success {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .modal-message.error {
+      background: #fee2e2;
+      color: #b91c1c;
+    }
+
     @media (max-width: 760px) {
       .features,
       .dashboard-grid,
@@ -663,6 +788,60 @@
   </main>
 </section>
 
+
+<!-- РЕДАКТИРОВАНИЕ УЧЕНИКА -->
+<div id="studentEditModal" class="modal-backdrop hidden">
+  <div class="modal-card">
+
+    <div class="modal-header">
+      <div>
+        <div class="teacher-label">Ученик</div>
+        <h3 id="editStudentName">Ученик</h3>
+      </div>
+
+      <button id="closeStudentModalButton" class="modal-close" type="button">×</button>
+    </div>
+
+    <div class="input-group">
+      <label>Логин</label>
+      <div id="editStudentLogin" class="readonly-box">—</div>
+    </div>
+
+    <div class="input-group">
+      <label for="resetPasswordInput">Новый пароль</label>
+
+      <div class="modal-password-row">
+        <input
+          id="resetPasswordInput"
+          type="text"
+          placeholder="Введите или сгенерируйте новый пароль"
+          autocomplete="off"
+        >
+
+        <button
+          id="generateResetPasswordButton"
+          class="secondary-button"
+          type="button"
+          title="Сгенерировать пароль"
+        >
+          🎲
+        </button>
+      </div>
+
+      <div class="modal-note">
+        Старый пароль увидеть нельзя. Можно только назначить новый.
+      </div>
+    </div>
+
+    <button id="resetStudentPasswordButton" class="primary-button" type="button">
+      Сбросить пароль
+    </button>
+
+    <div id="studentEditMessage" class="modal-message hidden"></div>
+
+  </div>
+</div>
+
 <script>
   // =========================================================
   // SUPABASE
@@ -712,6 +891,17 @@
   const generatePasswordButton = document.getElementById('generatePasswordButton');
   const createStudentButton = document.getElementById('createStudentButton');
   const createStudentMessage = document.getElementById('createStudentMessage');
+
+  const studentEditModal = document.getElementById('studentEditModal');
+  const editStudentName = document.getElementById('editStudentName');
+  const editStudentLogin = document.getElementById('editStudentLogin');
+  const closeStudentModalButton = document.getElementById('closeStudentModalButton');
+  const resetPasswordInput = document.getElementById('resetPasswordInput');
+  const generateResetPasswordButton = document.getElementById('generateResetPasswordButton');
+  const resetStudentPasswordButton = document.getElementById('resetStudentPasswordButton');
+  const studentEditMessage = document.getElementById('studentEditMessage');
+
+  let editingStudentId = null;
 
   let selectedClassId = null;
   let selectedClassName = null;
@@ -858,7 +1048,7 @@
 
     const { data: students, error } = await supabaseClient
       .from('profiles')
-      .select('id, full_name')
+      .select('id, full_name, login')
       .eq('class_id', classId)
       .eq('role', 'student')
       .order('full_name');
@@ -883,8 +1073,37 @@
       row.className = 'student-row';
 
       row.innerHTML = `
-        <div class="student-name">${student.full_name}</div>
+        <div>
+          <div class="student-name">${student.full_name}</div>
+          <div class="student-login">${student.login || 'Логин не указан'}</div>
+        </div>
+
+        <div class="student-actions">
+          <button
+            type="button"
+            class="icon-button edit-button"
+            title="Логин и сброс пароля"
+          >
+            ✏️
+          </button>
+
+          <button
+            type="button"
+            class="icon-button delete-button"
+            title="Удалить ученика"
+          >
+            🗑️
+          </button>
+        </div>
       `;
+
+      row.querySelector('.edit-button').addEventListener('click', function() {
+        openStudentModal(student);
+      });
+
+      row.querySelector('.delete-button').addEventListener('click', async function() {
+        await deleteStudent(student);
+      });
 
       studentsList.appendChild(row);
     });
@@ -900,20 +1119,7 @@
   // =========================================================
 
   generatePasswordButton.addEventListener('click', function() {
-
-    const chars =
-      'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789';
-
-    let password = '';
-
-    for (let i = 0; i < 8; i++) {
-      password += chars.charAt(
-        Math.floor(Math.random() * chars.length)
-      );
-    }
-
-    password += '!';
-    newStudentPassword.value = password;
+    newStudentPassword.value = generateSecurePassword();
   });
 
   // =========================================================
@@ -1013,6 +1219,160 @@
       showStudentMessage('Ошибка соединения с сервером.', 'error');
     }
   });
+
+
+  // =========================================================
+  // УПРАВЛЕНИЕ УЧЕНИКОМ
+  // =========================================================
+
+  function generateSecurePassword() {
+    const chars =
+      'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789';
+
+    let password = '';
+
+    for (let i = 0; i < 8; i++) {
+      password += chars.charAt(
+        Math.floor(Math.random() * chars.length)
+      );
+    }
+
+    return password + '!';
+  }
+
+  function openStudentModal(student) {
+    editingStudentId = student.id;
+
+    editStudentName.textContent = student.full_name;
+    editStudentLogin.textContent = student.login || 'Логин не указан';
+
+    resetPasswordInput.value = '';
+    studentEditMessage.classList.add('hidden');
+
+    studentEditModal.classList.remove('hidden');
+  }
+
+  function closeStudentModal() {
+    editingStudentId = null;
+    studentEditModal.classList.add('hidden');
+    resetPasswordInput.value = '';
+    studentEditMessage.classList.add('hidden');
+  }
+
+  closeStudentModalButton.addEventListener('click', closeStudentModal);
+
+  studentEditModal.addEventListener('click', function(event) {
+    if (event.target === studentEditModal) {
+      closeStudentModal();
+    }
+  });
+
+  generateResetPasswordButton.addEventListener('click', function() {
+    resetPasswordInput.value = generateSecurePassword();
+  });
+
+  resetStudentPasswordButton.addEventListener('click', async function() {
+
+    if (!editingStudentId) return;
+
+    const newPassword = resetPasswordInput.value.trim();
+
+    if (!newPassword) {
+      studentEditMessage.textContent =
+        'Введите или сгенерируйте новый пароль.';
+      studentEditMessage.className = 'modal-message error';
+      return;
+    }
+
+    resetStudentPasswordButton.disabled = true;
+    resetStudentPasswordButton.textContent = 'Сбрасываем...';
+
+    const { data, error } = await supabaseClient.functions.invoke(
+      'manage-student',
+      {
+        body: {
+          action: 'reset_password',
+          studentId: editingStudentId,
+          newPassword
+        }
+      }
+    );
+
+    resetStudentPasswordButton.disabled = false;
+    resetStudentPasswordButton.textContent = 'Сбросить пароль';
+
+    if (error) {
+      console.error('manage-student reset error:', error);
+
+      let message = error.message || 'Не удалось сбросить пароль.';
+
+      if (error.context) {
+        try {
+          const body = await error.context.json();
+          if (body?.error) message = body.error;
+        } catch (_) {}
+      }
+
+      studentEditMessage.textContent = message;
+      studentEditMessage.className = 'modal-message error';
+      return;
+    }
+
+    if (data?.error) {
+      studentEditMessage.textContent = data.error;
+      studentEditMessage.className = 'modal-message error';
+      return;
+    }
+
+    studentEditMessage.innerHTML =
+      `Пароль сброшен ✅<br>Новый пароль: <strong>${newPassword}</strong>`;
+
+    studentEditMessage.className = 'modal-message success';
+  });
+
+  async function deleteStudent(student) {
+
+    const confirmed = window.confirm(
+      `Удалить ученика "${student.full_name}"?\n\n` +
+      'Его аккаунт и профиль будут удалены. Это действие нельзя отменить.'
+    );
+
+    if (!confirmed) return;
+
+    const { data, error } = await supabaseClient.functions.invoke(
+      'manage-student',
+      {
+        body: {
+          action: 'delete',
+          studentId: student.id
+        }
+      }
+    );
+
+    if (error) {
+      console.error('manage-student delete error:', error);
+
+      let message = error.message || 'Не удалось удалить ученика.';
+
+      if (error.context) {
+        try {
+          const body = await error.context.json();
+          if (body?.error) message = body.error;
+        } catch (_) {}
+      }
+
+      alert(message);
+      return;
+    }
+
+    if (data?.error) {
+      alert(data.error);
+      return;
+    }
+
+    await loadStudents(selectedClassId);
+    await loadClasses();
+  }
 
   // =========================================================
   // ОТКРЫТИЕ ЛИЧНОГО КАБИНЕТА
