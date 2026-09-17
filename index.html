@@ -977,6 +977,54 @@
       color: #6d28d9;
     }
 
+
+    .staff-grade-switcher {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin: 14px 0 4px;
+      padding: 10px;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      background: #f8fafc;
+    }
+
+    .staff-grade-switcher-label {
+      font-size: 13px;
+      font-weight: 800;
+      color: #475569;
+      margin-right: 4px;
+    }
+
+    .grade-switch-button {
+      border: 1px solid #cbd5e1;
+      background: white;
+      color: #334155;
+      border-radius: 10px;
+      padding: 9px 14px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .grade-switch-button.active {
+      border-color: #7c3aed;
+      background: #ede9fe;
+      color: #6d28d9;
+    }
+
+    .material-delete {
+      background: #fee2e2;
+      color: #b91c1c;
+    }
+
+    .material-grade-note {
+      width: 100%;
+      color: #64748b;
+      font-size: 12px;
+      margin-top: 2px;
+    }
+
     /* TEACHER PANEL */
     .teacher-panel {
       margin-top: 20px;
@@ -1499,6 +1547,13 @@
         </button>
       </div>
 
+      <div id="staffGradeSwitcher" class="staff-grade-switcher hidden">
+        <span class="staff-grade-switcher-label">Материалы параллели:</span>
+        <button class="grade-switch-button active" type="button" data-grade="5">5 класс</button>
+        <button class="grade-switch-button" type="button" data-grade="6">6 класс</button>
+        <button class="grade-switch-button" type="button" data-grade="7">7 класс</button>
+      </div>
+
       <div class="progress-overview">
         <div>
           <div class="progress-caption">Пройдено</div>
@@ -1934,6 +1989,7 @@
   const classAcademicYearInput = document.getElementById('classAcademicYearInput');
   const saveClassScheduleButton = document.getElementById('saveClassScheduleButton');
   const scheduleMessage = document.getElementById('scheduleMessage');
+  const staffGradeSwitcher = document.getElementById('staffGradeSwitcher');
 
   const calendarCard = document.getElementById('calendarCard');
   const calendarToggleButton = document.getElementById('calendarToggleButton');
@@ -2002,6 +2058,7 @@
   let selectedClassId = null;
   let selectedClassName = null;
   let currentProfile = null;
+  let currentStaffGrade = 5;
 
   // =========================================================
   // ВСПОМОГАТЕЛЬНОЕ
@@ -2373,6 +2430,8 @@
     const isSuperAdmin =
       currentProfile?.role === 'super_admin';
 
+    staffGradeSwitcher.classList.toggle('hidden', !isStaff);
+
     const { data: lessons, error: lessonsError } =
       await supabaseClient
         .from('lessons')
@@ -2389,6 +2448,7 @@
     let progress = [];
     let releases = [];
     let materials = [];
+    let variants = [];
 
     if (!isStaff) {
       const { data: progressData, error: progressError } =
@@ -2417,16 +2477,36 @@
         }
       }
     } else {
-      const { data: materialData, error: materialsError } =
+      const { data: variantData, error: variantsError } =
         await supabaseClient
-          .from('lesson_materials')
-          .select('id, lesson_id, material_type, title, storage_path, file_name')
-          .eq('material_type', 'presentation');
+          .from('lesson_variants')
+          .select('id, lesson_id, grade_level')
+          .eq('grade_level', currentStaffGrade);
 
-      if (materialsError) {
-        console.error('Ошибка загрузки материалов:', materialsError);
-      } else {
-        materials = materialData || [];
+      if (variantsError) {
+        console.error('Ошибка загрузки вариантов уроков:', variantsError);
+        lessonsList.innerHTML =
+          '<div class="loading-text">Не удалось загрузить материалы параллели.</div>';
+        return;
+      }
+
+      variants = variantData || [];
+
+      const variantIds = variants.map(item => item.id);
+
+      if (variantIds.length > 0) {
+        const { data: materialData, error: materialsError } =
+          await supabaseClient
+            .from('lesson_materials')
+            .select('id, lesson_variant_id, material_type, title, storage_path, file_name')
+            .in('lesson_variant_id', variantIds)
+            .eq('material_type', 'presentation');
+
+        if (materialsError) {
+          console.error('Ошибка загрузки материалов:', materialsError);
+        } else {
+          materials = materialData || [];
+        }
       }
     }
 
@@ -2438,8 +2518,12 @@
       progress.map(item => [item.lesson_id, item])
     );
 
+    const variantMap = new Map(
+      variants.map(item => [item.lesson_id, item])
+    );
+
     const materialMap = new Map(
-      materials.map(item => [item.lesson_id, item])
+      materials.map(item => [item.lesson_variant_id, item])
     );
 
     const completedCount =
@@ -2449,10 +2533,7 @@
 
     if (isStaff) {
       lessonsProgressText.textContent =
-        isSuperAdmin
-          ? `Материалы курса · ${total} уроков`
-          : `Курс · ${total} уроков`;
-
+        `${currentStaffGrade} класс · ${total} уроков`;
       lessonsProgressBar.style.width = '100%';
     } else {
       const percent = total
@@ -2462,16 +2543,10 @@
       lessonsProgressText.textContent =
         `${completedCount} из ${total}`;
 
-      lessonsProgressBar.style.width =
-        `${percent}%`;
+      lessonsProgressBar.style.width = `${percent}%`;
     }
 
-    const grouped = {
-      1: [],
-      2: [],
-      3: [],
-      4: []
-    };
+    const grouped = { 1: [], 2: [], 3: [], 4: [] };
 
     (lessons || []).forEach(lesson => {
       grouped[lesson.quarter].push(lesson);
@@ -2487,10 +2562,8 @@
     lessonsList.innerHTML = '';
 
     Object.keys(grouped).forEach(key => {
-
       const quarterNumber = Number(key);
       const quarterLessons = grouped[quarterNumber];
-
       if (!quarterLessons || quarterLessons.length === 0) return;
 
       const section = document.createElement('section');
@@ -2499,17 +2572,18 @@
       let quarterBadgeText;
 
       if (isStaff) {
-        const withPresentation =
-          quarterLessons.filter(lesson => materialMap.has(lesson.id)).length;
+        const withPresentation = quarterLessons.filter(lesson => {
+          const variant = variantMap.get(lesson.id);
+          return variant && materialMap.has(variant.id);
+        }).length;
 
         quarterBadgeText =
           `${withPresentation} / ${quarterLessons.length} презентаций`;
       } else {
-        const quarterCompleted =
-          quarterLessons.filter(lesson => {
-            const progressItem = progressMap.get(lesson.id);
-            return progressItem?.status === 'completed';
-          }).length;
+        const quarterCompleted = quarterLessons.filter(lesson => {
+          const progressItem = progressMap.get(lesson.id);
+          return progressItem?.status === 'completed';
+        }).length;
 
         quarterBadgeText =
           `${quarterCompleted} / ${quarterLessons.length} пройдено`;
@@ -2517,26 +2591,19 @@
 
       section.innerHTML = `
         <div class="quarter-header">
-          <div>
-            <h3 class="quarter-title">${quarterLabels[quarterNumber]}</h3>
-          </div>
-
-          <div class="quarter-badge">
-            ${quarterBadgeText}
-          </div>
+          <div><h3 class="quarter-title">${quarterLabels[quarterNumber]}</h3></div>
+          <div class="quarter-badge">${quarterBadgeText}</div>
         </div>
-
         <div class="quarter-lessons"></div>
       `;
 
-      const quarterContainer =
-        section.querySelector('.quarter-lessons');
+      const quarterContainer = section.querySelector('.quarter-lessons');
 
       quarterLessons.forEach(lesson => {
-
         const progressItem = progressMap.get(lesson.id);
         const status = progressItem?.status || 'not_started';
-        const material = materialMap.get(lesson.id);
+        const variant = variantMap.get(lesson.id);
+        const material = variant ? materialMap.get(variant.id) : null;
 
         let isAvailable = isStaff;
         let releaseDateText = '';
@@ -2550,8 +2617,7 @@
             } else if (release.manual_state === 'closed') {
               isAvailable = false;
             } else {
-              isAvailable =
-                new Date() >= new Date(release.release_at);
+              isAvailable = new Date() >= new Date(release.release_at);
             }
           }
 
@@ -2582,16 +2648,18 @@
             `
             : `
               <span class="material-missing">
-                Презентация ещё не загружена
+                Презентация не загружена
               </span>
             `;
 
-          const uploadHtml = isSuperAdmin
+          const adminControls = isSuperAdmin && variant
             ? `
               <input
                 class="presentation-file-input"
+                data-variant-id="${variant.id}"
                 data-lesson-id="${lesson.id}"
                 data-week-number="${lesson.week_number}"
+                data-grade="${currentStaffGrade}"
                 type="file"
                 accept=".ppt,.pptx,.pdf"
                 hidden
@@ -2599,17 +2667,32 @@
 
               <button
                 class="material-button material-upload"
-                data-material-upload="${lesson.id}"
+                data-material-upload="${variant.id}"
               >
                 ${material ? '↻ Заменить презентацию' : '⬆️ Загрузить презентацию'}
               </button>
+
+              ${material ? `
+                <button
+                  class="material-button material-delete"
+                  data-material-delete="${material.id}"
+                  data-storage-path="${material.storage_path}"
+                  data-week-number="${lesson.week_number}"
+                  data-grade="${currentStaffGrade}"
+                >
+                  🗑 Удалить презентацию
+                </button>
+              ` : ''}
             `
             : '';
 
           actions = `
             <div class="staff-materials">
               ${presentationHtml}
-              ${uploadHtml}
+              ${adminControls}
+              <div class="material-grade-note">
+                Материалы: ${currentStaffGrade} класс
+              </div>
             </div>
           `;
 
@@ -2617,7 +2700,7 @@
             <div class="staff-role-note">
               ${
                 isSuperAdmin
-                  ? 'Супер-админ: можно загружать и заменять материалы'
+                  ? 'Супер-админ: загрузка, замена и удаление материалов'
                   : 'Учитель: материалы доступны только для скачивания'
               }
             </div>
@@ -2628,20 +2711,10 @@
               status === 'completed'
                 ? `<span class="lesson-done-badge">✓ Пройдено</span>`
                 : `
-                  <button
-                    class="lesson-action lesson-open"
-                    data-action="open"
-                    data-id="${lesson.id}"
-                    data-url="${lesson.lesson_url || ''}"
-                  >
+                  <button class="lesson-action lesson-open" data-action="open" data-id="${lesson.id}" data-url="${lesson.lesson_url || ''}">
                     ${status === 'in_progress' ? 'Продолжить' : 'Открыть'}
                   </button>
-
-                  <button
-                    class="lesson-action lesson-complete"
-                    data-action="complete"
-                    data-id="${lesson.id}"
-                  >
+                  <button class="lesson-action lesson-complete" data-action="complete" data-id="${lesson.id}">
                     Завершить
                   </button>
                 `
@@ -2658,14 +2731,11 @@
           <div>
             <div class="lesson-theme">Тема урока</div>
             <div class="lesson-title">${lesson.title}</div>
-
             ${
               isStaff
                 ? extraInfo
                 : `
-                  <div class="lesson-meta">
-                    ${statusLabel(status)}
-                  </div>
+                  <div class="lesson-meta">${statusLabel(status)}</div>
                   <div class="lesson-release-date ${!isAvailable ? 'locked-date' : ''}">
                     📅 ${releaseDateText}
                   </div>
@@ -2673,9 +2743,7 @@
             }
           </div>
 
-          <div class="lesson-actions">
-            ${actions}
-          </div>
+          <div class="lesson-actions">${actions}</div>
         `;
 
         quarterContainer.appendChild(card);
@@ -2689,15 +2757,12 @@
         button.addEventListener('click', async function() {
           const lessonId = button.dataset.id;
           const lessonUrl = button.dataset.url;
-
           await setLessonStatus(lessonId, 'in_progress');
 
           if (lessonUrl) {
             window.location.href = lessonUrl;
           } else {
-            alert(
-              'Карточка урока уже подключена к прогрессу. Сам материал перенесём на следующем этапе.'
-            );
+            alert('Карточка урока уже подключена к прогрессу. Сам материал перенесём на следующем этапе.');
             await loadLessons();
           }
         });
@@ -2712,64 +2777,61 @@
     }
 
     if (isStaff) {
-      lessonsList
-        .querySelectorAll('[data-material-download]')
-        .forEach(button => {
-          button.addEventListener('click', async function() {
-            await downloadTeacherMaterial(
-              button.dataset.materialDownload,
-              button.dataset.materialName
-            );
-          });
+      lessonsList.querySelectorAll('[data-material-download]').forEach(button => {
+        button.addEventListener('click', async function() {
+          await downloadTeacherMaterial(
+            button.dataset.materialDownload,
+            button.dataset.materialName
+          );
         });
+      });
     }
 
     if (isSuperAdmin) {
-      lessonsList
-        .querySelectorAll('[data-material-upload]')
-        .forEach(button => {
-          button.addEventListener('click', function() {
-            const lessonId = button.dataset.materialUpload;
-            const input = lessonsList.querySelector(
-              `.presentation-file-input[data-lesson-id="${lessonId}"]`
-            );
-
-            if (input) {
-              input.click();
-            }
-          });
+      lessonsList.querySelectorAll('[data-material-upload]').forEach(button => {
+        button.addEventListener('click', function() {
+          const variantId = button.dataset.materialUpload;
+          const input = lessonsList.querySelector(
+            `.presentation-file-input[data-variant-id="${variantId}"]`
+          );
+          if (input) input.click();
         });
+      });
 
-      lessonsList
-        .querySelectorAll('.presentation-file-input')
-        .forEach(input => {
-          input.addEventListener('change', async function() {
-            const file = input.files?.[0];
+      lessonsList.querySelectorAll('.presentation-file-input').forEach(input => {
+        input.addEventListener('change', async function() {
+          const file = input.files?.[0];
+          if (!file) return;
 
-            if (!file) return;
+          await uploadPresentation(
+            input.dataset.variantId,
+            input.dataset.weekNumber,
+            input.dataset.grade,
+            file
+          );
 
-            await uploadPresentation(
-              input.dataset.lessonId,
-              input.dataset.weekNumber,
-              file
-            );
-
-            input.value = '';
-          });
+          input.value = '';
         });
+      });
+
+      lessonsList.querySelectorAll('[data-material-delete]').forEach(button => {
+        button.addEventListener('click', async function() {
+          await deletePresentation(
+            button.dataset.materialDelete,
+            button.dataset.storagePath,
+            button.dataset.weekNumber,
+            button.dataset.grade
+          );
+        });
+      });
     }
   }
 
   async function downloadTeacherMaterial(storagePath, fileName) {
-
     const { data, error } =
       await supabaseClient.storage
         .from('teacher-materials')
-        .createSignedUrl(
-          storagePath,
-          60,
-          { download: fileName || true }
-        );
+        .createSignedUrl(storagePath, 60, { download: fileName || true });
 
     if (error || !data?.signedUrl) {
       console.error('Ошибка скачивания материала:', error);
@@ -2781,58 +2843,45 @@
     link.href = data.signedUrl;
     link.target = '_blank';
     link.rel = 'noopener';
-
     document.body.appendChild(link);
     link.click();
     link.remove();
   }
 
-  async function uploadPresentation(lessonId, weekNumber, file) {
-
+  async function uploadPresentation(variantId, weekNumber, grade, file) {
     if (currentProfile?.role !== 'super_admin') {
       alert('Загружать материалы может только супер-админ.');
       return;
     }
 
     const allowedExtensions = ['ppt', 'pptx', 'pdf'];
-    const extension =
-      (file.name.split('.').pop() || '').toLowerCase();
+    const extension = (file.name.split('.').pop() || '').toLowerCase();
 
     if (!allowedExtensions.includes(extension)) {
       alert('Разрешены файлы PPT, PPTX и PDF.');
       return;
     }
 
-    const safeName =
-      file.name
-        .replace(/[^a-zA-Z0-9а-яА-ЯёЁ._-]+/g, '_')
-        .replace(/_+/g, '_');
+    const safeName = file.name
+      .replace(/[^a-zA-Z0-9а-яА-ЯёЁ._-]+/g, '_')
+      .replace(/_+/g, '_');
 
-    const weekFolder =
-      `week-${String(weekNumber).padStart(2, '0')}`;
-
+    const weekFolder = `week-${String(weekNumber).padStart(2, '0')}`;
     const storagePath =
-      `presentations/${weekFolder}/${Date.now()}_${safeName}`;
+      `presentations/grade-${grade}/${weekFolder}/${Date.now()}_${safeName}`;
 
     const { data: oldMaterial } =
       await supabaseClient
         .from('lesson_materials')
         .select('id, storage_path')
-        .eq('lesson_id', lessonId)
+        .eq('lesson_variant_id', variantId)
         .eq('material_type', 'presentation')
         .maybeSingle();
 
     const { error: uploadError } =
       await supabaseClient.storage
         .from('teacher-materials')
-        .upload(
-          storagePath,
-          file,
-          {
-            cacheControl: '3600',
-            upsert: false
-          }
-        );
+        .upload(storagePath, file, { cacheControl: '3600', upsert: false });
 
     if (uploadError) {
       console.error('Ошибка загрузки презентации:', uploadError);
@@ -2840,52 +2889,101 @@
       return;
     }
 
-    const { error: metadataError } =
-      await supabaseClient
+    const payload = {
+      lesson_variant_id: variantId,
+      material_type: 'presentation',
+      title: `Презентация · ${grade} класс · неделя ${weekNumber}`,
+      storage_path: storagePath,
+      file_name: file.name,
+      uploaded_by: currentProfile.id,
+      updated_at: new Date().toISOString()
+    };
+
+    let metadataError = null;
+
+    if (oldMaterial?.id) {
+      const result = await supabaseClient
         .from('lesson_materials')
-        .upsert(
-          {
-            lesson_id: lessonId,
-            material_type: 'presentation',
-            title: `Презентация к неделе ${weekNumber}`,
-            storage_path: storagePath,
-            file_name: file.name,
-            uploaded_by: currentProfile.id,
-            updated_at: new Date().toISOString()
-          },
-          {
-            onConflict: 'lesson_id,material_type'
-          }
-        );
+        .update(payload)
+        .eq('id', oldMaterial.id);
+      metadataError = result.error;
+    } else {
+      const result = await supabaseClient
+        .from('lesson_materials')
+        .insert(payload);
+      metadataError = result.error;
+    }
 
     if (metadataError) {
       console.error('Ошибка сохранения материала:', metadataError);
-
-      await supabaseClient.storage
-        .from('teacher-materials')
-        .remove([storagePath]);
-
+      await supabaseClient.storage.from('teacher-materials').remove([storagePath]);
       alert('Файл загрузился, но не удалось сохранить его в уроке.');
       return;
     }
 
-    if (
-      oldMaterial?.storage_path &&
-      oldMaterial.storage_path !== storagePath
-    ) {
+    if (oldMaterial?.storage_path && oldMaterial.storage_path !== storagePath) {
       await supabaseClient.storage
         .from('teacher-materials')
         .remove([oldMaterial.storage_path]);
     }
 
-    alert(
-      oldMaterial
-        ? 'Презентация заменена ✅'
-        : 'Презентация загружена ✅'
-    );
-
+    alert(oldMaterial ? 'Презентация заменена ✅' : 'Презентация загружена ✅');
     await loadLessons();
   }
+
+  async function deletePresentation(materialId, storagePath, weekNumber, grade) {
+    if (currentProfile?.role !== 'super_admin') {
+      alert('Удалять материалы может только супер-админ.');
+      return;
+    }
+
+    const confirmed = confirm(
+      `Удалить презентацию для ${grade} класса, неделя ${weekNumber}?\n\nСам урок, задания и прогресс учеников останутся.`
+    );
+
+    if (!confirmed) return;
+
+    const { error: storageError } =
+      await supabaseClient.storage
+        .from('teacher-materials')
+        .remove([storagePath]);
+
+    if (storageError) {
+      console.error('Ошибка удаления файла:', storageError);
+      alert('Не удалось удалить файл из хранилища.');
+      return;
+    }
+
+    const { error: dbError } =
+      await supabaseClient
+        .from('lesson_materials')
+        .delete()
+        .eq('id', materialId);
+
+    if (dbError) {
+      console.error('Ошибка удаления записи:', dbError);
+      alert('Файл удалён, но запись материала не удалось удалить.');
+      return;
+    }
+
+    alert('Презентация удалена ✅');
+    await loadLessons();
+  }
+
+  staffGradeSwitcher.querySelectorAll('[data-grade]').forEach(button => {
+    button.addEventListener('click', async function() {
+      currentStaffGrade = Number(button.dataset.grade);
+
+      staffGradeSwitcher.querySelectorAll('[data-grade]').forEach(item => {
+        item.classList.toggle(
+          'active',
+          Number(item.dataset.grade) === currentStaffGrade
+        );
+      });
+
+      await loadLessons();
+    });
+  });
 
   async function setLessonStatus(lessonId, status) {
 
