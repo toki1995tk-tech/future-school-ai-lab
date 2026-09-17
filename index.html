@@ -672,6 +672,266 @@
       color: #b91c1c;
     }
 
+
+    .calendar-card {
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .calendar-toggle {
+      width: 100%;
+      border: none;
+      background: white;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .calendar-toggle:hover {
+      background: #fffaf5;
+    }
+
+    .calendar-toggle-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .calendar-toggle-icon {
+      font-size: 21px;
+    }
+
+    .calendar-toggle-title {
+      font-weight: 800;
+      color: #0f172a;
+      font-size: 16px;
+    }
+
+    .calendar-toggle-subtitle {
+      color: #64748b;
+      font-size: 12px;
+      margin-top: 2px;
+    }
+
+    .calendar-chevron {
+      font-size: 18px;
+      color: #64748b;
+      transition: transform .18s ease;
+    }
+
+    .calendar-card.open .calendar-chevron {
+      transform: rotate(180deg);
+    }
+
+    .calendar-body {
+      padding: 4px 20px 20px;
+      border-top: 1px solid #fed7aa;
+      background: white;
+    }
+
+    .class-progress-box {
+      margin-top: 20px;
+      border: 1px solid #e2e8f0;
+      border-radius: 18px;
+      padding: 18px;
+      background: linear-gradient(180deg, #ffffff, #f8fafc);
+    }
+
+    .class-progress-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 15px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .class-progress-header h4 {
+      margin: 0 0 5px;
+      font-size: 20px;
+    }
+
+    .class-progress-header p {
+      margin: 0;
+      color: #64748b;
+      font-size: 13px;
+    }
+
+    .progress-summary-cards {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .progress-summary-card {
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 13px;
+      background: white;
+    }
+
+    .progress-summary-label {
+      color: #64748b;
+      font-size: 12px;
+      margin-bottom: 5px;
+    }
+
+    .progress-summary-value {
+      font-weight: 800;
+      font-size: 22px;
+      color: #0f172a;
+    }
+
+    .class-progress-table-wrap {
+      overflow-x: auto;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      background: white;
+    }
+
+    .class-progress-table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 720px;
+    }
+
+    .class-progress-table th,
+    .class-progress-table td {
+      text-align: left;
+      padding: 12px 14px;
+      border-bottom: 1px solid #e2e8f0;
+      vertical-align: middle;
+      font-size: 14px;
+    }
+
+    .class-progress-table th {
+      background: #f8fafc;
+      color: #475569;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+
+    .class-progress-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .progress-pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 9px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .progress-pill.done {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .progress-pill.doing {
+      background: #dbeafe;
+      color: #1d4ed8;
+    }
+
+    .progress-pill.none {
+      background: #f1f5f9;
+      color: #64748b;
+    }
+
+    .progress-details-button {
+      border: none;
+      background: #eff6ff;
+      color: #1d4ed8;
+      padding: 8px 11px;
+      border-radius: 9px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .student-progress-modal-card {
+      width: 100%;
+      max-width: 760px;
+      max-height: 88vh;
+      overflow: auto;
+    }
+
+    .student-progress-top {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .student-progress-stat {
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 13px;
+      background: #f8fafc;
+    }
+
+    .student-progress-stat span {
+      display: block;
+      color: #64748b;
+      font-size: 12px;
+      margin-bottom: 4px;
+    }
+
+    .student-progress-stat strong {
+      font-size: 20px;
+    }
+
+    .student-progress-weeks {
+      display: grid;
+      gap: 8px;
+    }
+
+    .student-progress-week {
+      display: grid;
+      grid-template-columns: 70px 1fr auto;
+      align-items: center;
+      gap: 12px;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 11px 12px;
+      background: white;
+    }
+
+    .student-progress-week-number {
+      font-weight: 800;
+      color: #334155;
+      font-size: 13px;
+    }
+
+    .student-progress-week-title {
+      font-size: 14px;
+      color: #0f172a;
+    }
+
+    @media (max-width: 760px) {
+      .progress-summary-cards,
+      .student-progress-top {
+        grid-template-columns: 1fr;
+      }
+
+      .student-progress-week {
+        grid-template-columns: 60px 1fr;
+      }
+
+      .student-progress-week .progress-pill {
+        grid-column: 1 / -1;
+        justify-self: start;
+      }
+    }
+
     /* TEACHER PANEL */
     .teacher-panel {
       margin-top: 20px;
@@ -1217,17 +1477,22 @@
         <p>Управление классами и учениками AI Lab</p>
       </div>
 
-      <div class="teacher-card calendar-card">
-        <div class="classes-header">
-          <div>
-            <h3>📅 Учебный календарь</h3>
-            <p class="teacher-card-text">
-              Задай границы четвертей. Платформа использует их вместе с расписанием классов,
-              чтобы автоматически рассчитывать даты уроков.
-            </p>
+      <div id="calendarCard" class="teacher-card calendar-card">
+        <button id="calendarToggleButton" class="calendar-toggle" type="button">
+          <div class="calendar-toggle-left">
+            <div class="calendar-toggle-icon">📅</div>
+            <div>
+              <div class="calendar-toggle-title">Учебный календарь</div>
+              <div class="calendar-toggle-subtitle">
+                Четверти, каникулы и даты автоматического открытия уроков
+              </div>
+            </div>
           </div>
-        </div>
 
+          <div class="calendar-chevron">⌄</div>
+        </button>
+
+        <div id="calendarBody" class="calendar-body hidden">
         <div class="input-group" style="max-width:260px;">
           <label for="academicYearInput">Учебный год</label>
           <input id="academicYearInput" type="text" value="2026-2027" placeholder="2026-2027">
@@ -1288,6 +1553,7 @@
         </div>
 
         <div id="calendarMessage" class="calendar-message hidden"></div>
+        </div>
       </div>
 
       <div class="teacher-card">
@@ -1366,6 +1632,56 @@
           </div>
 
           <div id="scheduleMessage" class="calendar-message hidden"></div>
+        </div>
+
+
+        <div class="class-progress-box">
+          <div class="class-progress-header">
+            <div>
+              <h4>📊 Прогресс класса</h4>
+              <p>Общий статус по урокам AI Prompt Engineering.</p>
+            </div>
+
+            <button id="refreshClassProgressButton" class="secondary-action-button" type="button">
+              ↻ Обновить
+            </button>
+          </div>
+
+          <div class="progress-summary-cards">
+            <div class="progress-summary-card">
+              <div class="progress-summary-label">Учеников</div>
+              <div id="progressStudentsCount" class="progress-summary-value">0</div>
+            </div>
+
+            <div class="progress-summary-card">
+              <div class="progress-summary-label">Всего завершено уроков</div>
+              <div id="progressCompletedTotal" class="progress-summary-value">0</div>
+            </div>
+
+            <div class="progress-summary-card">
+              <div class="progress-summary-label">Сейчас в процессе</div>
+              <div id="progressInProgressTotal" class="progress-summary-value">0</div>
+            </div>
+          </div>
+
+          <div class="class-progress-table-wrap">
+            <table class="class-progress-table">
+              <thead>
+                <tr>
+                  <th>Ученик</th>
+                  <th>Пройдено</th>
+                  <th>В процессе</th>
+                  <th>Последний урок</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="classProgressTableBody">
+                <tr>
+                  <td colspan="5" class="loading-text">Выберите класс</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
 
         <div id="studentFormBox" class="student-form-box hidden">
@@ -1485,6 +1801,44 @@
   </div>
 </div>
 
+
+<!-- ПРОГРЕСС КОНКРЕТНОГО УЧЕНИКА -->
+<div id="studentProgressModal" class="modal-backdrop hidden">
+  <div class="modal-card student-progress-modal-card">
+
+    <div class="modal-header">
+      <div>
+        <div class="teacher-label">Прогресс ученика</div>
+        <h3 id="studentProgressTitle">Ученик</h3>
+      </div>
+
+      <button id="closeStudentProgressModalButton" class="modal-close" type="button">×</button>
+    </div>
+
+    <div class="student-progress-top">
+      <div class="student-progress-stat">
+        <span>Пройдено</span>
+        <strong id="studentProgressCompleted">0 / 34</strong>
+      </div>
+
+      <div class="student-progress-stat">
+        <span>В процессе</span>
+        <strong id="studentProgressDoing">0</strong>
+      </div>
+
+      <div class="student-progress-stat">
+        <span>Последний урок</span>
+        <strong id="studentProgressLast">—</strong>
+      </div>
+    </div>
+
+    <div id="studentProgressWeeks" class="student-progress-weeks">
+      <div class="loading-text">Загружаем прогресс...</div>
+    </div>
+
+  </div>
+</div>
+
 <script>
   // =========================================================
   // SUPABASE
@@ -1535,6 +1889,24 @@
   const classAcademicYearInput = document.getElementById('classAcademicYearInput');
   const saveClassScheduleButton = document.getElementById('saveClassScheduleButton');
   const scheduleMessage = document.getElementById('scheduleMessage');
+
+  const calendarCard = document.getElementById('calendarCard');
+  const calendarToggleButton = document.getElementById('calendarToggleButton');
+  const calendarBody = document.getElementById('calendarBody');
+
+  const refreshClassProgressButton = document.getElementById('refreshClassProgressButton');
+  const progressStudentsCount = document.getElementById('progressStudentsCount');
+  const progressCompletedTotal = document.getElementById('progressCompletedTotal');
+  const progressInProgressTotal = document.getElementById('progressInProgressTotal');
+  const classProgressTableBody = document.getElementById('classProgressTableBody');
+
+  const studentProgressModal = document.getElementById('studentProgressModal');
+  const closeStudentProgressModalButton = document.getElementById('closeStudentProgressModalButton');
+  const studentProgressTitle = document.getElementById('studentProgressTitle');
+  const studentProgressCompleted = document.getElementById('studentProgressCompleted');
+  const studentProgressDoing = document.getElementById('studentProgressDoing');
+  const studentProgressLast = document.getElementById('studentProgressLast');
+  const studentProgressWeeks = document.getElementById('studentProgressWeeks');
 
   const openLessonsButton = document.getElementById('openLessonsButton');
   const closeLessonsButton = document.getElementById('closeLessonsButton');
@@ -1605,6 +1977,17 @@
   }
 
 
+
+  // =========================================================
+  // СВОРАЧИВАЕМЫЙ УЧЕБНЫЙ КАЛЕНДАРЬ
+  // =========================================================
+
+  calendarToggleButton.addEventListener('click', function() {
+    const isHidden = calendarBody.classList.contains('hidden');
+
+    calendarBody.classList.toggle('hidden');
+    calendarCard.classList.toggle('open', isHidden);
+  });
 
   // =========================================================
   // УЧЕБНЫЙ КАЛЕНДАРЬ
@@ -2266,6 +2649,7 @@
 
         await loadStudents(classItem.id);
         await loadClassSchedule(classItem.id);
+        await loadClassProgress(classItem.id);
       });
 
       classesList.appendChild(card);
@@ -2315,6 +2699,310 @@
     createClassBox.classList.add('hidden');
 
     await loadClasses();
+  });
+
+
+  // =========================================================
+  // ПРОГРЕСС КЛАССА
+  // =========================================================
+
+  function progressStatusPill(status) {
+    if (status === 'completed') {
+      return '<span class="progress-pill done">✓ Пройдено</span>';
+    }
+
+    if (status === 'in_progress') {
+      return '<span class="progress-pill doing">● В процессе</span>';
+    }
+
+    return '<span class="progress-pill none">○ Не начато</span>';
+  }
+
+  async function getProgressDataForClass(classId) {
+
+    const { data: students, error: studentsError } =
+      await supabaseClient
+        .from('profiles')
+        .select('id, full_name, login')
+        .eq('class_id', classId)
+        .eq('role', 'student')
+        .order('full_name');
+
+    if (studentsError) {
+      throw studentsError;
+    }
+
+    const { data: lessons, error: lessonsError } =
+      await supabaseClient
+        .from('lessons')
+        .select('id, week_number, title, quarter')
+        .order('week_number');
+
+    if (lessonsError) {
+      throw lessonsError;
+    }
+
+    const studentIds = (students || []).map(student => student.id);
+
+    let progress = [];
+
+    if (studentIds.length > 0) {
+      const { data: progressRows, error: progressError } =
+        await supabaseClient
+          .from('lesson_progress')
+          .select('user_id, lesson_id, status, updated_at, completed_at')
+          .in('user_id', studentIds);
+
+      if (progressError) {
+        throw progressError;
+      }
+
+      progress = progressRows || [];
+    }
+
+    return {
+      students: students || [],
+      lessons: lessons || [],
+      progress
+    };
+  }
+
+  async function loadClassProgress(classId) {
+
+    classProgressTableBody.innerHTML = `
+      <tr>
+        <td colspan="5" class="loading-text">Загружаем прогресс...</td>
+      </tr>
+    `;
+
+    try {
+      const { students, lessons, progress } =
+        await getProgressDataForClass(classId);
+
+      const lessonMap = new Map(
+        lessons.map(lesson => [lesson.id, lesson])
+      );
+
+      const rowsByStudent = new Map();
+
+      students.forEach(student => {
+        rowsByStudent.set(student.id, []);
+      });
+
+      progress.forEach(item => {
+        if (rowsByStudent.has(item.user_id)) {
+          rowsByStudent.get(item.user_id).push(item);
+        }
+      });
+
+      const totalCompleted =
+        progress.filter(item => item.status === 'completed').length;
+
+      const totalDoing =
+        progress.filter(item => item.status === 'in_progress').length;
+
+      progressStudentsCount.textContent = students.length;
+      progressCompletedTotal.textContent = totalCompleted;
+      progressInProgressTotal.textContent = totalDoing;
+
+      if (students.length === 0) {
+        classProgressTableBody.innerHTML = `
+          <tr>
+            <td colspan="5" class="loading-text">
+              В этом классе пока нет учеников.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      classProgressTableBody.innerHTML = '';
+
+      students.forEach(student => {
+
+        const studentProgress = rowsByStudent.get(student.id) || [];
+
+        const completed =
+          studentProgress.filter(item => item.status === 'completed').length;
+
+        const doingItems =
+          studentProgress
+            .filter(item => item.status === 'in_progress')
+            .sort((a, b) => {
+              const weekA = lessonMap.get(a.lesson_id)?.week_number || 0;
+              const weekB = lessonMap.get(b.lesson_id)?.week_number || 0;
+              return weekB - weekA;
+            });
+
+        const doingLesson = doingItems[0]
+          ? lessonMap.get(doingItems[0].lesson_id)
+          : null;
+
+        const activityItems = [...studentProgress].sort((a, b) => {
+          const dateA = new Date(a.updated_at || a.completed_at || 0);
+          const dateB = new Date(b.updated_at || b.completed_at || 0);
+          return dateB - dateA;
+        });
+
+        const lastItem = activityItems[0];
+        const lastLesson = lastItem
+          ? lessonMap.get(lastItem.lesson_id)
+          : null;
+
+        const tr = document.createElement('tr');
+
+        tr.innerHTML = `
+          <td>
+            <strong>${student.full_name}</strong>
+            <div class="student-login">${student.login || ''}</div>
+          </td>
+
+          <td>
+            <span class="progress-pill done">
+              ${completed} / ${lessons.length}
+            </span>
+          </td>
+
+          <td>
+            ${
+              doingLesson
+                ? `<span class="progress-pill doing">
+                    Неделя ${doingLesson.week_number}
+                  </span>`
+                : '<span class="progress-pill none">—</span>'
+            }
+          </td>
+
+          <td>
+            ${
+              lastLesson
+                ? `Неделя ${lastLesson.week_number}: ${lastLesson.title}`
+                : 'Нет активности'
+            }
+          </td>
+
+          <td>
+            <button
+              type="button"
+              class="progress-details-button"
+            >
+              Подробнее
+            </button>
+          </td>
+        `;
+
+        tr
+          .querySelector('.progress-details-button')
+          .addEventListener('click', function() {
+            openStudentProgress(student, lessons, studentProgress);
+          });
+
+        classProgressTableBody.appendChild(tr);
+      });
+
+    } catch (error) {
+      console.error('Ошибка загрузки прогресса класса:', error);
+
+      classProgressTableBody.innerHTML = `
+        <tr>
+          <td colspan="5" class="loading-text">
+            Не удалось загрузить прогресс класса.
+          </td>
+        </tr>
+      `;
+    }
+  }
+
+  function openStudentProgress(student, lessons, progressRows) {
+
+    studentProgressTitle.textContent = student.full_name;
+
+    const progressMap = new Map(
+      (progressRows || []).map(item => [item.lesson_id, item])
+    );
+
+    const completed =
+      (progressRows || []).filter(item => item.status === 'completed').length;
+
+    const doing =
+      (progressRows || []).filter(item => item.status === 'in_progress').length;
+
+    const activityItems = [...(progressRows || [])].sort((a, b) => {
+      const dateA = new Date(a.updated_at || a.completed_at || 0);
+      const dateB = new Date(b.updated_at || b.completed_at || 0);
+      return dateB - dateA;
+    });
+
+    const lastItem = activityItems[0];
+    const lastLesson = lastItem
+      ? lessons.find(lesson => lesson.id === lastItem.lesson_id)
+      : null;
+
+    studentProgressCompleted.textContent =
+      `${completed} / ${lessons.length}`;
+
+    studentProgressDoing.textContent =
+      String(doing);
+
+    studentProgressLast.textContent =
+      lastLesson
+        ? `Неделя ${lastLesson.week_number}`
+        : '—';
+
+    studentProgressWeeks.innerHTML = '';
+
+    lessons.forEach(lesson => {
+      const progressItem = progressMap.get(lesson.id);
+      const status = progressItem?.status || 'not_started';
+
+      const row = document.createElement('div');
+      row.className = 'student-progress-week';
+
+      row.innerHTML = `
+        <div class="student-progress-week-number">
+          Неделя ${lesson.week_number}
+        </div>
+
+        <div class="student-progress-week-title">
+          ${lesson.title}
+        </div>
+
+        <div>
+          ${progressStatusPill(status)}
+        </div>
+      `;
+
+      studentProgressWeeks.appendChild(row);
+    });
+
+    studentProgressModal.classList.remove('hidden');
+  }
+
+  function closeStudentProgressModal() {
+    studentProgressModal.classList.add('hidden');
+  }
+
+  closeStudentProgressModalButton.addEventListener(
+    'click',
+    closeStudentProgressModal
+  );
+
+  studentProgressModal.addEventListener('click', function(event) {
+    if (event.target === studentProgressModal) {
+      closeStudentProgressModal();
+    }
+  });
+
+  refreshClassProgressButton.addEventListener('click', async function() {
+    if (!selectedClassId) return;
+
+    refreshClassProgressButton.disabled = true;
+    refreshClassProgressButton.textContent = 'Обновляем...';
+
+    await loadClassProgress(selectedClassId);
+
+    refreshClassProgressButton.disabled = false;
+    refreshClassProgressButton.textContent = '↻ Обновить';
   });
 
   // =========================================================
@@ -2488,6 +3176,7 @@
 
       await loadStudents(selectedClassId);
       await loadClasses();
+      await loadClassProgress(selectedClassId);
 
     } catch (error) {
 
@@ -2619,6 +3308,7 @@
 
     await loadClasses();
     await loadStudents(selectedClassId);
+    await loadClassProgress(selectedClassId);
 
     setTimeout(closeStudentModal, 700);
   });
@@ -2709,6 +3399,7 @@
 
     await loadStudents(selectedClassId);
     await loadClasses();
+    await loadClassProgress(selectedClassId);
   }
 
   // =========================================================
