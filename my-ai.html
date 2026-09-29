@@ -1,0 +1,405 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>My AI — Future School AI Lab</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--bg:#f6f8fc;--card:#fff;--ink:#0f172a;--muted:#64748b;--line:#e2e8f0;--blue:#2563eb;--violet:#7c3aed;--green:#16a34a;--amber:#d97706;--red:#dc2626}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:radial-gradient(circle at 15% 0,#ede9fe 0,transparent 28%),radial-gradient(circle at 100% 15%,#dbeafe 0,transparent 26%),var(--bg);color:var(--ink)}
+button,input,textarea,select{font:inherit}button{cursor:pointer}
+.top{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:900}.brand b{display:grid;place-items:center;width:34px;height:34px;border-radius:11px;background:linear-gradient(135deg,#2563eb,#7c3aed);color:white}
+.top-actions{display:flex;gap:8px;flex-wrap:wrap}.btn{border:0;border-radius:12px;padding:10px 14px;font-weight:800}.btn.primary{background:#111827;color:white}.btn.light{background:white;border:1px solid var(--line);color:#334155}.btn.blue{background:#2563eb;color:white}.btn.red{background:#fee2e2;color:#b91c1c}
+.shell{max-width:1500px;margin:auto;padding:24px}.hero{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:18px}.eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:.11em;color:#7c3aed;font-weight:900}.hero h1{margin:5px 0 6px;font-size:36px}.hero p{margin:0;color:var(--muted);line-height:1.55}.save-state{padding:8px 11px;border-radius:999px;background:#ecfdf5;color:#166534;font-weight:800;font-size:12px}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0}.tab{border:1px solid var(--line);background:white;color:#475569;border-radius:12px;padding:10px 14px;font-weight:800}.tab.active{background:#111827;color:white;border-color:#111827}
+.panel{display:none}.panel.active{display:block}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}.card{background:rgba(255,255,255,.96);border:1px solid var(--line);border-radius:20px;padding:20px;box-shadow:0 10px 30px rgba(15,23,42,.05)}.card h2,.card h3{margin-top:0}.muted{color:var(--muted);font-size:13px;line-height:1.5}
+.field{margin:13px 0}.field label{display:block;font-weight:800;font-size:13px;margin-bottom:6px}.field input,.field textarea,.field select{width:100%;border:1px solid #cbd5e1;border-radius:12px;padding:11px 12px;background:white;outline:none}.field textarea{min-height:92px;resize:vertical}.field input:focus,.field textarea:focus,.field select:focus{border-color:#7c3aed;box-shadow:0 0 0 3px rgba(124,58,237,.1)}
+.days{display:flex;gap:7px;flex-wrap:wrap}.day{border:1px solid var(--line);background:white;border-radius:10px;padding:8px 10px;font-weight:800;color:#475569}.day.active{background:#ede9fe;border-color:#c4b5fd;color:#6d28d9}
+.builder{display:grid;grid-template-columns:210px minmax(420px,1fr) minmax(360px,.85fr);gap:14px;align-items:start}.palette,.canvas,.codepane{background:white;border:1px solid var(--line);border-radius:18px;padding:15px}.palette{position:sticky;top:82px}.codepane{position:sticky;top:82px;max-height:78vh;overflow:auto}.palette h3,.canvas h3,.codepane h3{margin:0 0 12px}.block-add{width:100%;text-align:left;border:0;border-radius:12px;padding:10px;margin:5px 0;font-weight:800}.b-trigger{background:#fff7ed;color:#9a3412}.b-data{background:#eff6ff;color:#1d4ed8}.b-ai{background:#f5f3ff;color:#6d28d9}.b-logic{background:#ecfdf5;color:#166534}.b-action{background:#fef2f2;color:#b91c1c}
+.flow{display:grid;gap:9px}.flow-empty{padding:35px;text-align:center;border:2px dashed #cbd5e1;border-radius:16px;color:#94a3b8}.flow-block{border:1px solid var(--line);border-left:5px solid #64748b;border-radius:14px;padding:12px;background:#fff;transition:.15s}.flow-block:hover,.flow-block.hovered{box-shadow:0 0 0 3px rgba(124,58,237,.12);border-color:#a78bfa}.flow-block.trigger{border-left-color:#f59e0b}.flow-block.data{border-left-color:#3b82f6}.flow-block.ai{border-left-color:#8b5cf6}.flow-block.logic{border-left-color:#22c55e}.flow-block.action{border-left-color:#ef4444}.block-head{display:flex;align-items:center;justify-content:space-between;gap:8px}.block-title{font-weight:900}.block-tools{display:flex;gap:5px}.mini{border:1px solid var(--line);background:#f8fafc;border-radius:8px;padding:5px 8px;font-size:12px}.block-config{margin-top:8px}.block-config input,.block-config select,.block-config textarea{width:100%;border:1px solid #dbe3ee;border-radius:9px;padding:8px}.block-config textarea{min-height:58px}.code-line{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;padding:5px 8px;border-radius:7px;white-space:pre-wrap}.code-line.hl{background:#fef3c7;color:#92400e}.code-comment{color:#94a3b8}.code-toolbar{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px}
+.function-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.fn-card{border:1px solid var(--line);border-radius:16px;padding:15px;background:white}.fn-card h4{margin:0 0 6px}.fn-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}.pill{display:inline-flex;padding:5px 8px;border-radius:999px;background:#f1f5f9;color:#475569;font-size:12px;font-weight:800}
+.modal{position:fixed;inset:0;background:rgba(15,23,42,.65);display:grid;place-items:center;padding:18px;z-index:50}.modal.hidden{display:none}.modalbox{width:min(900px,100%);max-height:92vh;overflow:auto;background:white;border-radius:22px;padding:20px}.modalhead{display:flex;justify-content:space-between;gap:10px}.fn-steps{display:grid;gap:8px;margin:12px 0}.fn-step{border:1px solid var(--line);border-radius:12px;padding:10px;display:flex;gap:8px;align-items:center;justify-content:space-between}.preview{display:grid;grid-template-columns:.9fr 1.1fr;gap:16px}.phone{border:1px solid #cbd5e1;border-radius:24px;padding:16px;background:#0f172a;min-height:520px}.chat{background:white;border-radius:18px;min-height:485px;display:flex;flex-direction:column;overflow:hidden}.chathead{padding:14px;border-bottom:1px solid var(--line);font-weight:900}.messages{flex:1;padding:14px;display:grid;align-content:start;gap:9px;background:#f8fafc}.msg{max-width:82%;padding:10px 12px;border-radius:14px;font-size:14px}.msg.ai{background:white;border:1px solid var(--line)}.msg.user{justify-self:end;background:#2563eb;color:white}.chatinput{display:grid;grid-template-columns:1fr auto;gap:8px;padding:12px;border-top:1px solid var(--line)}.chatinput input{border:1px solid #cbd5e1;border-radius:11px;padding:10px}
+.notice{padding:12px 14px;border-radius:12px;background:#fff7ed;color:#9a3412;font-size:13px;line-height:1.5}.hidden{display:none!important}
+@media(max-width:1000px){.builder{grid-template-columns:1fr}.palette,.codepane{position:static}.grid2,.preview{grid-template-columns:1fr}.function-list{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="brand"><b>AI</b><span>Future School AI Lab · My AI</span></div>
+  <div class="top-actions">
+    <button class="btn light" id="backBtn">← В кабинет</button>
+    <button class="btn primary" id="saveAllBtn">Сохранить проект</button>
+  </div>
+</header>
+
+<main class="shell">
+  <section class="hero">
+    <div>
+      <div class="eyebrow">Персональный AI-проект</div>
+      <h1 id="heroName">My AI</h1>
+      <p id="heroMeta">Создай собственного AI-репетитора: личность, диагностика, функции, workflow и триггеры.</p>
+    </div>
+    <div id="saveState" class="save-state">Готово к работе</div>
+  </section>
+
+  <nav class="tabs">
+    <button class="tab active" data-tab="profile">1. Профиль AI</button>
+    <button class="tab" data-tab="student">2. Диагностика</button>
+    <button class="tab" data-tab="functions">3. Мои функции</button>
+    <button class="tab" data-tab="workflow">4. Workflow</button>
+    <button class="tab" data-tab="preview">5. Тест</button>
+  </nav>
+
+  <section id="profile" class="panel active">
+    <div class="grid2">
+      <div class="card">
+        <h2>🤖 Кто твой AI?</h2>
+        <p class="muted">Это основа личности продукта. Здесь нет «правильного» варианта — это твой проект.</p>
+        <div class="field"><label>Имя AI</label><input id="aiName" placeholder="Например: Nova"></div>
+        <div class="field"><label>Назначение</label><textarea id="aiPurpose" placeholder="Что именно делает твой AI?"></textarea></div>
+        <div class="field"><label>Предмет / область</label><input id="aiSubject" placeholder="Например: английский язык"></div>
+        <div class="field"><label>Для кого</label><input id="aiAudience" placeholder="Например: ученики 6 класса"></div>
+      </div>
+      <div class="card">
+        <h2>🎭 Поведение</h2>
+        <div class="field"><label>Личность</label><textarea id="aiPersonality" placeholder="Дружелюбный, терпеливый, требовательный..."></textarea></div>
+        <div class="field"><label>Стиль общения</label><textarea id="aiStyle" placeholder="Коротко, с примерами, задаёт вопросы..."></textarea></div>
+        <div class="field"><label>Правила поведения</label><textarea id="aiRules" placeholder="Например: не давать готовый ответ сразу; сначала дать подсказку..."></textarea></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="student" class="panel">
+    <div class="grid2">
+      <div class="card">
+        <h2>🧭 Первое знакомство</h2>
+        <p class="muted">То, что настоящий репетитор узнаёт на первом занятии.</p>
+        <div class="field"><label>Цель ученика</label><textarea id="goals" placeholder="Что нужно улучшить и зачем?"></textarea></div>
+        <div class="field"><label>Слабые темы</label><textarea id="weakTopics" placeholder="Какие темы требуют внимания?"></textarea></div>
+        <div class="field"><label>Как лучше объяснять</label><textarea id="preferredExplanation" placeholder="Примеры, задачи, схемы, короткие объяснения..."></textarea></div>
+      </div>
+      <div class="card">
+        <h2>⏰ Расписание занятий</h2>
+        <div class="field"><label>Сколько занятий в неделю?</label><input id="sessionsPerWeek" type="number" min="1" max="7" value="2"></div>
+        <div class="field"><label>Дни</label><div class="days" id="dayButtons">
+          <button class="day" data-day="1">Пн</button><button class="day" data-day="2">Вт</button><button class="day" data-day="3">Ср</button><button class="day" data-day="4">Чт</button><button class="day" data-day="5">Пт</button><button class="day" data-day="6">Сб</button><button class="day" data-day="7">Вс</button>
+        </div></div>
+        <div class="field"><label>Время</label><input id="preferredTime" type="time" value="19:00"></div>
+        <div class="notice">Когда проект дойдёт до автоматического запуска, эти данные станут основой триггера расписания. Сам AI не «просыпается» — его запускает система.</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="functions" class="panel">
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap">
+        <div><h2>🧩 Мои функции</h2><p class="muted">Создавай собственные возможности AI. Они появятся как отдельные блоки только в твоём проекте.</p></div>
+        <button class="btn blue" id="newFunctionBtn">+ Создать функцию</button>
+      </div>
+      <div id="functionList" class="function-list"></div>
+    </div>
+  </section>
+
+  <section id="workflow" class="panel">
+    <div class="builder">
+      <aside class="palette">
+        <h3>Блоки</h3>
+        <button class="block-add b-trigger" data-add="schedule">⏰ По расписанию</button>
+        <button class="block-add b-data" data-add="progress">📊 Получить прогресс</button>
+        <button class="block-add b-logic" data-add="condition">🔀 Условие</button>
+        <button class="block-add b-ai" data-add="ai">✨ AI-действие</button>
+        <button class="block-add b-action" data-add="notify">🔔 Уведомление</button>
+        <button class="block-add b-action" data-add="next_topic">➡️ Следующая тема</button>
+        <div id="customFunctionPalette"></div>
+      </aside>
+
+      <section class="canvas">
+        <h3>Workflow</h3>
+        <p class="muted">Добавляй только те возможности, до которых ты сам дошёл. Порядок сверху вниз — порядок выполнения.</p>
+        <div id="flow" class="flow"></div>
+      </section>
+
+      <aside class="codepane">
+        <div class="code-toolbar"><h3>🐍 Python View</h3><button class="mini" id="copyCodeBtn">Копировать</button></div>
+        <p class="muted">Наведи на блок — соответствующая часть Python подсветится.</p>
+        <div id="pythonCode"></div>
+      </aside>
+    </div>
+  </section>
+
+  <section id="preview" class="panel">
+    <div class="preview">
+      <div class="card">
+        <h2>▶ Проверка проекта</h2>
+        <p class="muted">Здесь видно, что именно уже умеет твой продукт.</p>
+        <div id="projectSummary"></div>
+        <div class="notice" style="margin-top:14px">Сейчас чат работает как безопасный preview интерфейса. Подключение реальной AI-модели будет выполняться через защищённую Edge Function, чтобы API-ключ никогда не попадал ученику.</div>
+      </div>
+      <div class="phone">
+        <div class="chat">
+          <div class="chathead" id="chatHead">My AI</div>
+          <div class="messages" id="messages"></div>
+          <div class="chatinput"><input id="chatInput" placeholder="Напиши сообщение..."><button class="btn blue" id="sendBtn">Отправить</button></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div id="functionModal" class="modal hidden">
+  <div class="modalbox">
+    <div class="modalhead"><div><div class="eyebrow">Моя функция</div><h2 id="fnModalTitle">Новая функция</h2></div><button class="btn light" id="closeFnModal">✕</button></div>
+    <input id="fnId" type="hidden">
+    <div class="grid2">
+      <div>
+        <div class="field"><label>Название функции</label><input id="fnName" placeholder="Например: Блиц-опрос"></div>
+        <div class="field"><label>Что она делает?</label><textarea id="fnDescription" placeholder="Опиши назначение функции"></textarea></div>
+        <div class="field"><label>Входные данные через запятую</label><input id="fnInputs" placeholder="topic, level, question_count"></div>
+        <div class="field"><label>Что возвращает?</label><input id="fnOutput" placeholder="score"></div>
+      </div>
+      <div>
+        <h3>Алгоритм функции</h3>
+        <div class="field"><label>Добавить шаг</label><div style="display:grid;grid-template-columns:1fr auto;gap:8px"><select id="fnStepType"><option value="get_data">Получить данные</option><option value="ai_generate">AI генерирует</option><option value="ask">Задать вопрос</option><option value="check">Проверить ответ</option><option value="condition">Условие</option><option value="calculate">Посчитать результат</option><option value="return">Вернуть результат</option></select><button class="btn light" id="addFnStepBtn">Добавить</button></div></div>
+        <div id="fnSteps" class="fn-steps"></div>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:16px"><button class="btn light" id="cancelFnBtn">Отмена</button><button class="btn primary" id="saveFnBtn">Сохранить функцию</button></div>
+  </div>
+</div>
+
+<script>
+const SUPABASE_URL='https://ovjpqjnjceuloakqnwsm.supabase.co';
+const SUPABASE_KEY='sb_publishable_W5s9Gkrb76hPoR7iu9Cf4A_uhyF7uCQ';
+const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+
+let user=null, profile=null, project=null, studentProfile=null, workflowBlocks=[], functions=[], selectedDays=[], fnDraftSteps=[];
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+const slugify=s=>String(s||'my_function').toLowerCase().trim().replace(/[^a-z0-9а-яё]+/gi,'_').replace(/^_+|_+$/g,'')||'my_function';
+const uid=()=>crypto.randomUUID();
+
+function state(msg,ok=true){$('saveState').textContent=msg;$('saveState').style.background=ok?'#ecfdf5':'#fef2f2';$('saveState').style.color=ok?'#166534':'#b91c1c'}
+function markDirty(){state('Есть несохранённые изменения',false)}
+
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===b));document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active',p.id===b.dataset.tab));if(b.dataset.tab==='preview')renderPreview()});
+$('backBtn').onclick=()=>location.href='./index.html';
+$('saveAllBtn').onclick=saveAll;
+['aiName','aiPurpose','aiSubject','aiAudience','aiPersonality','aiStyle','aiRules','goals','weakTopics','preferredExplanation','sessionsPerWeek','preferredTime'].forEach(id=>$(id).addEventListener('input',markDirty));
+
+document.querySelectorAll('.day').forEach(b=>b.onclick=e=>{e.preventDefault();const d=Number(b.dataset.day);selectedDays=selectedDays.includes(d)?selectedDays.filter(x=>x!==d):[...selectedDays,d].sort();renderDays();markDirty()});
+function renderDays(){document.querySelectorAll('.day').forEach(b=>b.classList.toggle('active',selectedDays.includes(Number(b.dataset.day))))}
+
+async function boot(){
+  const {data:{session}}=await db.auth.getSession();
+  if(!session){location.href='./index.html';return}
+  user=session.user;
+  const {data:p}=await db.from('profiles').select('id,full_name,role,class_id').eq('id',user.id).single();
+  profile=p;
+  if(!profile){alert('Профиль пользователя не найден');return}
+  if(profile.role!=='student'){state('My AI сейчас открыт в режиме ученика',false)}
+  await loadOrCreateProject();
+  await loadProjectData();
+  renderAll();
+}
+
+async function loadOrCreateProject(){
+  let {data:p,error}=await db.from('ai_projects').select('*').eq('user_id',user.id).maybeSingle();
+  if(error){console.error(error);alert('Не удалось загрузить My AI');return}
+  if(!p){
+    const {data:newP,error:e}=await db.from('ai_projects').insert({user_id:user.id,name:'My AI',audience:'Ученик'}).select().single();
+    if(e){console.error(e);alert('Не удалось создать My AI');return}
+    p=newP;
+  }
+  project=p;
+}
+async function loadProjectData(){
+  const [sp,wf,fn]=await Promise.all([
+    db.from('ai_student_profiles').select('*').eq('project_id',project.id).maybeSingle(),
+    db.from('ai_project_workflows').select('*').eq('project_id',project.id).maybeSingle(),
+    db.from('ai_project_functions').select('*').eq('project_id',project.id).order('created_at')
+  ]);
+  studentProfile=sp.data||{};
+  workflowBlocks=wf.data?.blocks||[];
+  functions=fn.data||[];
+  selectedDays=studentProfile.preferred_days||[];
+}
+function renderAll(){
+  $('aiName').value=project.name||'';
+  $('aiPurpose').value=project.purpose||'';
+  $('aiSubject').value=project.subject||'';
+  $('aiAudience').value=project.audience||'';
+  $('aiPersonality').value=project.personality||'';
+  $('aiStyle').value=project.communication_style||'';
+  $('aiRules').value=project.behavior_rules||'';
+  $('goals').value=studentProfile.goals||'';
+  $('weakTopics').value=studentProfile.weak_topics||'';
+  $('preferredExplanation').value=studentProfile.preferred_explanation||'';
+  $('sessionsPerWeek').value=studentProfile.sessions_per_week||2;
+  $('preferredTime').value=(studentProfile.preferred_time||'19:00').slice(0,5);
+  $('heroName').textContent=project.name||'My AI';
+  $('heroMeta').textContent=(project.purpose||'Собственный AI-репетитор')+(profile?.full_name?' · Автор: '+profile.full_name:'');
+  renderDays();renderFunctions();renderWorkflow();state('Сохранено');
+}
+async function saveAll(){
+  if(!project)return;
+  state('Сохраняем...');
+  const proj={
+    name:$('aiName').value.trim()||'My AI',
+    purpose:$('aiPurpose').value.trim(),
+    subject:$('aiSubject').value.trim(),
+    audience:$('aiAudience').value.trim(),
+    personality:$('aiPersonality').value.trim(),
+    communication_style:$('aiStyle').value.trim(),
+    behavior_rules:$('aiRules').value.trim(),
+    updated_at:new Date().toISOString()
+  };
+  const sp={
+    project_id:project.id,
+    goals:$('goals').value.trim(),
+    weak_topics:$('weakTopics').value.trim(),
+    preferred_explanation:$('preferredExplanation').value.trim(),
+    sessions_per_week:Number($('sessionsPerWeek').value)||null,
+    preferred_days:selectedDays,
+    preferred_time:$('preferredTime').value||null,
+    onboarding_completed:Boolean($('goals').value.trim()||$('weakTopics').value.trim()),
+    updated_at:new Date().toISOString()
+  };
+  const wf={project_id:project.id,blocks:workflowBlocks,connections:[],updated_at:new Date().toISOString()};
+  const [a,b,c]=await Promise.all([
+    db.from('ai_projects').update(proj).eq('id',project.id).select().single(),
+    db.from('ai_student_profiles').upsert(sp,{onConflict:'project_id'}),
+    db.from('ai_project_workflows').upsert(wf,{onConflict:'project_id'})
+  ]);
+  if(a.error||b.error||c.error){console.error(a.error,b.error,c.error);state('Ошибка сохранения',false);return}
+  project=a.data;renderAll();state('Сохранено ✓');
+}
+
+const BLOCKS={
+ schedule:{label:'По расписанию',kind:'trigger',icon:'⏰',default:{days:'Ср',time:'19:00'},py:b=>[`# Триггер расписания: ${b.config.days} ${b.config.time}`,`schedule_trigger(days="${b.config.days}", time="${b.config.time}")`]},
+ progress:{label:'Получить прогресс',kind:'data',icon:'📊',default:{topic:'current_topic'},py:b=>[`progress = get_topic_progress("${b.config.topic}")`]},
+ condition:{label:'Условие',kind:'logic',icon:'🔀',default:{variable:'progress',operator:'<',value:'70'},py:b=>[`if ${b.config.variable} ${b.config.operator} ${b.config.value}:`]},
+ ai:{label:'AI-действие',kind:'ai',icon:'✨',default:{instruction:'Объясни тему и задай проверочный вопрос'},py:b=>[`response = ai_action("${String(b.config.instruction).replaceAll('"','\\\"')}")`]},
+ notify:{label:'Уведомление',kind:'action',icon:'🔔',default:{text:'Пора заниматься!'},py:b=>[`send_notification("${String(b.config.text).replaceAll('"','\\\"')}")`]},
+ next_topic:{label:'Следующая тема',kind:'action',icon:'➡️',default:{rule:'если текущая тема освоена'},py:b=>[`move_to_next_topic()  # ${b.config.rule}`]},
+ function_call:{label:'Моя функция',kind:'action',icon:'🧩',default:{function_id:''},py:b=>{const f=functions.find(x=>x.id===b.config.function_id);return [f?`${f.slug}()`:'# Выбери функцию']}}
+};
+document.querySelectorAll('[data-add]').forEach(b=>b.onclick=()=>addBlock(b.dataset.add));
+function addBlock(type,extra={}){
+  const spec=BLOCKS[type];if(!spec)return;
+  workflowBlocks.push({id:uid(),type,config:{...spec.default,...extra}});
+  renderWorkflow();markDirty();
+}
+function renderWorkflow(){
+  const flow=$('flow');flow.innerHTML='';
+  if(!workflowBlocks.length)flow.innerHTML='<div class="flow-empty">Добавь первый блок слева. Здесь появится логика твоего AI.</div>';
+  workflowBlocks.forEach((b,i)=>{
+    const spec=BLOCKS[b.type]||BLOCKS.function_call;
+    const el=document.createElement('div');el.className='flow-block '+spec.kind;el.dataset.blockId=b.id;
+    el.innerHTML=`<div class="block-head"><div class="block-title">${spec.icon} ${esc(blockDisplayName(b))}</div><div class="block-tools"><button class="mini" data-up>↑</button><button class="mini" data-down>↓</button><button class="mini" data-del>✕</button></div></div><div class="block-config">${blockConfigHtml(b)}</div>`;
+    el.onmouseenter=()=>highlightCode(b.id,true);el.onmouseleave=()=>highlightCode(b.id,false);
+    el.querySelector('[data-up]').onclick=()=>moveBlock(i,-1);el.querySelector('[data-down]').onclick=()=>moveBlock(i,1);el.querySelector('[data-del]').onclick=()=>{workflowBlocks.splice(i,1);renderWorkflow();markDirty()};
+    el.querySelectorAll('[data-cfg]').forEach(inp=>inp.oninput=()=>{b.config[inp.dataset.cfg]=inp.value;renderPython();markDirty()});
+    flow.appendChild(el);
+  });
+  renderPython();renderCustomPalette();
+}
+function blockDisplayName(b){
+  if(b.type==='function_call'){const f=functions.find(x=>x.id===b.config.function_id);return f?f.name:'Моя функция'}
+  return BLOCKS[b.type]?.label||b.type;
+}
+function blockConfigHtml(b){
+  const c=b.config||{};
+  if(b.type==='schedule')return `<div style="display:grid;grid-template-columns:1fr 1fr;gap:7px"><input data-cfg="days" value="${esc(c.days)}" placeholder="Ср"><input data-cfg="time" value="${esc(c.time)}" placeholder="19:00"></div>`;
+  if(b.type==='progress')return `<input data-cfg="topic" value="${esc(c.topic)}" placeholder="Тема">`;
+  if(b.type==='condition')return `<div style="display:grid;grid-template-columns:1fr 80px 90px;gap:7px"><input data-cfg="variable" value="${esc(c.variable)}"><select data-cfg="operator"><option ${c.operator==='<'?'selected':''}>&lt;</option><option ${c.operator==='>='?'selected':''}>&gt;=</option><option ${c.operator==='=='?'selected':''}>==</option></select><input data-cfg="value" value="${esc(c.value)}"></div>`;
+  if(b.type==='ai')return `<textarea data-cfg="instruction">${esc(c.instruction)}</textarea>`;
+  if(b.type==='notify')return `<input data-cfg="text" value="${esc(c.text)}">`;
+  if(b.type==='next_topic')return `<input data-cfg="rule" value="${esc(c.rule)}">`;
+  if(b.type==='function_call')return `<select data-cfg="function_id">${functions.map(f=>`<option value="${f.id}" ${f.id===c.function_id?'selected':''}>${esc(f.name)}</option>`).join('')}</select>`;
+  return '';
+}
+function moveBlock(i,d){const j=i+d;if(j<0||j>=workflowBlocks.length)return;[workflowBlocks[i],workflowBlocks[j]]=[workflowBlocks[j],workflowBlocks[i]];renderWorkflow();markDirty()}
+function renderPython(){
+  const box=$('pythonCode');box.innerHTML='';
+  const header=['# Future School AI Lab','',`def run_${slugify(project?.name||'my_ai')}():`];
+  header.forEach(x=>{const l=document.createElement('div');l.className='code-line '+(x.startsWith('#')?'code-comment':'');l.textContent=x;box.appendChild(l)});
+  if(!workflowBlocks.length){const l=document.createElement('div');l.className='code-line code-comment';l.textContent='    # Добавь блоки — здесь появится Python';box.appendChild(l);return}
+  workflowBlocks.forEach(b=>{
+    const lines=(BLOCKS[b.type]||BLOCKS.function_call).py(b);
+    lines.forEach(t=>{const l=document.createElement('div');l.className='code-line';l.dataset.codeBlock=b.id;l.textContent='    '+t;box.appendChild(l)});
+  });
+}
+function highlightCode(id,on){document.querySelectorAll('[data-code-block="'+id+'"]').forEach(x=>x.classList.toggle('hl',on))}
+$('copyCodeBtn').onclick=async()=>{await navigator.clipboard.writeText($('pythonCode').innerText);state('Python скопирован ✓')};
+
+function renderCustomPalette(){
+  const box=$('customFunctionPalette');box.innerHTML=functions.length?'<div class="muted" style="margin:12px 0 4px;font-weight:800">Мои функции</div>':'';
+  functions.forEach(f=>{const b=document.createElement('button');b.className='block-add b-action';b.textContent='🧩 '+f.name;b.onclick=()=>addBlock('function_call',{function_id:f.id});box.appendChild(b)});
+}
+function renderFunctions(){
+  const box=$('functionList');box.innerHTML='';
+  if(!functions.length){box.innerHTML='<div class="flow-empty" style="grid-column:1/-1">Пока нет функций. Создай первую — например, «Блиц-опрос».</div>';renderCustomPalette();return}
+  functions.forEach(f=>{
+    const el=document.createElement('div');el.className='fn-card';
+    const inputs=(f.inputs||[]).map(x=>'<span class="pill">'+esc(x)+'</span>').join(' ');
+    el.innerHTML=`<h4>🧩 ${esc(f.name)}</h4><div class="muted">${esc(f.description||'Без описания')}</div><div style="margin-top:9px">${inputs||'<span class="pill">без входов</span>'} <span class="pill">→ ${esc(f.output_name||'без результата')}</span></div><div class="fn-actions"><button class="btn light" data-edit>Редактировать</button><button class="btn red" data-delete>Удалить</button></div>`;
+    el.querySelector('[data-edit]').onclick=()=>openFunction(f);el.querySelector('[data-delete]').onclick=()=>deleteFunction(f);
+    box.appendChild(el);
+  });renderCustomPalette();
+}
+$('newFunctionBtn').onclick=()=>openFunction(null);$('closeFnModal').onclick=closeFn;$('cancelFnBtn').onclick=closeFn;
+function openFunction(f){
+  $('functionModal').classList.remove('hidden');$('fnId').value=f?.id||'';$('fnName').value=f?.name||'';$('fnDescription').value=f?.description||'';$('fnInputs').value=(f?.inputs||[]).join(', ');$('fnOutput').value=f?.output_name||'result';fnDraftSteps=Array.isArray(f?.blocks)?JSON.parse(JSON.stringify(f.blocks)):[];$('fnModalTitle').textContent=f?'Редактировать функцию':'Новая функция';renderFnSteps();
+}
+function closeFn(){$('functionModal').classList.add('hidden')}
+$('addFnStepBtn').onclick=()=>{fnDraftSteps.push({id:uid(),type:$('fnStepType').value,detail:''});renderFnSteps()};
+function renderFnSteps(){
+  const box=$('fnSteps');box.innerHTML='';
+  const labels={get_data:'Получить данные',ai_generate:'AI генерирует',ask:'Задать вопрос',check:'Проверить ответ',condition:'Условие',calculate:'Посчитать результат',return:'Вернуть результат'};
+  if(!fnDraftSteps.length)box.innerHTML='<div class="muted">Добавь шаги функции.</div>';
+  fnDraftSteps.forEach((s,i)=>{
+    const el=document.createElement('div');el.className='fn-step';el.innerHTML=`<div style="flex:1"><strong>${labels[s.type]||s.type}</strong><input style="width:100%;margin-top:6px;border:1px solid #dbe3ee;border-radius:8px;padding:7px" value="${esc(s.detail||'')}" placeholder="Уточни, что делает этот шаг"></div><button class="mini">✕</button>`;el.querySelector('input').oninput=e=>s.detail=e.target.value;el.querySelector('button').onclick=()=>{fnDraftSteps.splice(i,1);renderFnSteps()};box.appendChild(el)
+  })
+}
+function functionPython(name,inputs,output,steps){
+  const slug=slugify(name);const ins=inputs.join(', ');const lines=[`def ${slug}(${ins}):`];
+  if(!steps.length)lines.push('    pass');
+  steps.forEach(s=>{const d=(s.detail||'').replaceAll('"','\\\"');if(s.type==='get_data')lines.push(`    data = get_data("${d||'source'}")`);else if(s.type==='ai_generate')lines.push(`    generated = ai_generate("${d||'content'}")`);else if(s.type==='ask')lines.push(`    answer = ask_student("${d||'question'}")`);else if(s.type==='check')lines.push('    checked = check_answer(answer)');else if(s.type==='condition')lines.push(`    if ${d||'checked'}:`);else if(s.type==='calculate')lines.push(`    score = calculate_score()  # ${d}`);else if(s.type==='return')lines.push(`    return ${d||output||'result'}`)});
+  if(output&& !steps.some(s=>s.type==='return'))lines.push(`    return ${output}`);
+  return lines.join('\n');
+}
+$('saveFnBtn').onclick=async()=>{
+  const name=$('fnName').value.trim();if(!name){alert('Дай функции название');return}
+  const inputs=$('fnInputs').value.split(',').map(x=>x.trim()).filter(Boolean),output=$('fnOutput').value.trim();
+  const payload={project_id:project.id,name,slug:slugify(name),description:$('fnDescription').value.trim(),inputs,output_name:output,blocks:fnDraftSteps,connections:[],python_code:functionPython(name,inputs,output,fnDraftSteps),updated_at:new Date().toISOString()};
+  const id=$('fnId').value;let res=id?await db.from('ai_project_functions').update(payload).eq('id',id).select().single():await db.from('ai_project_functions').insert(payload).select().single();
+  if(res.error){console.error(res.error);alert('Не удалось сохранить функцию');return}
+  const {data}=await db.from('ai_project_functions').select('*').eq('project_id',project.id).order('created_at');functions=data||[];closeFn();renderFunctions();renderWorkflow();state('Функция сохранена ✓');
+}
+async function deleteFunction(f){
+  if(!confirm('Удалить функцию «'+f.name+'»?'))return;
+  const {error}=await db.from('ai_project_functions').delete().eq('id',f.id);if(error){alert('Не удалось удалить функцию');return}
+  workflowBlocks=workflowBlocks.filter(b=>!(b.type==='function_call'&&b.config.function_id===f.id));
+  functions=functions.filter(x=>x.id!==f.id);renderFunctions();renderWorkflow();markDirty();
+}
+
+function renderPreview(){
+  $('chatHead').textContent=$('aiName').value.trim()||'My AI';
+  $('messages').innerHTML=`<div class="msg ai">Привет! Я <strong>${esc($('aiName').value.trim()||'твой AI')}</strong>. ${esc($('aiPurpose').value.trim()||'Настрой моё назначение в профиле.')}</div>`;
+  const summary=[
+    ['Назначение',$('aiPurpose').value||'—'],['Личность',$('aiPersonality').value||'—'],['Слабые темы',$('weakTopics').value||'—'],['Функции',String(functions.length)],['Блоки workflow',String(workflowBlocks.length)],['Расписание',selectedDays.length?selectedDays.join(', ')+' · '+$('preferredTime').value:'не задано']
+  ];
+  $('projectSummary').innerHTML=summary.map(([a,b])=>`<div style="padding:10px 0;border-bottom:1px solid #e2e8f0"><strong>${esc(a)}</strong><div class="muted">${esc(b)}</div></div>`).join('');
+}
+$('sendBtn').onclick=sendPreview;$('chatInput').onkeydown=e=>{if(e.key==='Enter')sendPreview()};
+function sendPreview(){
+  const text=$('chatInput').value.trim();if(!text)return;$('messages').insertAdjacentHTML('beforeend','<div class="msg user">'+esc(text)+'</div>');$('chatInput').value='';
+  const reply=`Сейчас я работаю в режиме preview. В моём проекте уже настроено: ${workflowBlocks.length} блок(ов) workflow и ${functions.length} пользовательск(их) функц(ий). Следующий технический шаг — подключить защищённый AI-runtime через Edge Function.`;
+  setTimeout(()=>$('messages').insertAdjacentHTML('beforeend','<div class="msg ai">'+esc(reply)+'</div>'),250)
+}
+boot();
+</script>
+</body>
+</html>
