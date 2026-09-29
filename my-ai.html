@@ -163,6 +163,10 @@ button,input,textarea,select{font:inherit}button{cursor:pointer}
         <h3>Алгоритм функции</h3>
         <div class="field"><label>Добавить шаг</label><div style="display:grid;grid-template-columns:1fr auto;gap:8px"><select id="fnStepType"><option value="get_data">Получить данные</option><option value="ai_generate">AI генерирует</option><option value="ask">Задать вопрос</option><option value="check">Проверить ответ</option><option value="condition">Условие</option><option value="calculate">Посчитать результат</option><option value="return">Вернуть результат</option></select><button class="btn light" id="addFnStepBtn">Добавить</button></div></div>
         <div id="fnSteps" class="fn-steps"></div>
+        <div class="field">
+          <label>🐍 Python этой функции</label>
+          <pre id="fnPythonPreview" style="background:#0f172a;color:#e2e8f0;border-radius:12px;padding:12px;overflow:auto;font-size:12px;min-height:120px"></pre>
+        </div>
       </div>
     </div>
     <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:16px"><button class="btn light" id="cancelFnBtn">Отмена</button><button class="btn primary" id="saveFnBtn">Сохранить функцию</button></div>
@@ -300,7 +304,7 @@ async function syncScheduleTrigger(){
 const BLOCKS={
  schedule:{label:'По расписанию',kind:'trigger',icon:'⏰',default:{days:'Ср',time:'19:00'},py:b=>[`# Триггер расписания: ${b.config.days} ${b.config.time}`,`schedule_trigger(days="${b.config.days}", time="${b.config.time}")`]},
  progress:{label:'Получить прогресс',kind:'data',icon:'📊',default:{topic:'current_topic'},py:b=>[`progress = get_topic_progress("${b.config.topic}")`]},
- condition:{label:'Условие',kind:'logic',icon:'🔀',default:{variable:'progress',operator:'<',value:'70'},py:b=>[`if ${b.config.variable} ${b.config.operator} ${b.config.value}:`]},
+ condition:{label:'Условие',kind:'logic',icon:'🔀',default:{variable:'progress',operator:'<',value:'70'},py:b=>[`if ${b.config.variable} ${b.config.operator} ${b.config.value}:`,'    pass  # добавь действие для этой ветки']},
  ai:{label:'AI-действие',kind:'ai',icon:'✨',default:{instruction:'Объясни тему и задай проверочный вопрос'},py:b=>[`response = ai_action("${String(b.config.instruction).replaceAll('"','\\\"')}")`]},
  notify:{label:'Уведомление',kind:'action',icon:'🔔',default:{text:'Пора заниматься!'},py:b=>[`send_notification("${String(b.config.text).replaceAll('"','\\\"')}")`]},
  next_topic:{label:'Следующая тема',kind:'action',icon:'➡️',default:{rule:'если текущая тема освоена'},py:b=>[`move_to_next_topic()  # ${b.config.rule}`]},
@@ -375,19 +379,28 @@ function openFunction(f){
   $('functionModal').classList.remove('hidden');$('fnId').value=f?.id||'';$('fnName').value=f?.name||'';$('fnDescription').value=f?.description||'';$('fnInputs').value=(f?.inputs||[]).join(', ');$('fnOutput').value=f?.output_name||'result';fnDraftSteps=Array.isArray(f?.blocks)?JSON.parse(JSON.stringify(f.blocks)):[];$('fnModalTitle').textContent=f?'Редактировать функцию':'Новая функция';renderFnSteps();
 }
 function closeFn(){$('functionModal').classList.add('hidden')}
-$('addFnStepBtn').onclick=()=>{fnDraftSteps.push({id:uid(),type:$('fnStepType').value,detail:''});renderFnSteps()};
+$('addFnStepBtn').onclick=()=>{fnDraftSteps.push({id:uid(),type:$('fnStepType').value,detail:''});renderFnSteps();renderFnPythonPreview()};
 function renderFnSteps(){
   const box=$('fnSteps');box.innerHTML='';
   const labels={get_data:'Получить данные',ai_generate:'AI генерирует',ask:'Задать вопрос',check:'Проверить ответ',condition:'Условие',calculate:'Посчитать результат',return:'Вернуть результат'};
   if(!fnDraftSteps.length)box.innerHTML='<div class="muted">Добавь шаги функции.</div>';
   fnDraftSteps.forEach((s,i)=>{
-    const el=document.createElement('div');el.className='fn-step';el.innerHTML=`<div style="flex:1"><strong>${labels[s.type]||s.type}</strong><input style="width:100%;margin-top:6px;border:1px solid #dbe3ee;border-radius:8px;padding:7px" value="${esc(s.detail||'')}" placeholder="Уточни, что делает этот шаг"></div><button class="mini">✕</button>`;el.querySelector('input').oninput=e=>s.detail=e.target.value;el.querySelector('button').onclick=()=>{fnDraftSteps.splice(i,1);renderFnSteps()};box.appendChild(el)
-  })
+    const el=document.createElement('div');el.className='fn-step';el.innerHTML=`<div style="flex:1"><strong>${labels[s.type]||s.type}</strong><input style="width:100%;margin-top:6px;border:1px solid #dbe3ee;border-radius:8px;padding:7px" value="${esc(s.detail||'')}" placeholder="Уточни, что делает этот шаг"></div><button class="mini">✕</button>`;el.querySelector('input').oninput=e=>{s.detail=e.target.value;renderFnPythonPreview()};el.querySelector('button').onclick=()=>{fnDraftSteps.splice(i,1);renderFnSteps();renderFnPythonPreview()};box.appendChild(el)
+  });
+  renderFnPythonPreview();
 }
+function renderFnPythonPreview(){
+  const target=$('fnPythonPreview'); if(!target) return;
+  const name=$('fnName').value.trim()||'my_function';
+  const inputs=$('fnInputs').value.split(',').map(x=>x.trim()).filter(Boolean);
+  const output=$('fnOutput').value.trim();
+  target.textContent=functionPython(name,inputs,output,fnDraftSteps);
+}
+['fnName','fnInputs','fnOutput'].forEach(id=>$(id).addEventListener('input',renderFnPythonPreview));
 function functionPython(name,inputs,output,steps){
   const slug=slugify(name);const ins=inputs.join(', ');const lines=[`def ${slug}(${ins}):`];
   if(!steps.length)lines.push('    pass');
-  steps.forEach(s=>{const d=(s.detail||'').replaceAll('"','\\\"');if(s.type==='get_data')lines.push(`    data = get_data("${d||'source'}")`);else if(s.type==='ai_generate')lines.push(`    generated = ai_generate("${d||'content'}")`);else if(s.type==='ask')lines.push(`    answer = ask_student("${d||'question'}")`);else if(s.type==='check')lines.push('    checked = check_answer(answer)');else if(s.type==='condition')lines.push(`    if ${d||'checked'}:`);else if(s.type==='calculate')lines.push(`    score = calculate_score()  # ${d}`);else if(s.type==='return')lines.push(`    return ${d||output||'result'}`)});
+  steps.forEach(s=>{const d=(s.detail||'').replaceAll('"','\\\"');if(s.type==='get_data')lines.push(`    data = get_data("${d||'source'}")`);else if(s.type==='ai_generate')lines.push(`    generated = ai_generate("${d||'content'}")`);else if(s.type==='ask')lines.push(`    answer = ask_student("${d||'question'}")`);else if(s.type==='check')lines.push('    checked = check_answer(answer)');else if(s.type==='condition'){lines.push(`    if ${d||'checked'}:`);lines.push('        pass  # добавь действие для этой ветки')};else if(s.type==='calculate')lines.push(`    score = calculate_score()  # ${d}`);else if(s.type==='return')lines.push(`    return ${d||output||'result'}`)});
   if(output&& !steps.some(s=>s.type==='return'))lines.push(`    return ${output}`);
   return lines.join('\n');
 }
