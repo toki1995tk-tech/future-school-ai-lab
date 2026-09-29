@@ -21,7 +21,7 @@ button,input,textarea,select{font:inherit}button{cursor:pointer}
 .flow{display:grid;gap:9px}.flow-empty{padding:35px;text-align:center;border:2px dashed #cbd5e1;border-radius:16px;color:#94a3b8}.flow-block{border:1px solid var(--line);border-left:5px solid #64748b;border-radius:14px;padding:12px;background:#fff;transition:.15s}.flow-block:hover,.flow-block.hovered{box-shadow:0 0 0 3px rgba(124,58,237,.12);border-color:#a78bfa}.flow-block.trigger{border-left-color:#f59e0b}.flow-block.data{border-left-color:#3b82f6}.flow-block.ai{border-left-color:#8b5cf6}.flow-block.logic{border-left-color:#22c55e}.flow-block.action{border-left-color:#ef4444}.block-head{display:flex;align-items:center;justify-content:space-between;gap:8px}.block-title{font-weight:900}.block-tools{display:flex;gap:5px}.mini{border:1px solid var(--line);background:#f8fafc;border-radius:8px;padding:5px 8px;font-size:12px}.block-config{margin-top:8px}.block-config input,.block-config select,.block-config textarea{width:100%;border:1px solid #dbe3ee;border-radius:9px;padding:8px}.block-config textarea{min-height:58px}.code-line{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;padding:5px 8px;border-radius:7px;white-space:pre-wrap}.code-line.hl{background:#fef3c7;color:#92400e}.code-comment{color:#94a3b8}.code-toolbar{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px}
 .function-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.fn-card{border:1px solid var(--line);border-radius:16px;padding:15px;background:white}.fn-card h4{margin:0 0 6px}.fn-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}.pill{display:inline-flex;padding:5px 8px;border-radius:999px;background:#f1f5f9;color:#475569;font-size:12px;font-weight:800}
 .modal{position:fixed;inset:0;background:rgba(15,23,42,.65);display:grid;place-items:center;padding:18px;z-index:50}.modal.hidden{display:none}.modalbox{width:min(900px,100%);max-height:92vh;overflow:auto;background:white;border-radius:22px;padding:20px}.modalhead{display:flex;justify-content:space-between;gap:10px}.fn-steps{display:grid;gap:8px;margin:12px 0}.fn-step{border:1px solid var(--line);border-radius:12px;padding:10px;display:flex;gap:8px;align-items:center;justify-content:space-between}.preview{display:grid;grid-template-columns:.9fr 1.1fr;gap:16px}.phone{border:1px solid #cbd5e1;border-radius:24px;padding:16px;background:#0f172a;min-height:520px}.chat{background:white;border-radius:18px;min-height:485px;display:flex;flex-direction:column;overflow:hidden}.chathead{padding:14px;border-bottom:1px solid var(--line);font-weight:900}.messages{flex:1;padding:14px;display:grid;align-content:start;gap:9px;background:#f8fafc}.msg{max-width:82%;padding:10px 12px;border-radius:14px;font-size:14px}.msg.ai{background:white;border:1px solid var(--line)}.msg.user{justify-self:end;background:#2563eb;color:white}.chatinput{display:grid;grid-template-columns:1fr auto;gap:8px;padding:12px;border-top:1px solid var(--line)}.chatinput input{border:1px solid #cbd5e1;border-radius:11px;padding:10px}
-.notice{padding:12px 14px;border-radius:12px;background:#fff7ed;color:#9a3412;font-size:13px;line-height:1.5}.hidden{display:none!important}
+.notice{padding:12px 14px;border-radius:12px;background:#fff7ed;color:#9a3412;font-size:13px;line-height:1.5}.step-nav{display:flex;justify-content:space-between;gap:10px;margin-top:18px}.step-nav .spacer{flex:1}.hidden{display:none!important}
 @media(max-width:1000px){.builder{grid-template-columns:1fr}.palette,.codepane{position:static}.grid2,.preview{grid-template-columns:1fr}.function-list{grid-template-columns:1fr}}
 </style>
 </head>
@@ -69,6 +69,7 @@ button,input,textarea,select{font:inherit}button{cursor:pointer}
         <div class="field"><label>Правила поведения</label><textarea id="aiRules" placeholder="Например: не давать готовый ответ сразу; сначала дать подсказку..."></textarea></div>
       </div>
     </div>
+    <div class="step-nav"><span class="spacer"></span><button class="btn blue" data-next="student">Сохранить и продолжить →</button></div>
   </section>
 
   <section id="student" class="panel">
@@ -90,6 +91,7 @@ button,input,textarea,select{font:inherit}button{cursor:pointer}
         <div class="notice">Когда проект дойдёт до автоматического запуска, эти данные станут основой триггера расписания. Сам AI не «просыпается» — его запускает система.</div>
       </div>
     </div>
+    <div class="step-nav"><button class="btn light" data-next="profile">← Назад</button><button class="btn blue" data-next="functions">Сохранить и продолжить →</button></div>
   </section>
 
   <section id="functions" class="panel">
@@ -100,6 +102,7 @@ button,input,textarea,select{font:inherit}button{cursor:pointer}
       </div>
       <div id="functionList" class="function-list"></div>
     </div>
+    <div class="step-nav"><button class="btn light" data-next="student">← Назад</button><button class="btn blue" data-next="workflow">Сохранить и продолжить →</button></div>
   </section>
 
   <section id="workflow" class="panel">
@@ -127,6 +130,7 @@ button,input,textarea,select{font:inherit}button{cursor:pointer}
         <div id="pythonCode"></div>
       </aside>
     </div>
+    <div class="step-nav"><button class="btn light" data-next="functions">← Назад</button><button class="btn blue" data-next="preview">Сохранить и перейти к тесту →</button></div>
   </section>
 
   <section id="preview" class="panel">
@@ -145,6 +149,7 @@ button,input,textarea,select{font:inherit}button{cursor:pointer}
         </div>
       </div>
     </div>
+    <div class="step-nav"><button class="btn light" data-next="workflow">← Назад к Workflow</button><span class="spacer"></span></div>
   </section>
 </main>
 
@@ -187,7 +192,17 @@ const uid=()=>crypto.randomUUID();
 function state(msg,ok=true){$('saveState').textContent=msg;$('saveState').style.background=ok?'#ecfdf5':'#fef2f2';$('saveState').style.color=ok?'#166534':'#b91c1c'}
 function markDirty(){state('Есть несохранённые изменения',false)}
 
-document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===b));document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active',p.id===b.dataset.tab));if(b.dataset.tab==='preview')renderPreview()});
+function openTab(tabId){
+  document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.tab===tabId));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active',p.id===tabId));
+  if(tabId==='preview')renderPreview();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>openTab(b.dataset.tab));
+document.querySelectorAll('[data-next]').forEach(b=>b.onclick=async()=>{
+  if(b.textContent.includes('Сохранить')) await saveAll();
+  openTab(b.dataset.next);
+});
 $('backBtn').onclick=()=>location.href='./index.html';
 $('saveAllBtn').onclick=saveAll;
 ['aiName','aiPurpose','aiSubject','aiAudience','aiPersonality','aiStyle','aiRules','goals','weakTopics','preferredExplanation','sessionsPerWeek','preferredTime'].forEach(id=>$(id).addEventListener('input',markDirty));
@@ -400,7 +415,7 @@ function renderFnPythonPreview(){
 function functionPython(name,inputs,output,steps){
   const slug=slugify(name);const ins=inputs.join(', ');const lines=[`def ${slug}(${ins}):`];
   if(!steps.length)lines.push('    pass');
-  steps.forEach(s=>{const d=(s.detail||'').replaceAll('"','\\\"');if(s.type==='get_data')lines.push(`    data = get_data("${d||'source'}")`);else if(s.type==='ai_generate')lines.push(`    generated = ai_generate("${d||'content'}")`);else if(s.type==='ask')lines.push(`    answer = ask_student("${d||'question'}")`);else if(s.type==='check')lines.push('    checked = check_answer(answer)');else if(s.type==='condition'){lines.push(`    if ${d||'checked'}:`);lines.push('        pass  # добавь действие для этой ветки')};else if(s.type==='calculate')lines.push(`    score = calculate_score()  # ${d}`);else if(s.type==='return')lines.push(`    return ${d||output||'result'}`)});
+  steps.forEach(s=>{const d=(s.detail||'').replaceAll('"','\\\"');if(s.type==='get_data')lines.push(`    data = get_data("${d||'source'}")`);else if(s.type==='ai_generate')lines.push(`    generated = ai_generate("${d||'content'}")`);else if(s.type==='ask')lines.push(`    answer = ask_student("${d||'question'}")`);else if(s.type==='check')lines.push('    checked = check_answer(answer)');else if(s.type==='condition'){lines.push(`    if ${d||'checked'}:`);lines.push('        pass  # добавь действие для этой ветки')}else if(s.type==='calculate')lines.push(`    score = calculate_score()  # ${d}`);else if(s.type==='return')lines.push(`    return ${d||output||'result'}`)});
   if(output&& !steps.some(s=>s.type==='return'))lines.push(`    return ${output}`);
   return lines.join('\n');
 }
