@@ -273,7 +273,28 @@ async function saveAll(){
     db.from('ai_project_workflows').upsert(wf,{onConflict:'project_id'})
   ]);
   if(a.error||b.error||c.error){console.error(a.error,b.error,c.error);state('Ошибка сохранения',false);return}
+  await syncScheduleTrigger();
   project=a.data;renderAll();state('Сохранено ✓');
+}
+
+async function syncScheduleTrigger(){
+  const config={
+    days:selectedDays,
+    time:$('preferredTime').value||null,
+    sessions_per_week:Number($('sessionsPerWeek').value)||null,
+    timezone:'Asia/Almaty'
+  };
+  const {data:existing}=await db.from('ai_project_triggers')
+    .select('id').eq('project_id',project.id).eq('name','Основное расписание').maybeSingle();
+  if(existing?.id){
+    await db.from('ai_project_triggers').update({
+      trigger_type:'schedule',config,enabled:selectedDays.length>0,updated_at:new Date().toISOString()
+    }).eq('id',existing.id);
+  }else{
+    await db.from('ai_project_triggers').insert({
+      project_id:project.id,name:'Основное расписание',trigger_type:'schedule',config,enabled:selectedDays.length>0
+    });
+  }
 }
 
 const BLOCKS={
@@ -385,19 +406,41 @@ async function deleteFunction(f){
   functions=functions.filter(x=>x.id!==f.id);renderFunctions();renderWorkflow();markDirty();
 }
 
-function renderPreview(){
+async function renderPreview(){
   $('chatHead').textContent=$('aiName').value.trim()||'My AI';
-  $('messages').innerHTML=`<div class="msg ai">Привет! Я <strong>${esc($('aiName').value.trim()||'твой AI')}</strong>. ${esc($('aiPurpose').value.trim()||'Настрой моё назначение в профиле.')}</div>`;
   const summary=[
     ['Назначение',$('aiPurpose').value||'—'],['Личность',$('aiPersonality').value||'—'],['Слабые темы',$('weakTopics').value||'—'],['Функции',String(functions.length)],['Блоки workflow',String(workflowBlocks.length)],['Расписание',selectedDays.length?selectedDays.join(', ')+' · '+$('preferredTime').value:'не задано']
   ];
   $('projectSummary').innerHTML=summary.map(([a,b])=>`<div style="padding:10px 0;border-bottom:1px solid #e2e8f0"><strong>${esc(a)}</strong><div class="muted">${esc(b)}</div></div>`).join('');
+  await loadChatHistory();
+}
+async function loadChatHistory(){
+  const {data,error}=await db.from('ai_project_chat_messages')
+    .select('role,content,created_at').eq('project_id',project.id).order('created_at',{ascending:true}).limit(30);
+  if(error){console.error(error);return}
+  const box=$('messages');box.innerHTML='';
+  if(!data?.length){
+    box.innerHTML=`<div class="msg ai">Привет! Я <strong>${esc($('aiName').value.trim()||'твой AI')}</strong>. ${esc($('aiPurpose').value.trim()||'Настрой моё назначение в профиле.')}</div>`;
+    return;
+  }
+  data.forEach(m=>box.insertAdjacentHTML('beforeend',`<div class="msg ${m.role==='user'?'user':'ai'}">${esc(m.content)}</div>`));
+  box.scrollTop=box.scrollHeight;
 }
 $('sendBtn').onclick=sendPreview;$('chatInput').onkeydown=e=>{if(e.key==='Enter')sendPreview()};
-function sendPreview(){
-  const text=$('chatInput').value.trim();if(!text)return;$('messages').insertAdjacentHTML('beforeend','<div class="msg user">'+esc(text)+'</div>');$('chatInput').value='';
-  const reply=`Сейчас я работаю в режиме preview. В моём проекте уже настроено: ${workflowBlocks.length} блок(ов) workflow и ${functions.length} пользовательск(их) функц(ий). Следующий технический шаг — подключить защищённый AI-runtime через Edge Function.`;
-  setTimeout(()=>$('messages').insertAdjacentHTML('beforeend','<div class="msg ai">'+esc(reply)+'</div>'),250)
+async function sendPreview(){
+  const text=$('chatInput').value.trim();if(!text)return;
+  $('messages').insertAdjacentHTML('beforeend','<div class="msg user">'+esc(text)+'</div>');
+  $('chatInput').value='';$('sendBtn').disabled=true;$('sendBtn').textContent='Думаю...';
+  const pending=document.createElement('div');pending.className='msg ai';pending.textContent='...';$('messages').appendChild(pending);
+  const {data,error}=await db.functions.invoke('my-ai-run',{body:{message:text}});
+  pending.remove();$('sendBtn').disabled=false;$('sendBtn').textContent='Отправить';
+  if(error||!data?.answer){
+    console.error(error,data);
+    $('messages').insertAdjacentHTML('beforeend','<div class="msg ai">Не удалось получить ответ AI. Проверь настройки проекта и попробуй ещё раз.</div>');
+    return;
+  }
+  $('messages').insertAdjacentHTML('beforeend','<div class="msg ai">'+esc(data.answer)+'</div>');
+  $('messages').scrollTop=$('messages').scrollHeight;
 }
 boot();
 </script>
