@@ -1425,7 +1425,97 @@
         grid-template-columns: 1fr;
       }
     }
-  </style>
+  
+/* ===== AI LAB DEVELOPER CONSOLE REDESIGN 2026 ===== */
+#dashboardPage{
+  --dev-bg:#050914;--dev-panel:#0b1220;--dev-panel2:#0e1728;--dev-line:#1d2b45;
+  --dev-text:#e7eefb;--dev-muted:#7f91ad;--dev-cyan:#22d3ee;--dev-blue:#3b82f6;
+  --dev-green:#22c55e;--dev-violet:#8b5cf6;--dev-amber:#f59e0b;
+  min-height:100vh;background:
+    linear-gradient(rgba(34,211,238,.025) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(34,211,238,.025) 1px,transparent 1px),
+    radial-gradient(circle at 12% 0,rgba(59,130,246,.13),transparent 30%),
+    radial-gradient(circle at 90% 15%,rgba(139,92,246,.10),transparent 28%),
+    var(--dev-bg);
+  background-size:34px 34px,34px 34px,auto,auto,auto;
+  color:var(--dev-text);
+}
+#dashboardPage .topbar{
+  position:sticky;top:0;z-index:40;background:rgba(5,9,20,.88);backdrop-filter:blur(18px);
+  border-bottom:1px solid rgba(127,145,173,.16);padding:13px 26px;
+}
+#dashboardPage .topbar-brand{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.01em}
+#dashboardPage .topbar-brand span:first-child{
+  background:linear-gradient(135deg,#2563eb,#06b6d4);box-shadow:0 0 28px rgba(34,211,238,.2);
+}
+#dashboardPage .logout-button{border-color:#263853;color:#9fb0c9;background:#0b1220}
+#dashboardPage .dashboard{max-width:1440px;padding:26px 26px 60px}
+#dashboardPage .welcome{margin:0 0 18px;display:flex;align-items:end;justify-content:space-between;gap:18px;flex-wrap:wrap}
+#dashboardPage .welcome-small{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;text-transform:uppercase;letter-spacing:.12em;color:#4fd1e5;font-size:11px}
+#dashboardPage .welcome h1{font-size:34px;letter-spacing:-.04em;color:#f8fbff}
+#dashboardPage .class-badge{background:#0d2035;color:#67e8f9;border:1px solid #16465d;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.dev-console-nav{display:flex;gap:7px;flex-wrap:wrap;margin:0 0 18px;padding:8px;border:1px solid #17253c;border-radius:16px;background:rgba(9,16,29,.72);backdrop-filter:blur(12px)}
+.dev-console-nav button,.dev-console-nav a{border:1px solid transparent;background:transparent;color:#8193af;padding:9px 12px;border-radius:10px;font:700 12px ui-monospace,SFMono-Regular,Menlo,monospace;text-decoration:none;cursor:pointer}
+.dev-console-nav .active{color:#dffbff;background:#0d2130;border-color:#164b61}
+.dev-console-nav button:hover,.dev-console-nav a:hover{color:#dbeafe;background:#101b2d}
+.dev-overview{margin-bottom:18px}
+.dev-kicker{font:800 11px ui-monospace,SFMono-Regular,Menlo,monospace;color:#5ee7f2;letter-spacing:.14em;text-transform:uppercase;margin-bottom:7px}
+.dev-overview-head{display:flex;justify-content:space-between;gap:20px;align-items:flex-end;flex-wrap:wrap;margin-bottom:14px}
+.dev-overview-head h2{margin:0;font-size:24px;letter-spacing:-.03em}
+.dev-overview-head p{margin:4px 0 0;color:#7184a0;font-size:13px}
+.dev-live{display:inline-flex;align-items:center;gap:7px;border:1px solid #174b38;background:#0b241d;color:#73e9ad;border-radius:999px;padding:7px 10px;font:800 11px ui-monospace,SFMono-Regular,Menlo,monospace}
+.dev-live::before{content:"";width:7px;height:7px;border-radius:50%;background:#22c55e;box-shadow:0 0 12px #22c55e}
+.dev-metrics{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+.dev-metric{position:relative;overflow:hidden;min-height:104px;border:1px solid #182942;border-radius:15px;padding:14px;background:linear-gradient(180deg,rgba(14,23,40,.94),rgba(8,15,27,.94));box-shadow:0 18px 50px rgba(0,0,0,.16)}
+.dev-metric::after{content:"";position:absolute;right:-20px;bottom:-34px;width:90px;height:90px;border-radius:50%;background:radial-gradient(circle,rgba(34,211,238,.12),transparent 65%)}
+.dev-metric-label{color:#6f829e;font:700 10px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em;text-transform:uppercase}
+.dev-metric-value{font:800 25px ui-monospace,SFMono-Regular,Menlo,monospace;color:#f1f7ff;margin-top:12px}
+.dev-metric-sub{font:700 10px ui-monospace,SFMono-Regular,Menlo,monospace;color:#536884;margin-top:7px}
+.dev-metric .cyan{color:#67e8f9}.dev-metric .green{color:#6ee7a5}.dev-metric .violet{color:#c4b5fd}.dev-metric .amber{color:#fcd34d}
+.dev-system-grid{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(300px,.7fr);gap:14px;margin:0 0 18px}
+.dev-system-card{border:1px solid #182942;border-radius:18px;background:linear-gradient(180deg,rgba(12,20,35,.96),rgba(7,13,24,.96));padding:16px}
+.dev-system-title{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:13px}
+.dev-system-title strong{font:800 12px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em;color:#cbdcf2}
+.dev-system-title span{font:700 10px ui-monospace,SFMono-Regular,Menlo,monospace;color:#536884}
+.dev-modules{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px}
+.dev-module{padding:11px 9px;border:1px solid #1a2b45;border-radius:12px;background:#09111f}
+.dev-module-code{font:800 9px ui-monospace,SFMono-Regular,Menlo,monospace;color:#506783}
+.dev-module-name{font-size:12px;font-weight:800;margin:6px 0;color:#cbd8ea}
+.dev-module-status{display:flex;align-items:center;gap:5px;font:700 9px ui-monospace,SFMono-Regular,Menlo,monospace;color:#68d99f}
+.dev-module-status.locked{color:#6d7890}.dev-dot{width:5px;height:5px;border-radius:50%;background:currentColor}
+.dev-resource-bar{height:8px;border-radius:999px;background:#101c2e;overflow:hidden;margin:13px 0 8px}
+.dev-resource-fill{height:100%;width:0%;background:linear-gradient(90deg,#06b6d4,#3b82f6)}
+.dev-resource-row{display:flex;justify-content:space-between;gap:10px;color:#637792;font:700 10px ui-monospace,SFMono-Regular,Menlo,monospace}
+#dashboardPage .dashboard-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:16px}
+#dashboardPage .dashboard-card{position:relative;overflow:hidden;background:linear-gradient(160deg,#0d1727,#09111e);border:1px solid #192b46;border-radius:17px;padding:18px;min-height:190px;box-shadow:none;color:#e7eefb;transition:.18s transform,.18s border-color}
+#dashboardPage .dashboard-card:hover{transform:translateY(-3px);border-color:#28517d}
+#dashboardPage .dashboard-card .icon{font-size:25px;margin-bottom:17px;width:42px;height:42px;display:grid;place-items:center;border-radius:12px;background:#0d2235;border:1px solid #174660}
+#dashboardPage .dashboard-card h2{font-size:18px;color:#eef6ff}
+#dashboardPage .dashboard-card p{font-size:13px;color:#71849f;margin-bottom:18px}
+#dashboardPage .card-button{background:#0c2940;color:#67e8f9;border:1px solid #174c64;font:800 11px ui-monospace,SFMono-Regular,Menlo,monospace}
+#dashboardPage .card-button.coming{background:#0d1522;color:#52637d;border-color:#1b283a}
+.dev-card-tag{position:absolute;top:14px;right:14px;padding:5px 7px;border-radius:999px;background:#0b241d;border:1px solid #164b38;color:#68e2a4;font:800 9px ui-monospace,SFMono-Regular,Menlo,monospace}
+.dev-card-tag.locked{background:#101724;border-color:#273249;color:#65738b}
+#dashboardPage .lessons-panel,#dashboardPage .teacher-panel,#dashboardPage .teacher-card{
+  background:linear-gradient(180deg,#0d1727,#09111e)!important;border-color:#192b46!important;color:#e7eefb!important;box-shadow:none!important
+}
+#dashboardPage .lessons-panel::before{opacity:.08}
+#dashboardPage .lessons-panel-header h2,#dashboardPage .quarter-title,#dashboardPage .calendar-toggle-title,#dashboardPage .teacher-card h3{color:#eef6ff!important}
+#dashboardPage .lessons-panel-header p,#dashboardPage .progress-caption,#dashboardPage .teacher-card-text,#dashboardPage .calendar-toggle-subtitle{color:#71849f!important}
+#dashboardPage .progress-overview,#dashboardPage .quarter-section,#dashboardPage .class-progress-box{background:#09111f!important;border-color:#1a2b45!important}
+#dashboardPage .progress-track{background:#101c2e}.progress-fill{background:linear-gradient(90deg,#06b6d4,#3b82f6)}
+#dashboardPage .lesson-card{background:#0b1422!important;border-color:#1a2b45!important;color:#dce7f6}
+#dashboardPage .lesson-card.completed{border-color:#1c5c43!important;background:#0a1e19!important}
+#dashboardPage .lesson-card.in-progress{border-color:#18517a!important;background:#0a1a2a!important}
+#dashboardPage .lesson-title{color:#e6f0fc}.lesson-theme,.lesson-meta{color:#637b99!important}
+#dashboardPage .lesson-week{background:#111d2d;border:1px solid #24364f}
+#dashboardPage .lesson-card.in-progress .lesson-week{background:#0e3c61}
+#dashboardPage .lesson-card.completed .lesson-week{background:#12452f}
+#dashboardPage input,#dashboardPage select{background:#07101d!important;color:#d8e5f5!important;border-color:#243750!important}
+@media(max-width:1050px){.dev-metrics{grid-template-columns:repeat(3,1fr)}.dev-system-grid{grid-template-columns:1fr}.dev-modules{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:720px){#dashboardPage .dashboard{padding:18px 14px 44px}.dev-metrics{grid-template-columns:repeat(2,1fr)}.dev-modules{grid-template-columns:repeat(2,1fr)}#dashboardPage .dashboard-grid{grid-template-columns:1fr}.dev-console-nav{overflow:auto;flex-wrap:nowrap}}
+
+</style>
 </head>
 
 <body>
@@ -1501,14 +1591,62 @@
   <main class="dashboard">
 
     <section class="welcome">
-      <div class="welcome-small">Добро пожаловать в AI Lab</div>
-      <h1 id="studentName">Ученик</h1>
+      <div>
+        <div class="welcome-small">AI ENGINEERING CONSOLE // STUDENT WORKSPACE</div>
+        <h1 id="studentName">Ученик</h1>
+      </div>
       <span id="studentClass" class="class-badge"></span>
+    </section>
+
+    <nav class="dev-console-nav">
+      <button class="active" type="button">⌘ Dashboard</button>
+      <button type="button" onclick="document.getElementById('openLessonsButton').click()">▣ Мои уроки</button>
+      <a href="./my-ai.html">◈ My AI</a>
+      <button type="button" title="Откроется позже">◉ Knowledge</button>
+      <button type="button" title="Метрики подключим к API">▥ Usage</button>
+      <button type="button" title="История версий — следующий этап">⌁ Versions</button>
+      <button type="button" title="Откроется позже">⎔ Tools</button>
+      <button type="button" title="Откроется на этапе проектов">⌘ API</button>
+    </nav>
+
+    <section class="dev-overview">
+      <div class="dev-overview-head">
+        <div><div class="dev-kicker">SYSTEM OVERVIEW</div><h2>Твой AI-проект сегодня</h2><p>Следи за системой как настоящий AI-разработчик.</p></div>
+        <div class="dev-live">PLATFORM ONLINE</div>
+      </div>
+      <div class="dev-metrics">
+        <div class="dev-metric"><div class="dev-metric-label">MY AI VERSION</div><div class="dev-metric-value cyan">v0.1</div><div class="dev-metric-sub">FOUNDATION BUILD</div></div>
+        <div class="dev-metric"><div class="dev-metric-label">TOKENS USED</div><div class="dev-metric-value" id="devTokens">0</div><div class="dev-metric-sub">USAGE METER READY</div></div>
+        <div class="dev-metric"><div class="dev-metric-label">REQUESTS</div><div class="dev-metric-value green" id="devRequests">0</div><div class="dev-metric-sub">AI CALLS</div></div>
+        <div class="dev-metric"><div class="dev-metric-label">EST. COST</div><div class="dev-metric-value amber" id="devCost">$0.0000</div><div class="dev-metric-sub">SCHOOL API MODE</div></div>
+        <div class="dev-metric"><div class="dev-metric-label">KNOWLEDGE</div><div class="dev-metric-value violet" id="devKnowledge">0</div><div class="dev-metric-sub">FILES / RAG</div></div>
+      </div>
+    </section>
+
+    <section class="dev-system-grid">
+      <div class="dev-system-card">
+        <div class="dev-system-title"><strong>AI SYSTEM STATUS</strong><span>architecture map</span></div>
+        <div class="dev-modules">
+          <div class="dev-module"><div class="dev-module-code">01 // CORE</div><div class="dev-module-name">Identity</div><div class="dev-module-status"><i class="dev-dot"></i>READY</div></div>
+          <div class="dev-module"><div class="dev-module-code">02 // LOGIC</div><div class="dev-module-name">Functions</div><div class="dev-module-status"><i class="dev-dot"></i>READY</div></div>
+          <div class="dev-module"><div class="dev-module-code">03 // FLOW</div><div class="dev-module-name">Workflow</div><div class="dev-module-status"><i class="dev-dot"></i>READY</div></div>
+          <div class="dev-module"><div class="dev-module-code">04 // RAG</div><div class="dev-module-name">Knowledge</div><div class="dev-module-status locked"><i class="dev-dot"></i>LOCKED</div></div>
+          <div class="dev-module"><div class="dev-module-code">05 // TOOLS</div><div class="dev-module-name">Tools</div><div class="dev-module-status locked"><i class="dev-dot"></i>LOCKED</div></div>
+          <div class="dev-module"><div class="dev-module-code">06 // API</div><div class="dev-module-name">Personal API</div><div class="dev-module-status locked"><i class="dev-dot"></i>LOCKED</div></div>
+        </div>
+      </div>
+      <div class="dev-system-card">
+        <div class="dev-system-title"><strong>AI RESOURCE</strong><span>school quota</span></div>
+        <div style="font:800 22px ui-monospace,SFMono-Regular,Menlo,monospace;color:#e7f7ff">0 <span style="font-size:12px;color:#536884">tokens used</span></div>
+        <div class="dev-resource-bar"><div class="dev-resource-fill"></div></div>
+        <div class="dev-resource-row"><span>0%</span><span>limit connects next</span></div>
+      </div>
     </section>
 
     <section class="dashboard-grid">
 
       <article class="dashboard-card">
+        <span class="dev-card-tag">ACTIVE</span>
         <div class="icon">📘</div>
         <h2>Мои уроки</h2>
         <p>Уроки AI Prompt Engineering, задания и твой учебный прогресс.</p>
@@ -1518,6 +1656,7 @@
       </article>
 
       <article class="dashboard-card">
+        <span class="dev-card-tag">BUILD</span>
         <div class="icon">🤖</div>
         <h2>My AI</h2>
         <p>Создавай собственного AI-репетитора: личность, функции, workflow, триггеры и Python.</p>
@@ -1527,6 +1666,7 @@
       </article>
 
       <article class="dashboard-card">
+        <span class="dev-card-tag locked">LOCKED</span>
         <div class="icon">🚀</div>
         <h2>Project Lab</h2>
         <p>Пространство для разработки собственных AI-проектов.</p>
