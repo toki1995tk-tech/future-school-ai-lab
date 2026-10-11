@@ -6,6 +6,14 @@
   <title>Future School AI Lab</title>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function(){
+  try{
+    var saved=localStorage.getItem('aiLabTheme')||'dark';
+    document.documentElement.setAttribute('data-theme',saved);
+  }catch(e){document.documentElement.setAttribute('data-theme','dark');}
+})();
+</script>
 
   <style>
     * { box-sizing: border-box; }
@@ -1515,6 +1523,62 @@
 @media(max-width:1050px){.dev-metrics{grid-template-columns:repeat(3,1fr)}.dev-system-grid{grid-template-columns:1fr}.dev-modules{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:720px){#dashboardPage .dashboard{padding:18px 14px 44px}.dev-metrics{grid-template-columns:repeat(2,1fr)}.dev-modules{grid-template-columns:repeat(2,1fr)}#dashboardPage .dashboard-grid{grid-template-columns:1fr}.dev-console-nav{overflow:auto;flex-wrap:nowrap}}
 
+
+/* THEME TOGGLE */
+.theme-toggle{position:relative;width:76px;height:36px;border:1px solid #263853;border-radius:999px;background:#08111e;padding:0;display:inline-flex;align-items:center;justify-content:space-between;cursor:pointer;overflow:hidden;box-shadow:inset 0 0 18px rgba(0,0,0,.24)}
+.theme-icon-wrap{position:relative;z-index:2;width:34px;height:34px;display:grid;place-items:center;pointer-events:none}
+.theme-icon-wrap img{width:17px;height:17px;object-fit:contain;transition:.2s opacity,.2s filter}
+.theme-knob{position:absolute;z-index:1;top:3px;left:39px;width:28px;height:28px;border-radius:50%;background:linear-gradient(145deg,#1f2d43,#0f1828);box-shadow:0 4px 12px rgba(0,0,0,.34);transition:.22s transform,.22s left,.22s background}
+html[data-theme="dark"] .theme-icon-wrap img{filter:invert(1);opacity:.55}
+html[data-theme="dark"] .moon-wrap img{opacity:1}
+html[data-theme="light"] .theme-toggle{background:#e9f2ff;border-color:#b9cce5;box-shadow:inset 0 0 14px rgba(72,108,150,.12)}
+html[data-theme="light"] .theme-knob{left:5px;background:white;box-shadow:0 4px 12px rgba(44,75,110,.18)}
+html[data-theme="light"] .theme-icon-wrap img{filter:none;opacity:.48}
+html[data-theme="light"] .sun-wrap img{opacity:1}
+
+/* LIGHT THEME — developer console, not a generic white dashboard */
+html[data-theme="light"] #dashboardPage{
+  --dev-bg:#eef4fb;--dev-panel:#ffffff;--dev-panel2:#f7fbff;--dev-line:#cbd9e8;--dev-text:#102038;--dev-muted:#60738d;
+  background:
+    linear-gradient(rgba(28,103,153,.035) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(28,103,153,.035) 1px,transparent 1px),
+    radial-gradient(circle at 10% 0,rgba(14,165,233,.10),transparent 30%),
+    radial-gradient(circle at 90% 12%,rgba(99,102,241,.08),transparent 28%),
+    #eef4fb;
+  background-size:34px 34px,34px 34px,auto,auto,auto;
+}
+html[data-theme="light"] #dashboardPage .topbar{background:rgba(248,252,255,.92);color:#13243d;border-bottom-color:#cbd9e8}
+html[data-theme="light"] #dashboardPage .topbar-brand{color:#17314e}
+html[data-theme="light"] #dashboardPage .logout-button{background:#fff;color:#50657f;border-color:#c7d5e5}
+html[data-theme="light"] #dashboardPage .welcome h1{color:#102038}
+html[data-theme="light"] .dev-console-nav{background:rgba(255,255,255,.82);border-color:#cfdae8}
+html[data-theme="light"] .dev-console-nav button,html[data-theme="light"] .dev-console-nav a{color:#60718a}
+html[data-theme="light"] .dev-console-nav .active{background:#e3f6fb;color:#08667c;border-color:#b7e4ee}
+html[data-theme="light"] .dev-console-nav button:hover,html[data-theme="light"] .dev-console-nav a:hover{background:#eef6ff;color:#22496d}
+html[data-theme="light"] .dev-overview-head h2{color:#13243d}
+html[data-theme="light"] .dev-overview-head p{color:#657991}
+html[data-theme="light"] .dev-metric,html[data-theme="light"] .dev-system-card,html[data-theme="light"] #dashboardPage .dashboard-card{
+  background:linear-gradient(180deg,#ffffff,#f6faff);border-color:#cfdae8;color:#13243d;box-shadow:0 10px 32px rgba(40,79,118,.07)
+}
+html[data-theme="light"] .dev-metric-label,html[data-theme="light"] .dev-metric-sub,html[data-theme="light"] .dev-system-title span{color:#71849d}
+html[data-theme="light"] .dev-metric-value,html[data-theme="light"] .dev-system-title strong{color:#142b46}
+html[data-theme="light"] .dev-module{background:#f8fbff;border-color:#d6e2ee}
+html[data-theme="light"] .dev-module-code{color:#7790aa}
+html[data-theme="light"] .dev-module-name{color:#1d3857}
+html[data-theme="light"] #dashboardPage .dashboard-card h2{color:#18314f}
+html[data-theme="light"] #dashboardPage .dashboard-card p{color:#687d96}
+html[data-theme="light"] #dashboardPage .dashboard-card .icon{background:#edf8fc;border-color:#c9e7ef}
+html[data-theme="light"] #dashboardPage .card-button{background:#e6f7fb;color:#08728a;border-color:#bee4ed}
+html[data-theme="light"] #dashboardPage .lessons-panel,html[data-theme="light"] #dashboardPage .teacher-panel,html[data-theme="light"] #dashboardPage .teacher-card{
+ background:linear-gradient(180deg,#ffffff,#f7fbff)!important;border-color:#cfdae8!important;color:#142b46!important
+}
+html[data-theme="light"] #dashboardPage .lessons-panel-header h2,html[data-theme="light"] #dashboardPage .quarter-title,html[data-theme="light"] #dashboardPage .calendar-toggle-title,html[data-theme="light"] #dashboardPage .teacher-card h3{color:#142b46!important}
+html[data-theme="light"] #dashboardPage .lessons-panel-header p,html[data-theme="light"] #dashboardPage .progress-caption,html[data-theme="light"] #dashboardPage .teacher-card-text{color:#687c95!important}
+html[data-theme="light"] #dashboardPage .progress-overview,html[data-theme="light"] #dashboardPage .quarter-section,html[data-theme="light"] #dashboardPage .class-progress-box{background:#f7fbff!important;border-color:#d5e1ed!important}
+html[data-theme="light"] #dashboardPage .lesson-card{background:#fff!important;border-color:#d5e1ed!important;color:#203b5a}
+html[data-theme="light"] #dashboardPage .lesson-title{color:#173452}
+html[data-theme="light"] #dashboardPage input,html[data-theme="light"] #dashboardPage select{background:#fff!important;color:#1b3655!important;border-color:#cbd9e8!important}
+
 </style>
 </head>
 
@@ -1585,7 +1649,11 @@
       <span>Future School AI Lab</span>
     </div>
 
-    <button id="logoutButton" class="logout-button">Выйти</button>
+    <div style="display:flex;align-items:center;gap:10px"><button class="theme-toggle" id="themeToggle" type="button" aria-label="Переключить тему" title="Светлая / тёмная тема">
+  <span class="theme-icon-wrap sun-wrap"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAADEUlEQVR42u2az0sbQRTHP5GAGksi6EWDVHouIlrqDyiU0hTxoIUeeijY9lKFFrzmVA/twf4JiodSEEptPZTW9qaE4D9REVoDPXgw8UdFU0gvb2EYZpPsZmeXhT54MJvdee/7fTM78+ZtwJ5MAr9FJ4mhrAE10TVbTtosEki5tGNDoObSjg2BUMQmgYRLO1QCU8AjoD2CKdQuvqf8kptVVpEPQKfH/jNARXTGY99O8en4n/VDYFExUAM2fJC4JuoV/Ibme9EPgR6gYCCRsvjepAzgC4LFl/QaSLwHOiyA7xDbOvjeVg2bSIw10S8DZEUzTTw/ZgO8SmJbDP8A+lyeuwksA0WgBJSBI+BAAL0CRlz69gF74mM7SPCOdAF3JaK6jAKfgaoWRZNeAB+BIYOdASAnvkKTF8BJE8B1LQMLUe/kSwZgP4FV4KlEMyftVbmnP78UFfh5DUgFyDdY8nrkmYrW93nY4K8DxwqAX8CEh/4T0sfpfwoMhwU+AWxqkR/3YWdcG4kvNpM+VYaBS8VxvgVbecVOFbgRBoHXitMDoLsFW91iw7H3xvZ5IAHcVq63ZDn0K2Wx4cgtr9MoKRWDJ4bN4y/wSTYoR9LAoHK9G8CI7gLPpH1VfFS0tPyBYFXlDHgLcFhnsznX0uGsRM25nwuAQE7b3LJaOn5eB99hW9zPxUngPjBnyPOdKbSv/HYq6mSX/QFg6DfYd2QfeNhoCnl9iYvKEK4EQGBFsVf0+hJ7nT41YEe5ng5gGZ1Wrnds1pBsb2SXYaUTtlKJzbBSCRvJ3LHYjG06PR/VMvwyzgcaRxa03blZPZHjaGjSJdEcMNwbkoP6RRPAq5JfjRrsDErhoDNo8GpZZa9OWWVESicFSZOPZHRKskktS+nFrQxZEh9fJakLDHwYha17mo9vQZAIs7R4RSIfGIkoirsZAa363PJLIqryetpA4rEfAlF+4EhL5GuS1t/xO6StfGJaVwKw7nPZnmsEPtnAyPcWkz5Tu1k5A94FfR7wenYwtQOV/9+JLU6hyAn8cWnHRkL5u80/dCVZwkgqIH0AAAAASUVORK5CYII=" alt=""></span>
+  <span class="theme-icon-wrap moon-wrap"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAADiUlEQVR42u2ZW0hUYRDHf2oXUyuzssJqKSuoJNOIoCKK8EnQbhBBFyJ6yYKIHoJCKjAqCnoJInrwqehCDyVZERVJF7pgF6FEXUvSyrSktDS17cGppo+z69l19ZwN//Dh8bvs+c/ZOTP/mYV+/B+IjVTi2cB14BWQE0nEZwGXAZ8aVyOF/Fbgs0HeB+yOBD8/aUHcB7QAU9xMPh64aJD+oq7vAFFuJT8QOGuQPwqcUP8XuPnpHzLI58v8FTW3yq3kc4FOiycdA7yQuZ/AXDeSHwVUK/LngGhZSwBey/x3YKrbXccLJKu1RKBW1poBj9vIe4xYv9pYHwrUyNo3N4bQ/UaIjDHWBwEvZb0TyHRbzK9QBiz3s++22pPrFNloi7l5yiWqgGt+zlao63Q3GZClrovFx63wSF0vdJML3bLpGjOBNtnXBIx3A/lhRnRJDbB3APBYGZvnBgMmi7L0SaJK6Gb/TmXAM2Cw0wZkijTwAU/8vCMaKUCDMmKD0wYsUGRKQsjY1cBoJw2Yr8jctXlmDPBWnSt00oB0pT6fWWRgf1hnSO7tThkwQVVadSLa7KJQGfADWO+EAUOASkUiLcgQfFcZ0QZsccKIIkUi2KeYApQa7nQ8yG+yx9ilbn46RDe8bxjxHFjWV4X/HKBDblxvFDJ2kQScsWi/3ABWirsFg0HAYpH5S7rbbEqEbSE+iCiRF/UWhlQBp4C1wGwJxfGSyeOknJ0u39oR4Kk62wiM7e7meepAhVRgoSJVyLb4aYp1SDavBsrFuA9KKJrjvRgYECOAN+rQnjC4Zpr0k7x+iNkdtntQeUYXLiOMijcLOEBXZ7sS+CTdjR9Aq9TjXimm3iketeJuthAL3FOHS+XlDDfigHHANGCG/E2RFzcH+Ko4bAr2wzP4twdaJC9bX+myRnXvCzbUsSU2Gj54Sd6R3sRSI3qVhRjO/yDfMOJBkDIjGGw23KZGytceY59hRIPkiHD9PjZFMr++hzeMwQNEnJnx/CGwxkb5GaiMLTAqu9/1SK90/BYZmfH3KAcOi/8mB9A9sUJsLXBeOhr6c9qBY3aTZ6jiajiwQ3LFSIv1j5IIa4Vgu0j1ZGCiCL44i3MlwF7gZl8p10nAQf622kMZrZKwVogOC1pwhQNJohKz6WpNegLki3YJkWXypIvp+rEkZMUYbgyWTOoR1Zgogq1ZElOdNAGa6Ec/nMcvIldeUu9WDGsAAAAASUVORK5CYII=" alt=""></span>
+  <span class="theme-knob" aria-hidden="true"></span>
+</button><button id="logoutButton" class="logout-button">Выйти</button></div>
   </header>
 
   <main class="dashboard">
@@ -4239,5 +4307,21 @@
   checkSession();
 </script>
 
+<script>
+(function(){
+  var btn=document.getElementById('themeToggle');
+  if(!btn)return;
+  function apply(theme){
+    document.documentElement.setAttribute('data-theme',theme);
+    try{localStorage.setItem('aiLabTheme',theme);}catch(e){}
+    btn.setAttribute('aria-pressed',theme==='light'?'true':'false');
+  }
+  btn.addEventListener('click',function(){
+    var current=document.documentElement.getAttribute('data-theme')||'dark';
+    apply(current==='dark'?'light':'dark');
+  });
+  apply(document.documentElement.getAttribute('data-theme')||'dark');
+})();
+</script>
 </body>
 </html>
