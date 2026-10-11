@@ -1440,8 +1440,8 @@
   --dev-text:#e7eefb;--dev-muted:#7f91ad;--dev-cyan:#22d3ee;--dev-blue:#3b82f6;
   --dev-green:#22c55e;--dev-violet:#8b5cf6;--dev-amber:#f59e0b;
   min-height:100vh;background:
-    linear-gradient(rgba(34,211,238,.025) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(34,211,238,.025) 1px,transparent 1px),
+    linear-gradient(rgba(34,211,238,.055) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(34,211,238,.055) 1px,transparent 1px),
     radial-gradient(circle at 12% 0,rgba(59,130,246,.13),transparent 30%),
     radial-gradient(circle at 90% 15%,rgba(139,92,246,.10),transparent 28%),
     var(--dev-bg);
@@ -1540,8 +1540,8 @@ html[data-theme="light"] .sun-wrap img{opacity:1}
 html[data-theme="light"] #dashboardPage{
   --dev-bg:#eef4fb;--dev-panel:#ffffff;--dev-panel2:#f7fbff;--dev-line:#cbd9e8;--dev-text:#102038;--dev-muted:#60738d;
   background:
-    linear-gradient(rgba(28,103,153,.035) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(28,103,153,.035) 1px,transparent 1px),
+    linear-gradient(rgba(28,103,153,.08) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(28,103,153,.08) 1px,transparent 1px),
     radial-gradient(circle at 10% 0,rgba(14,165,233,.10),transparent 30%),
     radial-gradient(circle at 90% 12%,rgba(99,102,241,.08),transparent 28%),
     #eef4fb;
@@ -1579,6 +1579,11 @@ html[data-theme="light"] #dashboardPage .lesson-card{background:#fff!important;b
 html[data-theme="light"] #dashboardPage .lesson-title{color:#173452}
 html[data-theme="light"] #dashboardPage input,html[data-theme="light"] #dashboardPage select{background:#fff!important;color:#1b3655!important;border-color:#cbd9e8!important}
 
+
+.dev-resource-value{font:800 22px ui-monospace,SFMono-Regular,Menlo,monospace;color:#e7f7ff}
+.dev-resource-value span{font-size:12px;color:#536884}
+html[data-theme="light"] .dev-resource-value{color:#142b46}
+html[data-theme="light"] .dev-resource-value span{color:#6f839c}
 </style>
 </head>
 
@@ -1705,7 +1710,7 @@ html[data-theme="light"] #dashboardPage input,html[data-theme="light"] #dashboar
       </div>
       <div class="dev-system-card">
         <div class="dev-system-title"><strong>AI RESOURCE</strong><span>school quota</span></div>
-        <div style="font:800 22px ui-monospace,SFMono-Regular,Menlo,monospace;color:#e7f7ff">0 <span style="font-size:12px;color:#536884">tokens used</span></div>
+        <div class="dev-resource-value">0 <span>tokens used</span></div>
         <div class="dev-resource-bar"><div class="dev-resource-fill"></div></div>
         <div class="dev-resource-row"><span>0%</span><span>limit connects next</span></div>
       </div>
