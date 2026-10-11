@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>6 класс — AI Tutor Lab</title>
+<style>
+:root{
+  --bg:#f4fff8;--card:#fff;--ink:#12352b;--muted:#637b71;--green:#24a86b;--green2:#137c50;
+  --mint:#e5f8ed;--line:#d9ede2;--red:#ef6b6b;--yellow:#fff2bd;--blue:#e9f2ff;--shadow:0 16px 40px rgba(25,100,70,.10);
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:radial-gradient(circle at 10% 0%,#def8e8 0,transparent 25%),radial-gradient(circle at 90% 4%,#edf7ca 0,transparent 24%),var(--bg);color:var(--ink)}
+.wrap{max-width:1120px;margin:auto;padding:18px 18px 60px}
+.nav{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px}
+.nav a,.reset{border:1px solid var(--line);background:#fff;color:var(--ink);text-decoration:none;padding:10px 14px;border-radius:14px;font-weight:900;box-shadow:0 5px 18px rgba(0,0,0,.04);cursor:pointer}
+.reset{background:#fff7f5;color:#9a4332;border-color:#f0c9c2}
+.hero{background:linear-gradient(135deg,#176d49,#2eb777);color:#fff;border-radius:28px;padding:30px;box-shadow:var(--shadow)}
+.eyebrow{font-size:13px;font-weight:1000;letter-spacing:.12em;text-transform:uppercase;opacity:.9}
+h1{font-size:clamp(34px,6vw,62px);line-height:.95;margin:8px 0 10px}
+.hero p{font-size:18px;line-height:1.45;max-width:820px}
+.cycle{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}.cycle span{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);padding:9px 12px;border-radius:999px;font-weight:900}
+.status{display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;margin:18px 0;background:#fff;padding:16px 18px;border-radius:20px;border:1px solid var(--line)}
+.progress{height:12px;background:#eaf3ee;border-radius:999px;overflow:hidden;margin-top:8px}.progress>div{height:100%;width:0;background:linear-gradient(90deg,var(--green),#a8e56a);transition:.4s}
+.rank{font-weight:1000;background:#effbf4;padding:10px 14px;border-radius:14px}
+.mission{margin-top:18px;background:var(--card);border:1px solid var(--line);border-radius:24px;padding:24px;box-shadow:0 10px 30px rgba(25,100,70,.07)}
+.mission.locked{opacity:.52;pointer-events:none;position:relative;filter:grayscale(.25)}
+.mission.locked:after{content:"🔒 Сначала пройди предыдущую миссию";position:absolute;inset:0;display:grid;place-items:center;background:rgba(255,255,255,.86);border-radius:24px;font-size:20px;font-weight:1000;text-align:center;padding:20px}
+.mission.done{border:2px solid #7bd7a5}
+.mhead{display:flex;justify-content:space-between;gap:14px;align-items:flex-start}
+.num{font-size:13px;font-weight:1000;letter-spacing:.1em;text-transform:uppercase;color:var(--green2)}
+h2{font-size:28px;margin:4px 0 8px}.badge{background:#effaf3;border:1px solid #d8efe1;padding:8px 12px;border-radius:999px;font-weight:900;white-space:nowrap}
+.box{background:#f8fbfa;border:1px solid #e3ece7;border-radius:18px;padding:16px;margin:14px 0;line-height:1.5}.prompt{border-left:5px solid #7a70dd}.answer{border-left:5px solid #5b91ef}.good{border-left:5px solid var(--green);background:#f5fff8}.warn{border-left:5px solid #f0a34c;background:#fffaf2}
+.label{font-weight:1000;margin:16px 0 8px;display:block}textarea,input,select{width:100%;border:2px solid #dbeae2;border-radius:16px;padding:14px;background:#fff;outline:none;font:inherit}textarea{min-height:96px;resize:vertical}.small{min-height:70px}
+textarea:focus,input:focus,select:focus{border-color:#79cfa0;box-shadow:0 0 0 4px rgba(53,183,121,.10)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.card{border:1px solid var(--line);border-radius:16px;padding:14px;background:#fff}
+.btnrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}.btn{border:0;border-radius:14px;padding:12px 16px;font-weight:1000;cursor:pointer;background:var(--green);color:#fff;box-shadow:0 8px 18px rgba(53,183,121,.22)}.btn.secondary{background:#edf5f0;color:var(--ink);box-shadow:none}
+.feedback{margin-top:12px;padding:12px 14px;border-radius:14px;font-weight:800;display:none}.feedback.ok{display:block;background:#eafff2;color:#17643f;border:1px solid #bfe8cf}.feedback.no{display:block;background:#fff3ef;color:#8c3a25;border:1px solid #ffd3c7}.feedback.maybe{display:block;background:#fffbe9;color:#70590b;border:1px solid #f4dea0}
+.choice{border:1px solid var(--line);background:#fff;border-radius:16px;padding:14px;cursor:pointer}.choice.selected{border-color:var(--green);background:#effbf4}
+.selfcheck{display:none;margin-top:12px;padding:14px;border-radius:14px;background:#fffbe9;border:1px solid #f4dea0}
+.final{display:none;margin-top:20px;padding:26px;border-radius:24px;background:#16352b;color:#fff}.final h2{font-size:34px}
+@media(max-width:760px){.grid2,.grid3,.status{grid-template-columns:1fr}.mhead{flex-direction:column}}
+</style>
+</head>
+<body><div style="position:fixed;right:12px;bottom:12px;z-index:9999;padding:7px 10px;border-radius:999px;background:#07111ddd;border:1px solid #24405f;color:#8defff;font:800 10px ui-monospace,monospace">FOUNDATION 5–7 · WEEK 13</div>
+<div class="wrap">
+<nav class="nav">
+  <a href="./index.html">← К неделям</a><a href="./index.html">← К классам</a><a href="./index.html">← К предметам</a>
+  <button class="reset" onclick="resetProgress()">↺ Сбросить прогресс</button>
+</nav>
+
+<section class="hero">
+ <div class="eyebrow">6 класс · Week 04</div>
+ <h1>AI TUTOR LAB</h1>
+ <p><b>AI‑репетитор:</b> как объяснять по уровню ученика. Сегодня ты проектируешь AI, который сначала понимает ученика, а потом выбирает подходящее объяснение.</p>
+ <div class="cycle"><span>ASK</span><span>→ ADAPT</span><span>→ TEACH</span><span>→ CHECK</span><span>→ PRACTICE</span></div>
+</section>
+
+<section class="status">
+ <div><b id="progressText">Пройдено: 0 из 6</b><div class="progress"><div id="progressFill"></div></div></div>
+ <div class="rank" id="rank">🟢 USER</div>
+</section>
+
+<section class="mission" id="m1">
+ <div class="mhead"><div><div class="num">Миссия 1</div><h2>🎯 Определи уровень ученика</h2></div><div class="badge">Диагностика</div></div>
+ <div class="box prompt"><b>Ученик пишет:</b><br>«Я не понимаю дроби. Объясни мне».</div>
+ <label class="label">Что AI‑репетитор должен спросить ДО объяснения? Напиши 3–4 вопроса.</label>
+ <textarea id="m1a" placeholder="1. ...&#10;2. ...&#10;3. ..."></textarea>
+ <label class="label">Почему нельзя сразу начинать объяснять?</label>
+ <textarea id="m1b" class="small"></textarea>
+ <div class="btnrow"><button class="btn" onclick="smartCheck('m1')">Проверить ответ</button></div>
+ <div class="feedback" id="f1"></div>
+</section>
+
+<section class="mission locked" id="m2">
+ <div class="mhead"><div><div class="num">Миссия 2</div><h2>🧭 Выбери формат объяснения</h2></div><div class="badge">Адаптация</div></div>
+ <div class="grid3">
+   <div class="card"><b>Алия</b><br>«Я вообще не понимаю тему»</div>
+   <div class="card"><b>Данияр</b><br>«Понимаю правило, но ошибаюсь в задачах»</div>
+   <div class="card"><b>Марк</b><br>«Мне легко, хочу сложнее»</div>
+ </div>
+ <label class="label">Для каждого ученика выбери способ помощи и объясни почему.</label>
+ <textarea id="m2a" placeholder="Алия — ..., потому что...&#10;Данияр — ..., потому что...&#10;Марк — ..., потому что..."></textarea>
+ <div class="btnrow"><button class="btn" onclick="smartCheck('m2')">Проверить ответ</button></div>
+ <div class="feedback" id="f2"></div>
+</section>
+
+<section class="mission locked" id="m3">
+ <div class="mhead"><div><div class="num">Миссия 3</div><h2>🛠 Исправь плохого репетитора</h2></div><div class="badge">Debug</div></div>
+ <div class="box warn"><b>Плохой AI:</b><br>«Дробь — это отношение двух чисел, где числитель делится на знаменатель. Для сложения дробей приведите их к общему знаменателю и выполните операцию».</div>
+ <label class="label">Почему этот ответ может быть плохим для ученика, который «ничего не понимает»?</label>
+ <textarea id="m3a"></textarea>
+ <label class="label">Перепиши ответ так, чтобы он стал понятнее новичку.</label>
+ <textarea id="m3b"></textarea>
+ <div class="btnrow"><button class="btn" onclick="smartCheck('m3')">Проверить ответ</button></div>
+ <div class="feedback" id="f3"></div>
+</section>
+
+<section class="mission locked" id="m4">
+ <div class="mhead"><div><div class="num">Миссия 4</div><h2>✅ Проверка понимания</h2></div><div class="badge">Check</div></div>
+ <div class="box prompt"><b>AI объяснил:</b><br>«Дробь показывает часть целого. Например, 1/2 — это одна из двух равных частей».</div>
+ <label class="label">Придумай 2 вопроса, которыми AI проверит, понял ли ученик объяснение.</label>
+ <textarea id="m4a"></textarea>
+ <label class="label">Придумай одну маленькую практическую задачу по этой теме.</label>
+ <textarea id="m4b" class="small"></textarea>
+ <div class="btnrow"><button class="btn" onclick="smartCheck('m4')">Проверить ответ</button></div>
+ <div class="feedback" id="f4"></div>
+</section>
+
+<section class="mission locked" id="m5">
+ <div class="mhead"><div><div class="num">Миссия 5</div><h2>🧩 Собери системный промпт</h2></div><div class="badge">Prompt Builder</div></div>
+ <div class="box good">Напиши инструкцию для AI‑репетитора. Он должен: задать вопросы, определить уровень, объяснить подходящим способом, проверить понимание и дать практику.</div>
+ <textarea id="m5a" style="min-height:160px" placeholder="Ты — AI‑репетитор..."></textarea>
+ <div class="btnrow"><button class="btn" onclick="smartCheck('m5')">Проверить ответ</button></div>
+ <div class="feedback" id="f5"></div>
+</section>
+
+<section class="mission locked" id="m6">
+ <div class="mhead"><div><div class="num">FINAL BOSS · MY AI MODULE 02</div><h2>🔥 Мой AI умеет обучать</h2></div><div class="badge">Project</div></div>
+ <label class="label">1. Какую тему твой MY AI сможет объяснять?</label>
+ <textarea id="m6a" class="small"></textarea>
+ <label class="label">2. Какие 3 вопроса он задаст, чтобы понять уровень пользователя?</label>
+ <textarea id="m6b"></textarea>
+ <label class="label">3. Напиши правило: как MY AI должен объяснять новичку, базовому ученику и сильному ученику.</label>
+ <textarea id="m6c"></textarea>
+ <label class="label">4. Как MY AI проверит, что пользователь понял?</label>
+ <textarea id="m6d" class="small"></textarea>
+ <div class="btnrow"><button class="btn" onclick="smartCheck('m6')">Завершить Boss</button></div>
+ <div class="feedback" id="f6"></div>
+</section>
+
+<section class="final" id="final">
+ <div class="eyebrow">Week 04 завершена</div>
+ <h2>🔥 AI TUTOR DESIGNER</h2>
+ <p>Ты сделал второй модуль MY AI: теперь твой помощник умеет не просто отвечать, а обучать по уровню пользователя.</p>
+</section>
+</div>
+
+<script>
+const completed=JSON.parse(localStorage.getItem('ai6w4_completed')||'[]');
+function norm(s){return (s||'').toLowerCase().replace(/ё/g,'е').replace(/[.,!?;:()«»"'—–\-]/g,' ').replace(/\s+/g,' ').trim()}
+function toks(s){return norm(s).split(' ').filter(Boolean)}
+function minWords(s,n){return toks(s).length>=n}
+function has(s,arr){const x=norm(s);return arr.some(a=>x.includes(norm(a)))}
+function lines(s){return s.split(/\n|;/).map(x=>norm(x)).filter(x=>x.length>2)}
+function gib(s){const t=toks(s);if(t.length<3)return true;if(/(.)\1{4,}/.test(norm(s)))return true;let u=new Set(t);return u.size/Math.max(1,t.length)<.45}
+function reason(s){return !gib(s)&&has(s,['потому что','чтобы','так как','поэтому','иначе','это поможет','нужно','влияет'])}
+function q(s){return !gib(s)&&(s.includes('?')||has(s,['какой','какая','что','сколько','где','когда','умеешь','понимаешь','знаешь','есть ли']))}
+function fb(id,type,msg){let e=document.getElementById('f'+id);e.className='feedback '+type;e.innerHTML=msg}
+function mark(id){if(!completed.includes(id)){completed.push(id);localStorage.setItem('ai6w4_completed',JSON.stringify(completed))}document.getElementById(id).classList.add('done');let n=+id.replace('m',''),nx=document.getElementById('m'+(n+1));if(nx)nx.classList.remove('locked');upd()}
+function upd(){completed.forEach(id=>{let e=document.getElementById(id);if(e)e.classList.add('done');let n=+id.replace('m',''),nx=document.getElementById('m'+(n+1));if(nx)nx.classList.remove('locked')});let c=completed.length;progressText.textContent='Пройдено: '+c+' из 6';progressFill.style.width=(c/6*100)+'%';rank.textContent=['🟢 USER','🔵 LEVEL CHECKER','🟣 AI TUTOR','🟠 PROMPT BUILDER','🟠 PROMPT BUILDER','🔥 MY AI BUILDER','🔥 MY AI BUILDER'][c];if(c>=6)final.style.display='block'}
+function save(){document.querySelectorAll('textarea,input').forEach(e=>localStorage.setItem('ai6w4_'+e.id,e.value))}
+function restore(){document.querySelectorAll('textarea,input').forEach(e=>{let v=localStorage.getItem('ai6w4_'+e.id);if(v!==null)e.value=v;e.addEventListener('input',save)})}
+
+const AI_GRADE_ENDPOINT = "https://ovjpqjnjceuloakqnwsm.supabase.co/functions/v1/ai-grade";
+
+async function smartCheck(mid){
+  const n = mid.replace("m","");
+  const f = document.getElementById("f"+n);
+  const answers = [...document.querySelectorAll("#"+mid+" textarea")].map(x=>x.value.trim());
+
+  if(!answers.length || answers.every(x=>x.length<2)){
+    f.className="feedback no";
+    f.textContent="Сначала напиши ответ.";
+    return;
+  }
+
+  f.className="feedback maybe";
+  f.textContent="🤖 AI проверяет смысл ответа...";
+
+  try{
+    const r = await fetch(AI_GRADE_ENDPOINT,{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({mission:mid,answers})
+    });
+
+    const data = await r.json();
+
+    if(!r.ok || typeof data.pass!=="boolean") throw new Error("AI unavailable");
+
+    if(data.pass){
+      f.className="feedback ok";
+      f.textContent="✅ "+(data.feedback||"Ответ засчитан.");
+      mark(mid);
+    }else{
+      f.className="feedback no";
+      f.textContent="🧠 "+(data.feedback||"Ответ пока не засчитан. Доработай его и попробуй снова.");
+    }
+  }catch(e){
+    const local = window["checkM"+n];
+    if(typeof local==="function"){
+      local();
+      const after = document.getElementById("f"+n);
+      after.innerHTML += "<br><small>AI-проверка временно недоступна — использована резервная проверка.</small>";
+    }else{
+      f.className="feedback no";
+      f.textContent="Проверка временно недоступна. Попробуй ещё раз.";
+    }
+  }
+}
+
+function checkM1(){let a=m1a.value,b=m1b.value;let qs=lines(a);let ok=qs.length>=3&&qs.slice(0,3).every(q)&&reason(b)&&has(a+b,['уровень','что знаешь','что не понимаешь','пример','класс','сложн']);ok?(fb(1,'ok','✅ Верно: AI должен сначала диагностировать уровень.'),mark('m1')):fb(1,'no','Нужны 3 осмысленных вопроса и объяснение, почему без диагностики ответ может быть неподходящим.')}
+function checkM2(){let a=m2a.value;let ok=minWords(a,30)&&reason(a)&&has(a,['алия','данияр','марк'])&&has(a,['нович','прост','пример'])&&has(a,['ошиб','практик','разбор'])&&has(a,['сложн','челлендж','задач']);ok?(fb(2,'ok','✅ Ты подобрал разные способы помощи для разных уровней.'),mark('m2')):fb(2,'no','Для каждого ученика нужен свой способ помощи и причина выбора.')}
+function checkM3(){let a=m3a.value,b=m3b.value;let ok=reason(a)&&minWords(b,25)&&has(a,['сложн','термин','непонят','сразу'])&&has(b,['прост','пример','часть','пицц','яблок','шаг']);ok?(fb(3,'ok','✅ Плохой ответ исправлен: стало проще, понятнее и ближе к новичку.'),mark('m3')):fb(3,'no','Нужно объяснить проблему плохого ответа и переписать его проще, с примером или шагами.')}
+function checkM4(){let a=m4a.value,b=m4b.value;let qs=lines(a);let ok=qs.length>=2&&qs.slice(0,2).every(q)&&minWords(b,8)&&has(a+b,['дроб','част','1/2','половин','цел']);ok?(fb(4,'ok','✅ Есть проверка понимания и маленькая практика.'),mark('m4')):fb(4,'no','Нужны 2 вопроса проверки и одна практическая задача именно по дробям/частям целого.')}
+function checkM5(){let p=m5a.value;let score=0;[['сначала','спрос'],['уровень'],['объясни','прост'],['пример','аналог'],['проверь','поним'],['задач','практик'],['если','ошиб']].forEach(g=>{if(has(p,g))score++});let ok=minWords(p,45)&&score>=5&&!gib(p);ok?(fb(5,'ok','✅ Это уже системная инструкция для AI‑репетитора.'),mark('m5')):fb(5,'no','Промпт должен управлять поведением AI: диагностика, уровень, объяснение, проверка и практика.')}
+function checkM6(){let ok=minWords(m6a.value,4)&&lines(m6b.value).length>=3&&minWords(m6c.value,30)&&minWords(m6d.value,8)&&has(m6c.value,['нович','базов','сильн']);ok?(fb(6,'ok','🏆 Boss пройден: модуль обучения для MY AI готов.'),mark('m6')):fb(6,'no','Boss требует тему, 3 диагностических вопроса, правила для трёх уровней и проверку понимания.')}
+function resetProgress(){if(!confirm('Сбросить прогресс Week 04?'))return;let ks=[];for(let i=0;i<localStorage.length;i++){let k=localStorage.key(i);if(k&&k.startsWith('ai6w4_'))ks.push(k)}ks.forEach(k=>localStorage.removeItem(k));localStorage.removeItem('ai6w4_completed');location.reload()}
+restore();upd();
+</script>
+</body>
+</html>
