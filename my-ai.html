@@ -5,6 +5,14 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>My AI — Future School AI Lab</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function(){
+  try{
+    var saved=localStorage.getItem('aiLabTheme')||'dark';
+    document.documentElement.setAttribute('data-theme',saved);
+  }catch(e){document.documentElement.setAttribute('data-theme','dark');}
+})();
+</script>
 <style>
 :root{--bg:#f6f8fc;--card:#fff;--ink:#0f172a;--muted:#64748b;--line:#e2e8f0;--blue:#2563eb;--violet:#7c3aed;--green:#16a34a;--amber:#d97706;--red:#dc2626}
 *{box-sizing:border-box}body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:radial-gradient(circle at 15% 0,#ede9fe 0,transparent 28%),radial-gradient(circle at 100% 15%,#dbeafe 0,transparent 26%),var(--bg);color:var(--ink)}
@@ -74,12 +82,78 @@ body{
 .step-nav{border-top:1px solid #13233a;padding-top:14px}
 @media(max-width:1000px){.myai-system-strip{grid-template-columns:repeat(2,1fr)}}
 
+
+/* THEME TOGGLE */
+.theme-toggle{position:relative;width:76px;height:36px;border:1px solid #263853;border-radius:999px;background:#08111e;padding:0;display:inline-flex;align-items:center;justify-content:space-between;cursor:pointer;overflow:hidden;box-shadow:inset 0 0 18px rgba(0,0,0,.24)}
+.theme-icon-wrap{position:relative;z-index:2;width:34px;height:34px;display:grid;place-items:center;pointer-events:none}
+.theme-icon-wrap img{width:17px;height:17px;object-fit:contain;transition:.2s opacity,.2s filter}
+.theme-knob{position:absolute;z-index:1;top:3px;left:39px;width:28px;height:28px;border-radius:50%;background:linear-gradient(145deg,#1f2d43,#0f1828);box-shadow:0 4px 12px rgba(0,0,0,.34);transition:.22s transform,.22s left,.22s background}
+html[data-theme="dark"] .theme-icon-wrap img{filter:invert(1);opacity:.55}
+html[data-theme="dark"] .moon-wrap img{opacity:1}
+html[data-theme="light"] .theme-toggle{background:#e9f2ff;border-color:#b9cce5;box-shadow:inset 0 0 14px rgba(72,108,150,.12)}
+html[data-theme="light"] .theme-knob{left:5px;background:white;box-shadow:0 4px 12px rgba(44,75,110,.18)}
+html[data-theme="light"] .theme-icon-wrap img{filter:none;opacity:.48}
+html[data-theme="light"] .sun-wrap img{opacity:1}
+
+/* LIGHT THEME — keeps the engineering-console character */
+html[data-theme="light"] body{
+  --bg:#eef4fb;--card:#ffffff;--ink:#102038;--muted:#61758e;--line:#cdd9e7;
+  background:
+    linear-gradient(rgba(28,103,153,.032) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(28,103,153,.032) 1px,transparent 1px),
+    radial-gradient(circle at 13% 0,rgba(14,165,233,.10),transparent 28%),
+    radial-gradient(circle at 90% 15%,rgba(99,102,241,.08),transparent 25%),
+    #eef4fb;
+  background-size:32px 32px,32px 32px,auto,auto,auto;color:#102038
+}
+html[data-theme="light"] .top{background:rgba(250,253,255,.9);border-bottom-color:#cfdae8}
+html[data-theme="light"] .brand{color:#17314e}
+html[data-theme="light"] .btn.light{background:#fff;border-color:#cbd9e8;color:#536b86}
+html[data-theme="light"] .hero,html[data-theme="light"] .card,html[data-theme="light"] .palette,html[data-theme="light"] .canvas,html[data-theme="light"] .codepane,html[data-theme="light"] .modalbox{
+ background:linear-gradient(180deg,#ffffff,#f7fbff);border-color:#cfdae8;color:#18324f;box-shadow:0 10px 34px rgba(42,79,116,.07)
+}
+html[data-theme="light"] .hero h1,html[data-theme="light"] .card h2,html[data-theme="light"] .card h3,html[data-theme="light"] .palette h3,html[data-theme="light"] .canvas h3,html[data-theme="light"] .codepane h3{color:#173452}
+html[data-theme="light"] .hero p,html[data-theme="light"] .muted{color:#687d96}
+html[data-theme="light"] .myai-sys{background:#f8fbff;border-color:#d5e1ed}
+html[data-theme="light"] .myai-sys span{color:#7890a9}
+html[data-theme="light"] .myai-sys strong{color:#173452}
+html[data-theme="light"] .tabs{background:rgba(255,255,255,.88);border-color:#cfdae8}
+html[data-theme="light"] .tab{color:#657b94}
+html[data-theme="light"] .tab.active{background:#e5f7fb;color:#08728a;border-color:#bce4ed}
+html[data-theme="light"] .field label{color:#556b84}
+html[data-theme="light"] .field input,html[data-theme="light"] .field textarea,html[data-theme="light"] .field select,
+html[data-theme="light"] .block-config input,html[data-theme="light"] .block-config select,html[data-theme="light"] .block-config textarea,html[data-theme="light"] .chatinput input{
+ background:#fff!important;color:#183452!important;border-color:#cbd9e8!important
+}
+html[data-theme="light"] .days .day{background:#fff;border-color:#ccd9e7;color:#687d96}
+html[data-theme="light"] .days .day.active{background:#e7f7fb;border-color:#bce3ec;color:#08728a}
+html[data-theme="light"] .flow-empty{background:#f7fbff;border-color:#c9d8e7;color:#8396ab}
+html[data-theme="light"] .flow-block,html[data-theme="light"] .branch-action{background:#fff;border-color:#d1deeb;color:#1d3857}
+html[data-theme="light"] .branch-zone{background:#f7fbff;border-color:#cbd8e6}
+html[data-theme="light"] .branch-zone.true{background:#f0fbf6;border-color:#a9dfc5}
+html[data-theme="light"] .branch-zone.false{background:#fff6f6;border-color:#efc2c5}
+html[data-theme="light"] .branch-picker button,html[data-theme="light"] .mini{background:#fff;color:#667c95;border-color:#cbd9e8}
+html[data-theme="light"] .codepane{background:#f8fbff}
+html[data-theme="light"] .code-line{color:#294765}
+html[data-theme="light"] .code-comment{color:#8093a8}
+html[data-theme="light"] .function-list .fn-card{background:#fff;border-color:#d0ddea;color:#173452}
+html[data-theme="light"] .pill{background:#edf3f9;color:#627892}
+html[data-theme="light"] .phone{background:#dbe7f4;border-color:#c2d2e3;box-shadow:0 20px 60px rgba(42,79,116,.15)}
+html[data-theme="light"] .chat{background:#fff}
+html[data-theme="light"] .chathead{background:#f7fbff;border-color:#d3deea;color:#173452}
+html[data-theme="light"] .messages{background:#f4f8fc}
+html[data-theme="light"] .msg.ai{background:#fff;border-color:#d4e0ec;color:#29445f}
+
 </style>
 </head>
 <body>
 <header class="top">
   <div class="brand"><b>AI</b><span>Future School AI Lab · My AI</span></div>
-  <div class="top-actions">
+  <div class="top-actions"><button class="theme-toggle" id="themeToggle" type="button" aria-label="Переключить тему" title="Светлая / тёмная тема">
+  <span class="theme-icon-wrap sun-wrap"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAADEUlEQVR42u2az0sbQRTHP5GAGksi6EWDVHouIlrqDyiU0hTxoIUeeijY9lKFFrzmVA/twf4JiodSEEptPZTW9qaE4D9REVoDPXgw8UdFU0gvb2EYZpPsZmeXhT54MJvdee/7fTM78+ZtwJ5MAr9FJ4mhrAE10TVbTtosEki5tGNDoObSjg2BUMQmgYRLO1QCU8AjoD2CKdQuvqf8kptVVpEPQKfH/jNARXTGY99O8en4n/VDYFExUAM2fJC4JuoV/Ibme9EPgR6gYCCRsvjepAzgC4LFl/QaSLwHOiyA7xDbOvjeVg2bSIw10S8DZEUzTTw/ZgO8SmJbDP8A+lyeuwksA0WgBJSBI+BAAL0CRlz69gF74mM7SPCOdAF3JaK6jAKfgaoWRZNeAB+BIYOdASAnvkKTF8BJE8B1LQMLUe/kSwZgP4FV4KlEMyftVbmnP78UFfh5DUgFyDdY8nrkmYrW93nY4K8DxwqAX8CEh/4T0sfpfwoMhwU+AWxqkR/3YWdcG4kvNpM+VYaBS8VxvgVbecVOFbgRBoHXitMDoLsFW91iw7H3xvZ5IAHcVq63ZDn0K2Wx4cgtr9MoKRWDJ4bN4y/wSTYoR9LAoHK9G8CI7gLPpH1VfFS0tPyBYFXlDHgLcFhnsznX0uGsRM25nwuAQE7b3LJaOn5eB99hW9zPxUngPjBnyPOdKbSv/HYq6mSX/QFg6DfYd2QfeNhoCnl9iYvKEK4EQGBFsVf0+hJ7nT41YEe5ng5gGZ1Wrnds1pBsb2SXYaUTtlKJzbBSCRvJ3LHYjG06PR/VMvwyzgcaRxa03blZPZHjaGjSJdEcMNwbkoP6RRPAq5JfjRrsDErhoDNo8GpZZa9OWWVESicFSZOPZHRKskktS+nFrQxZEh9fJakLDHwYha17mo9vQZAIs7R4RSIfGIkoirsZAa363PJLIqryetpA4rEfAlF+4EhL5GuS1t/xO6StfGJaVwKw7nPZnmsEPtnAyPcWkz5Tu1k5A94FfR7wenYwtQOV/9+JLU6hyAn8cWnHRkL5u80/dCVZwkgqIH0AAAAASUVORK5CYII=" alt=""></span>
+  <span class="theme-icon-wrap moon-wrap"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAADiUlEQVR42u2ZW0hUYRDHf2oXUyuzssJqKSuoJNOIoCKK8EnQbhBBFyJ6yYKIHoJCKjAqCnoJInrwqehCDyVZERVJF7pgF6FEXUvSyrSktDS17cGppo+z69l19ZwN//Dh8bvs+c/ZOTP/mYV+/B+IjVTi2cB14BWQE0nEZwGXAZ8aVyOF/Fbgs0HeB+yOBD8/aUHcB7QAU9xMPh64aJD+oq7vAFFuJT8QOGuQPwqcUP8XuPnpHzLI58v8FTW3yq3kc4FOiycdA7yQuZ/AXDeSHwVUK/LngGhZSwBey/x3YKrbXccLJKu1RKBW1poBj9vIe4xYv9pYHwrUyNo3N4bQ/UaIjDHWBwEvZb0TyHRbzK9QBiz3s++22pPrFNloi7l5yiWqgGt+zlao63Q3GZClrovFx63wSF0vdJML3bLpGjOBNtnXBIx3A/lhRnRJDbB3APBYGZvnBgMmi7L0SaJK6Gb/TmXAM2Cw0wZkijTwAU/8vCMaKUCDMmKD0wYsUGRKQsjY1cBoJw2Yr8jctXlmDPBWnSt00oB0pT6fWWRgf1hnSO7tThkwQVVadSLa7KJQGfADWO+EAUOASkUiLcgQfFcZ0QZsccKIIkUi2KeYApQa7nQ8yG+yx9ilbn46RDe8bxjxHFjWV4X/HKBDblxvFDJ2kQScsWi/3ABWirsFg0HAYpH5S7rbbEqEbSE+iCiRF/UWhlQBp4C1wGwJxfGSyeOknJ0u39oR4Kk62wiM7e7meepAhVRgoSJVyLb4aYp1SDavBsrFuA9KKJrjvRgYECOAN+rQnjC4Zpr0k7x+iNkdtntQeUYXLiOMijcLOEBXZ7sS+CTdjR9Aq9TjXimm3iketeJuthAL3FOHS+XlDDfigHHANGCG/E2RFzcH+Ko4bAr2wzP4twdaJC9bX+myRnXvCzbUsSU2Gj54Sd6R3sRSI3qVhRjO/yDfMOJBkDIjGGw23KZGytceY59hRIPkiHD9PjZFMr++hzeMwQNEnJnx/CGwxkb5GaiMLTAqu9/1SK90/BYZmfH3KAcOi/8mB9A9sUJsLXBeOhr6c9qBY3aTZ6jiajiwQ3LFSIv1j5IIa4Vgu0j1ZGCiCL44i3MlwF7gZl8p10nAQf622kMZrZKwVogOC1pwhQNJohKz6WpNegLki3YJkWXypIvp+rEkZMUYbgyWTOoR1Zgogq1ZElOdNAGa6Ec/nMcvIldeUu9WDGsAAAAASUVORK5CYII=" alt=""></span>
+  <span class="theme-knob" aria-hidden="true"></span>
+</button>
     <button class="btn light" id="backBtn">← В кабинет</button>
     <button class="btn primary" id="saveAllBtn">Сохранить проект</button>
   </div>
@@ -651,6 +725,22 @@ async function sendPreview(){
   $('messages').scrollTop=$('messages').scrollHeight;
 }
 boot();
+</script>
+<script>
+(function(){
+  var btn=document.getElementById('themeToggle');
+  if(!btn)return;
+  function apply(theme){
+    document.documentElement.setAttribute('data-theme',theme);
+    try{localStorage.setItem('aiLabTheme',theme);}catch(e){}
+    btn.setAttribute('aria-pressed',theme==='light'?'true':'false');
+  }
+  btn.addEventListener('click',function(){
+    var current=document.documentElement.getAttribute('data-theme')||'dark';
+    apply(current==='dark'?'light':'dark');
+  });
+  apply(document.documentElement.getAttribute('data-theme')||'dark');
+})();
 </script>
 </body>
 </html>
