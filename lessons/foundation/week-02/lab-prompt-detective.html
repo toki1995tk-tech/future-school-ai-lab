@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0b5cff" />
+  <title>AI Prompt Engineering — Week 02</title>
+  <style>
+    :root{
+      --bg:#07152f;
+      --bg2:#0b2250;
+      --card:#ffffff;
+      --ink:#102653;
+      --muted:#66789f;
+      --blue:#146cff;
+      --blue2:#53a2ff;
+      --cyan:#46ddff;
+      --green:#22c55e;
+      --yellow:#f5b82e;
+      --red:#ef4444;
+      --purple:#8b5cf6;
+      --line:#dfeaff;
+      --shadow:0 22px 55px rgba(5,24,60,.22);
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:Inter, ui-rounded, "SF Pro Rounded", "Segoe UI", Arial, sans-serif;
+      color:white;
+      min-height:100vh;
+      background:
+        radial-gradient(circle at 10% 0%, rgba(70,221,255,.22), transparent 28%),
+        radial-gradient(circle at 95% 15%, rgba(20,108,255,.32), transparent 34%),
+        linear-gradient(150deg,var(--bg),var(--bg2) 58%,#0a3268);
+    }
+    button,textarea{font:inherit}
+    button{cursor:pointer}
+    .shell{width:min(1180px,calc(100% - 28px));margin:auto;padding:18px 0 60px}
+    .topbar{
+      display:flex;align-items:center;justify-content:space-between;gap:12px;
+      position:sticky;top:10px;z-index:20;
+      padding:10px 14px;border:1px solid rgba(255,255,255,.15);
+      border-radius:20px;background:rgba(5,20,50,.78);
+      backdrop-filter:blur(18px);box-shadow:0 10px 35px rgba(0,0,0,.15)
+    }
+    .brand{display:flex;align-items:center;gap:10px;font-weight:900}
+    .brand-badge{width:38px;height:38px;display:grid;place-items:center;border-radius:13px;background:linear-gradient(135deg,var(--blue),var(--cyan));box-shadow:0 8px 22px rgba(20,108,255,.4)}
+    .top-right{display:flex;align-items:center;gap:10px}
+    .xp-pill,.level-pill{padding:9px 13px;border-radius:999px;background:rgba(255,255,255,.1);font-weight:800;font-size:14px}
+    .xp-pill strong{color:#ffe16b}
+    .home-btn{border:0;border-radius:12px;padding:9px 12px;color:white;background:rgba(255,255,255,.1);font-weight:800;text-decoration:none}
+    .hero{
+      min-height:520px;display:grid;grid-template-columns:1.12fr .88fr;align-items:center;gap:30px;
+      padding:64px 22px 30px
+    }
+    .eyebrow{display:inline-flex;gap:8px;align-items:center;padding:8px 13px;border-radius:999px;background:rgba(255,255,255,.1);font-weight:900;letter-spacing:.04em}
+    h1{font-size:clamp(48px,7vw,92px);line-height:.92;margin:20px 0 16px;letter-spacing:-.055em}
+    .gradient{background:linear-gradient(90deg,#fff 0%,#9de8ff 45%,#4c92ff 100%);-webkit-background-clip:text;color:transparent}
+    .hero p{font-size:clamp(18px,2.1vw,25px);line-height:1.45;color:#d8e8ff;max-width:720px}
+    .hero-card{
+      position:relative;padding:26px;border-radius:34px;
+      background:linear-gradient(145deg,rgba(255,255,255,.16),rgba(255,255,255,.07));
+      border:1px solid rgba(255,255,255,.18);box-shadow:0 28px 60px rgba(0,0,0,.22);
+      transform:rotate(1deg)
+    }
+    .robot{font-size:116px;text-align:center;filter:drop-shadow(0 16px 20px rgba(0,0,0,.18))}
+    .chat{
+      background:white;color:var(--ink);padding:17px 19px;border-radius:22px;margin:10px 0;font-weight:900;box-shadow:var(--shadow)
+    }
+    .chat.ai{margin-left:45px;background:#dff5ff}
+    .hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px}
+    .btn{
+      border:0;border-radius:16px;padding:14px 20px;font-weight:900;
+      transition:.18s transform,.18s opacity,.18s box-shadow
+    }
+    .btn:hover{transform:translateY(-2px)}
+    .btn-primary{color:white;background:linear-gradient(135deg,var(--blue),#398cff);box-shadow:0 12px 28px rgba(20,108,255,.35)}
+    .btn-light{color:var(--ink);background:white}
+    .btn-ghost{color:var(--blue);background:#eef5ff;border:1px solid #d6e6ff}
+    .btn-success{color:white;background:var(--green)}
+    .btn:disabled{cursor:not-allowed;opacity:.45;transform:none;box-shadow:none}
+    .progress-wrap{margin:0 22px 28px}
+    .progress-track{height:14px;background:rgba(255,255,255,.12);border-radius:999px;overflow:hidden}
+    .progress-bar{height:100%;width:0;background:linear-gradient(90deg,var(--cyan),var(--blue));border-radius:inherit;transition:.35s width}
+    .steps{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-top:10px}
+    .step{text-align:center;font-size:12px;font-weight:900;color:#8298c5}
+    .step.active,.step.done{color:#fff}
+    .step.done::before{content:"✓ ";color:#75f59d}
+    .mission{
+      display:none;color:var(--ink);background:#f8fbff;border-radius:32px;padding:28px;margin:22px 0;box-shadow:var(--shadow)
+    }
+    .mission.active{display:block;animation:pop .35s ease}
+    @keyframes pop{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+    .mission-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:22px}
+    .tag{display:inline-flex;align-items:center;gap:8px;background:#e7f0ff;color:#0d5ad8;padding:8px 12px;border-radius:999px;font-weight:900;font-size:13px}
+    h2{font-size:clamp(30px,4vw,52px);line-height:1;margin:10px 0 8px;letter-spacing:-.035em}
+    .subtitle{color:var(--muted);font-size:17px;line-height:1.45}
+    .xp-reward{white-space:nowrap;background:#fff5cf;color:#7a5900;border:1px solid #ffe48a;border-radius:16px;padding:10px 13px;font-weight:900}
+    .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+    .card{
+      background:white;border:2px solid var(--line);border-radius:22px;padding:18px;box-shadow:0 10px 24px rgba(20,70,130,.06)
+    }
+    .prompt{font-size:21px;font-weight:900;line-height:1.3;margin:8px 0 16px}
+    .options{display:grid;gap:9px}
+    .option{
+      width:100%;text-align:left;border:1px solid #d9e5fa;background:#f7faff;color:var(--ink);
+      border-radius:14px;padding:12px 14px;font-weight:750
+    }
+    .option:hover{border-color:#9ec4ff;background:#eef5ff}
+    .option.correct{border-color:#8ae3a9;background:#eafff0;color:#126f33}
+    .option.wrong{border-color:#ffaaaa;background:#fff0f0;color:#aa2222}
+    .feedback{min-height:24px;margin-top:10px;font-weight:800;color:var(--muted)}
+    .mission-footer{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:22px;flex-wrap:wrap}
+    .counter{font-weight:900;color:var(--muted)}
+    textarea{
+      width:100%;min-height:118px;resize:vertical;border:2px solid #dce8fb;border-radius:18px;padding:15px;color:var(--ink);outline:none;background:white
+    }
+    textarea:focus{border-color:#7ab0ff;box-shadow:0 0 0 4px #e9f2ff}
+    .hint-row{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+    .hint{border:0;border-radius:999px;padding:8px 11px;background:#edf4ff;color:#2467c8;font-weight:900}
+    .scorebar{display:flex;gap:7px;margin:12px 0}
+    .star{font-size:28px;filter:grayscale(1);opacity:.25}
+    .star.on{filter:none;opacity:1}
+    .criteria{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:14px 0}
+    .criterion{background:#f1f6ff;border:1px solid #dceaff;border-radius:14px;padding:10px;text-align:center;font-size:12px;font-weight:900}
+    .criterion.hit{background:#eafff0;border-color:#9ce4b4;color:#137238}
+    .compare{display:grid;grid-template-columns:1fr auto 1fr;gap:16px;align-items:stretch}
+    .vs{align-self:center;width:58px;height:58px;border-radius:50%;display:grid;place-items:center;background:var(--blue);color:white;font-weight:1000}
+    .prediction{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:16px}
+    .check{
+      display:flex;align-items:center;gap:9px;border:1px solid #dae7fb;background:white;border-radius:14px;padding:11px 13px;font-weight:800
+    }
+    .boss{
+      background:linear-gradient(135deg,#1c1632,#311230);color:white;border-radius:25px;padding:22px;border:2px solid #7f2649
+    }
+    .boss .bad{font-size:clamp(25px,3vw,38px);font-weight:1000;color:#ffb4b4;margin:12px 0 20px}
+    .boss textarea{background:#fff;color:var(--ink)}
+    .boss-grid{display:grid;grid-template-columns:1fr .85fr;gap:20px;align-items:center}
+    .boss-emoji{font-size:160px;text-align:center;filter:drop-shadow(0 12px 20px rgba(0,0,0,.35))}
+    .quiz-q{margin-bottom:18px}
+    .quiz-title{font-size:20px;font-weight:950;margin-bottom:10px}
+    .quiz-options{display:grid;gap:8px}
+    .result{
+      display:none;text-align:center;padding:28px;border-radius:28px;background:linear-gradient(135deg,#e9fff1,#eaf5ff);border:2px solid #cce8d5;margin-top:20px
+    }
+    .result.show{display:block}
+    .result-icon{font-size:74px}
+    .result h3{font-size:38px;margin:4px 0;color:var(--ink)}
+    .challenge{
+      display:none;background:#101a38;color:white;border-radius:30px;padding:28px;margin-top:24px;border:1px solid rgba(255,255,255,.15)
+    }
+    .challenge.show{display:block}
+    .challenge h3{font-size:34px;margin:0 0 8px}
+    .challenge-card{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:18px;padding:16px;margin:12px 0}
+    .challenge textarea{margin-top:10px}
+    .toast{
+      position:fixed;right:18px;bottom:18px;z-index:50;transform:translateY(30px);opacity:0;
+      padding:13px 17px;border-radius:15px;background:#07152f;color:white;box-shadow:0 15px 38px rgba(0,0,0,.28);
+      transition:.25s;pointer-events:none;font-weight:900
+    }
+    .toast.show{opacity:1;transform:none}
+    .confetti{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:45}
+    .confetti i{position:absolute;top:-30px;font-style:normal;animation:fall 2.7s linear forwards}
+    @keyframes fall{to{transform:translateY(110vh) rotate(720deg);opacity:.3}}
+    @media(max-width:850px){
+      .hero{grid-template-columns:1fr;min-height:auto;padding-top:44px}
+      .hero-card{transform:none}
+      .grid,.compare,.boss-grid{grid-template-columns:1fr}
+      .vs{margin:auto}
+      .criteria{grid-template-columns:repeat(2,1fr)}
+      .steps{grid-template-columns:repeat(3,1fr)}
+      .mission-head{flex-direction:column}
+      .prediction{grid-template-columns:1fr}
+    }
+    @media(max-width:560px){
+      .shell{width:min(100% - 16px,1180px)}
+      .brand span:last-child{display:none}
+      .level-pill{display:none}
+      .hero{padding-left:8px;padding-right:8px}
+      .mission{padding:18px;border-radius:24px}
+      .grid{grid-template-columns:1fr}
+      .topbar{top:4px}
+      h1{font-size:51px}
+    }
+  </style>
+</head>
+<body><div style="position:fixed;right:12px;bottom:12px;z-index:9999;padding:7px 10px;border-radius:999px;background:#07111ddd;border:1px solid #24405f;color:#8defff;font:800 10px ui-monospace,monospace;backdrop-filter:blur(10px)">FOUNDATION 5–7 · WEEK 02</div>
+<div class="confetti" id="confetti"></div>
+<div class="toast" id="toast"></div>
+
+<div class="shell">
+  <div class="topbar">
+    <div class="brand">
+      <div class="brand-badge">🤖</div>
+      <span>AI Prompt Engineering</span>
+    </div>
+    <div class="top-right">
+      <span class="level-pill">LEVEL 02</span>
+      <span class="xp-pill">⚡ <strong id="xpTop">0</strong> XP</span>
+      <a class="home-btn" href="../index.html">← Недели</a>
+    </div>
+  </div>
+
+  <section class="hero" id="hero">
+    <div>
+      <span class="eyebrow">🎓 5 класс • Week 02</span>
+      <h1><span class="gradient">AI НЕ ЧИТАЕТ МЫСЛИ</span></h1>
+      <p>Сегодня ты станешь <strong>Prompt Detective</strong>: найдёшь слабые запросы, починишь их, устроишь Prompt Battle и победишь финального босса.</p>
+      <div class="hero-actions">
+        <button class="btn btn-primary" onclick="startLesson()">НАЧАТЬ МИССИЮ →</button>
+        <button class="btn btn-light" onclick="resetProgress()">Сбросить прогресс</button>
+      </div>
+    </div>
+    <div class="hero-card">
+      <div class="robot">🤖</div>
+      <div class="chat">👤 Расскажи про него.</div>
+      <div class="chat ai">🤖 Про кого именно? 🤔</div>
+      <p style="text-align:center;font-weight:900;margin-bottom:0">AI отвечает на то, что написано,<br>а не на то, что ты подумал.</p>
+    </div>
+  </section>
+
+  <div class="progress-wrap" id="progressArea">
+    <div class="progress-track"><div class="progress-bar" id="progressBar"></div></div>
+    <div class="steps">
+      <div class="step" id="step1">DETECT</div>
+      <div class="step" id="step2">REPAIR</div>
+      <div class="step" id="step3">BATTLE</div>
+      <div class="step" id="step4">TEST</div>
+      <div class="step" id="step5">BOSS</div>
+      <div class="step" id="step6">EXIT</div>
+    </div>
+  </div>
+
+  <!-- MISSION 1 -->
+  <section class="mission" id="mission1">
+    <div class="mission-head">
+      <div>
+        <span class="tag">🔍 MISSION 1</span>
+        <h2>PROMPT DETECTOR</h2>
+        <div class="subtitle">Найди проблему в каждом запросе. AI не виноват, если ему пришлось угадывать.</div>
+      </div>
+      <div class="xp-reward">+100 XP</div>
+    </div>
+    <div class="grid" id="detectorGrid"></div>
+    <div class="mission-footer">
+      <div class="counter" id="detectorCounter">0 / 5 найдено</div>
+      <button class="btn btn-primary" id="detectorNext" disabled onclick="completeMission(1,100)">MISSION COMPLETE →</button>
+    </div>
+  </section>
+
+  <!-- MISSION 2 -->
+  <section class="mission" id="mission2">
+    <div class="mission-head">
+      <div>
+        <span class="tag">🛠 MISSION 2</span>
+        <h2>PROMPT REPAIR</h2>
+        <div class="subtitle">Плохой prompt поступил в мастерскую. Добавь полезные уточнения и сделай запрос управляемее.</div>
+      </div>
+      <div class="xp-reward">+150 XP</div>
+    </div>
+
+    <div class="card">
+      <div class="prompt">1. «Расскажи про собаку.»</div>
+      <div class="hint-row">
+        <button class="hint" onclick="insertHint('repair1','Для кого: пятикласснику')">+ для кого</button>
+        <button class="hint" onclick="insertHint('repair1','5 интересных фактов')">+ объём</button>
+        <button class="hint" onclick="insertHint('repair1','о золотистом ретривере')">+ точная тема</button>
+      </div>
+      <textarea id="repair1" placeholder="Напиши улучшенный prompt..."></textarea>
+    </div>
+
+    <div class="card" style="margin-top:14px">
+      <div class="prompt">2. «Придумай игру.»</div>
+      <div class="hint-row">
+        <button class="hint" onclick="insertHint('repair2','для 4 пятиклассников')">+ игроки</button>
+        <button class="hint" onclick="insertHint('repair2','в классе без телефонов')">+ условия</button>
+        <button class="hint" onclick="insertHint('repair2','на 10 минут')">+ время</button>
+      </div>
+      <textarea id="repair2" placeholder="Напиши улучшенный prompt..."></textarea>
+    </div>
+
+    <div class="card" style="margin-top:14px">
+      <div class="prompt">3. «Помоги с математикой.»</div>
+      <div class="hint-row">
+        <button class="hint" onclick="insertHint('repair3','объясни пятикласснику')">+ аудитория</button>
+        <button class="hint" onclick="insertHint('repair3','сложение дробей с разными знаменателями')">+ тема</button>
+        <button class="hint" onclick="insertHint('repair3','пошагово и с одним примером')">+ формат</button>
+      </div>
+      <textarea id="repair3" placeholder="Напиши улучшенный prompt..."></textarea>
+    </div>
+
+    <div class="mission-footer">
+      <div class="counter" id="repairFeedback">Нужно улучшить все 3 промпта.</div>
+      <button class="btn btn-primary" onclick="checkRepair()">ПРОВЕРИТЬ РЕМОНТ</button>
+    </div>
+  </section>
+
+  <!-- MISSION 3 -->
+<section class="mission" id="mission3">
+
+  <div class="mission-head">
+    <div>
+      <span class="tag">⚔️ MISSION 3</span>
+      <h2>PROMPT BATTLE</h2>
+      <div class="subtitle">
+        Собери сильный prompt по частям.
+        Заполни каждое поле — в конце сайт сам объединит всё в один POWER PROMPT.
+      </div>
+    </div>
+
+    <div class="xp-reward">+200 XP</div>
+  </div>
+
+
+  <div class="card">
+
+    <div class="prompt">
+      🎮 Задача: попроси AI придумать необычного персонажа для компьютерной игры.
+    </div>
+
+    <p class="subtitle">
+      Не пиши весь prompt сразу. Сначала собери его как конструктор.
+    </p>
+
+
+    <!-- 1 -->
+    <div style="margin-top:24px">
+
+      <div class="tag">⭐ 1. ЗАДАЧА</div>
+
+      <p>
+        Что именно должен сделать AI?
+      </p>
+
+      <textarea
+        id="battleTask"
+        placeholder="Например: Придумай необычного персонажа для компьютерной игры."
+      ></textarea>
+
+    </div>
+
+
+    <!-- 2 -->
+    <div style="margin-top:24px">
+
+      <div class="tag">⭐ 2. ДЕТАЛИ</div>
+
+      <p>
+        Что обязательно должно быть у персонажа?
+      </p>
+
+      <textarea
+        id="battleDetails"
+        placeholder="Например: придумай имя, внешний вид, характер и суперспособность."
+      ></textarea>
+
+    </div>
+
+
+    <!-- 3 -->
+    <div style="margin-top:24px">
+
+      <div class="tag">⭐ 3. ДЛЯ ЧЕГО</div>
+
+      <p>
+        Для какой игры или ситуации нужен персонаж?
+      </p>
+
+      <textarea
+        id="battlePurpose"
+        placeholder="Например: персонаж нужен для приключенческой компьютерной игры."
+      ></textarea>
+
+    </div>
+
+
+    <!-- 4 -->
+    <div style="margin-top:24px">
+
+      <div class="tag">⭐ 4. ФОРМАТ</div>
+
+      <p>
+        В каком виде AI должен дать ответ?
+      </p>
+
+      <textarea
+        id="battleFormat"
+        placeholder="Например: оформи ответ в виде 4 коротких пунктов."
+      ></textarea>
+
+    </div>
+
+
+    <!-- 5 -->
+    <div style="margin-top:24px">
+
+      <div class="tag">⭐ 5. ОГРАНИЧЕНИЯ</div>
+
+      <p>
+        Добавь необычное правило или ограничение.
+      </p>
+
+      <textarea
+        id="battleLimits"
+        placeholder="Например: персонаж не должен быть человеком и не должен уметь летать."
+      ></textarea>
+
+    </div>
+
+
+    <div class="scorebar" id="constructorStars">
+
+      <span class="star">⭐</span>
+      <span class="star">⭐</span>
+      <span class="star">⭐</span>
+      <span class="star">⭐</span>
+      <span class="star">⭐</span>
+
+    </div>
+
+
+    <div class="feedback" id="constructorFeedback">
+      Заполни элементы своего prompt.
+    </div>
+
+
+    <button
+      class="btn btn-primary"
+      style="margin-top:16px"
+      onclick="buildBattlePrompt()"
+    >
+      🧩 СОБРАТЬ PROMPT
+    </button>
+
+  </div>
+
+
+  <!-- ГОТОВЫЙ PROMPT -->
+
+  <div
+    class="card"
+    id="battleResultCard"
+    style="margin-top:20px; display:none;"
+  >
+
+    <div class="tag">
+      🚀 ТВОЙ POWER PROMPT
+    </div>
+
+    <div
+      id="battleResult"
+      style="
+        margin-top:16px;
+        padding:18px;
+        background:#eef5ff;
+        border-radius:18px;
+        font-size:19px;
+        line-height:1.6;
+        font-weight:700;
+        white-space:pre-wrap;
+      "
+    ></div>
+
+
+    <div
+      style="
+        display:flex;
+        gap:10px;
+        flex-wrap:wrap;
+        margin-top:16px;
+      "
+    >
+
+      <button
+        class="btn btn-ghost"
+        onclick="copyBattlePrompt()"
+      >
+        📋 СКОПИРОВАТЬ
+      </button>
+
+
+      <button
+        class="btn btn-primary"
+        id="battleNext"
+        onclick="completeMission(3,200)"
+      >
+        PROMPT ГОТОВ →
+      </button>
+
+    </div>
+
+  </div>
+
+</section>
+
+  <!-- MISSION 4 -->
+  <section class="mission" id="mission4">
+    <div class="mission-head">
+      <div>
+        <span class="tag">🧪 MISSION 4</span>
+        <h2>TEST LAB</h2>
+        <div class="subtitle">Сначала предскажи результат. Затем сравни, как уточнения меняют ответ AI.</div>
+      </div>
+      <div class="xp-reward">+150 XP</div>
+    </div>
+    <div class="compare">
+      <div class="card">
+        <div class="tag">Prompt A</div>
+        <div class="prompt">«Расскажи про роботов.»</div>
+        <p class="subtitle">Очень широкий запрос. AI сам решит, что именно рассказать.</p>
+      </div>
+      <div class="vs">VS</div>
+      <div class="card">
+        <div class="tag">Prompt B</div>
+        <div class="prompt">«Объясни пятикласснику в пяти коротких предложениях, где сегодня используются роботы. Приведи три примера из обычной жизни.»</div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:16px">
+      <div class="prompt">Что, скорее всего, изменится в результате Prompt B?</div>
+      <div class="prediction">
+        <label class="check"><input type="checkbox" value="short"> Ответ станет короче и управляемее</label>
+        <label class="check"><input type="checkbox" value="simple"> Язык будет понятнее пятикласснику</label>
+        <label class="check"><input type="checkbox" value="examples"> В ответе появятся 3 примера</label>
+        <label class="check"><input type="checkbox" value="random"> AI обязательно напишет стихотворение</label>
+      </div>
+      <div class="feedback" id="testFeedback"></div>
+    </div>
+
+    <div class="mission-footer">
+      <div class="counter">Выбери все верные прогнозы.</div>
+      <button class="btn btn-primary" onclick="checkTestLab()">ПРОВЕРИТЬ ГИПОТЕЗУ</button>
+    </div>
+  </section>
+
+  <!-- BOSS -->
+  <section class="mission" id="mission5">
+    <div class="mission-head">
+      <div>
+        <span class="tag">👑 FINAL BOSS</span>
+        <h2>POWER PROMPT</h2>
+        <div class="subtitle">Победи самый расплывчатый запрос урока.</div>
+      </div>
+      <div class="xp-reward">+250 XP</div>
+    </div>
+    <div class="boss">
+      <div class="boss-grid">
+        <div>
+          <div style="font-weight:900;color:#ff9eae">🚨 УЖАСНЫЙ PROMPT:</div>
+          <div class="bad">«Сделай мне что-нибудь интересное про космос.»</div>
+          <div style="font-weight:900;margin-bottom:10px">Добавь минимум 4 полезных уточнения:</div>
+          <div class="hint-row">
+            <span class="hint">что создать</span>
+            <span class="hint">для кого</span>
+            <span class="hint">тема</span>
+            <span class="hint">размер</span>
+            <span class="hint">формат</span>
+            <span class="hint">стиль</span>
+          </div>
+          <textarea id="bossPrompt" placeholder="Напиши свой POWER PROMPT..."></textarea>
+          <div class="feedback" id="bossFeedback" style="color:#d9e3ff"></div>
+          <button class="btn btn-primary" style="margin-top:12px" onclick="checkBoss()">АТАКОВАТЬ БОССА ⚡</button>
+        </div>
+        <div class="boss-emoji">👾</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EXIT -->
+  <section class="mission" id="mission6">
+    <div class="mission-head">
+      <div>
+        <span class="tag">🚪 EXIT CHALLENGE</span>
+        <h2>ФИНАЛЬНАЯ ПРОВЕРКА</h2>
+        <div class="subtitle">3 вопроса. Докажи, что сегодня ты работал как настоящий Prompt Engineer.</div>
+      </div>
+      <div class="xp-reward">+150 XP</div>
+    </div>
+
+    <div class="card">
+      <div class="quiz-q" data-answer="b">
+        <div class="quiz-title">1. Какой prompt лучше?</div>
+        <div class="quiz-options">
+          <label class="option"><input type="radio" name="q1" value="a"> A. Напиши текст.</label>
+          <label class="option"><input type="radio" name="q1" value="b"> B. Напиши 5 предложений для пятиклассника о том, почему важно экономить воду.</label>
+        </div>
+      </div>
+
+      <div class="quiz-q" data-answer="c">
+        <div class="quiz-title">2. Почему AI иногда отвечает не так, как мы хотели?</div>
+        <div class="quiz-options">
+          <label class="option"><input type="radio" name="q2" value="a"> A. AI специально вредничает.</label>
+          <label class="option"><input type="radio" name="q2" value="b"> B. AI всегда ошибается.</label>
+          <label class="option"><input type="radio" name="q2" value="c"> C. Иногда в запросе недостаточно информации.</label>
+        </div>
+      </div>
+
+      <div class="quiz-q" data-answer="b">
+        <div class="quiz-title">3. Что обычно произойдёт, если добавить полезные уточнения?</div>
+        <div class="quiz-options">
+          <label class="option"><input type="radio" name="q3" value="a"> A. AI перестанет работать.</label>
+          <label class="option"><input type="radio" name="q3" value="b"> B. Результат станет более управляемым.</label>
+          <label class="option"><input type="radio" name="q3" value="c"> C. Prompt станет неправильным.</label>
+        </div>
+      </div>
+
+      <button class="btn btn-primary" onclick="finishQuiz()">ЗАВЕРШИТЬ УРОК</button>
+    </div>
+
+    <div class="result" id="resultBox">
+      <div class="result-icon" id="resultIcon">🏆</div>
+      <h3 id="resultTitle">PROMPT ENGINEER</h3>
+      <p class="subtitle" id="resultText"></p>
+      <div style="font-size:26px;font-weight:1000;color:#0d5ad8;margin:12px 0">⚡ <span id="finalXp">0</span> XP</div>
+      <button class="btn btn-primary" onclick="showChallenge()">🔥 EXTRA CHALLENGE</button>
+      <a class="btn btn-ghost" href="../index.html" style="display:inline-block;text-decoration:none;margin-left:8px">К неделям</a>
+    </div>
+
+    <div class="challenge" id="extraChallenge">
+      <h3>🔥 PROMPT HACKER</h3>
+      <p style="color:#cfe2ff">Закончил раньше остальных? Набери дополнительные XP.</p>
+
+      <div class="challenge-card">
+        <strong>Challenge 1 — DOUBLE PROMPT</strong>
+        <p>Сделай два совершенно разных хороших промпта на тему «динозавры».</p>
+        <textarea id="ch1" placeholder="Prompt 1...\n\nPrompt 2..."></textarea>
+      </div>
+
+      <div class="challenge-card">
+        <strong>Challenge 2 — TWO AUDIENCES</strong>
+        <p>Создай два запроса на одну тему: один — для шестилетнего ребёнка, второй — для учёного.</p>
+        <textarea id="ch2" placeholder="Для ребёнка...\n\nДля учёного..."></textarea>
+      </div>
+
+      <div class="challenge-card">
+        <strong>Challenge 3 — REVERSE ENGINEERING</strong>
+        <p>Ответ AI: «Панда живёт в Китае и питается в основном бамбуком». Придумай 3 разных промпта, которые могли привести к такому ответу.</p>
+        <textarea id="ch3" placeholder="1...\n2...\n3..."></textarea>
+      </div>
+
+      <button class="btn btn-success" onclick="checkChallenge()">ПОЛУЧИТЬ BONUS XP</button>
+      <div id="challengeFeedback" style="font-weight:900;margin-top:10px"></div>
+    </div>
+  </section>
+</div>
+
+<script>
+  const STORAGE_KEY = "aiclassfs_prompt5_week02_v2";
+  const state = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{"xp":0,"completed":[],"current":1,"bonus":false}');
+  const maxBaseXp = 1000;
+
+  const detectorItems = [
+    {p:"Сделай красиво.", opts:["Непонятно, что именно нужно сделать.","Слишком много информации.","AI не умеет делать красиво."], a:0},
+    {p:"Напиши про животных.", opts:["Нельзя спрашивать AI про животных.","Тема слишком широкая.","Нужно писать только на английском."], a:1},
+    {p:"Сделай мне это.", opts:["Непонятно, что означает «это».","Запрос слишком длинный.","AI не знает слово «сделай»."], a:0},
+    {p:"Расскажи про Казахстан.", opts:["Запрос возможен, но слишком общий.","AI ничего не знает о Казахстане.","Нужно обязательно добавить картинку."], a:0},
+    {p:"Напиши рассказ.", opts:["AI не умеет писать рассказы.","Непонятны тема, длина и жанр.","Запрос содержит слишком много деталей."], a:1}
+  ];
+  let detectorSolved = new Set();
+
+  function save(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+  function toast(msg){
+    const t=document.getElementById("toast");
+    t.textContent=msg;t.classList.add("show");
+    setTimeout(()=>t.classList.remove("show"),1800);
+  }
+  function confetti(){
+    const c=document.getElementById("confetti");
+    const icons=["✨","⭐","💙","⚡","🎉","🤖"];
+    for(let i=0;i<34;i++){
+      const x=document.createElement("i");
+      x.textContent=icons[Math.floor(Math.random()*icons.length)];
+      x.style.left=Math.random()*100+"vw";
+      x.style.fontSize=(14+Math.random()*22)+"px";
+      x.style.animationDelay=(Math.random()*.7)+"s";
+      c.appendChild(x);
+      setTimeout(()=>x.remove(),3500);
+    }
+  }
+
+  function renderDetector(){
+    const g=document.getElementById("detectorGrid");
+    g.innerHTML="";
+    detectorItems.forEach((it,idx)=>{
+      const card=document.createElement("div");
+      card.className="card";
+      card.innerHTML=`<div class="tag">CASE ${idx+1}</div><div class="prompt">«${it.p}»</div><div class="options"></div><div class="feedback" id="df${idx}"></div>`;
+      const opts=card.querySelector(".options");
+      it.opts.forEach((o,oi)=>{
+        const b=document.createElement("button");
+        b.className="option"; b.textContent=o;
+        b.onclick=()=>{
+          if(detectorSolved.has(idx)) return;
+          if(oi===it.a){
+            b.classList.add("correct");
+            card.querySelector(".feedback").textContent="✓ Верно! AI пришлось бы угадывать.";
+            detectorSolved.add(idx);
+            document.getElementById("detectorCounter").textContent=`${detectorSolved.size} / 5 найдено`;
+            if(detectorSolved.size===detectorItems.length) document.getElementById("detectorNext").disabled=false;
+          } else {
+            b.classList.add("wrong");
+            card.querySelector(".feedback").textContent="Попробуй ещё раз.";
+            setTimeout(()=>b.classList.remove("wrong"),650);
+          }
+        };
+        opts.appendChild(b);
+      });
+      g.appendChild(card);
+    });
+  }
+
+  function startLesson(){
+    state.current=Math.max(1,state.current||1);save();showMission(state.current);
+  }
+
+  function showMission(n){
+    document.querySelectorAll(".mission").forEach(x=>x.classList.remove("active"));
+    const el=document.getElementById("mission"+n);
+    if(el){el.classList.add("active");el.scrollIntoView({behavior:"smooth",block:"start"});}
+    state.current=n;save();updateUI();
+  }
+
+  function completeMission(n,xp){
+    if(!state.completed.includes(n)){
+      state.completed.push(n); state.xp+=xp; confetti(); toast(`+${xp} XP`);
+    }
+    state.current=Math.min(6,n+1);
+    save(); updateUI();
+    setTimeout(()=>showMission(state.current),400);
+  }
+
+  function updateUI(){
+    document.getElementById("xpTop").textContent=state.xp;
+    const done=state.completed.length;
+    document.getElementById("progressBar").style.width=(done/6*100)+"%";
+    for(let i=1;i<=6;i++){
+      const s=document.getElementById("step"+i);
+      s.classList.toggle("done",state.completed.includes(i));
+      s.classList.toggle("active",state.current===i);
+    }
+  }
+
+  function resetProgress(){
+    if(confirm("Сбросить прогресс Week 02?")){
+      localStorage.removeItem(STORAGE_KEY);location.reload();
+    }
+  }
+
+  function insertHint(id,text){
+    const t=document.getElementById(id);
+    const prefix=t.value.trim()? " " : "";
+    t.value+=prefix+text;
+    t.focus();
+  }
+
+  function richness(text){
+    const t=text.toLowerCase();
+    const tokens=t.split(/\s+/).filter(Boolean);
+    let score=0;
+    if(tokens.length>=8) score++;
+    if(/пятикласс|ребен|ребён|учен|игрок|для\s+\d|для\s+класс/.test(t)) score++;
+    if(/факт|пример|пункт|предлож|таблиц|список|пошаг|абзац|опиши/.test(t)) score++;
+    if(/\d/.test(t)) score++;
+    if(/без|только|не более|корот|простой|вес[её]л|необыч|стиль|жанр/.test(t)) score++;
+    return score;
+  }
+
+  function checkRepair(){
+    const vals=[1,2,3].map(i=>document.getElementById("repair"+i).value.trim());
+    const good=vals.map(v=>v.length>=35 && richness(v)>=2);
+    const count=good.filter(Boolean).length;
+    const f=document.getElementById("repairFeedback");
+    if(count===3){
+      f.textContent="✓ Отличный ремонт: во всех трёх запросах появилась конкретика.";
+      completeMission(2,150);
+    }else{
+      f.textContent=`Пока хорошо отремонтировано: ${count}/3. Добавь: для кого, точную задачу, формат, объём или ограничение.`;
+    }
+  }
+
+  function buildBattlePrompt(){
+    const fields = [
+      document.getElementById("battleTask"),
+      document.getElementById("battleDetails"),
+      document.getElementById("battlePurpose"),
+      document.getElementById("battleFormat"),
+      document.getElementById("battleLimits")
+    ];
+
+    const stars = document.querySelectorAll("#constructorStars .star");
+    let filled = 0;
+
+    fields.forEach((field,index)=>{
+      const value = field.value.trim();
+
+      if(value.length >= 5){
+        filled++;
+        stars[index].classList.add("on");
+        field.style.borderColor = "#69d98b";
+        field.style.background = "#f2fff6";
+      }else{
+        stars[index].classList.remove("on");
+        field.style.borderColor = "#ffb0b0";
+        field.style.background = "#fff8f8";
+      }
+    });
+
+    const feedback = document.getElementById("constructorFeedback");
+
+    if(filled < 4){
+      feedback.textContent = `Сейчас заполнено ${filled}/5 элементов. Нужно минимум 4 ⭐`;
+      document.getElementById("battleResultCard").style.display = "none";
+      return;
+    }
+
+    const labels = [
+      "ЗАДАЧА",
+      "ДЕТАЛИ",
+      "ДЛЯ ЧЕГО",
+      "ФОРМАТ",
+      "ОГРАНИЧЕНИЯ"
+    ];
+
+    const parts = fields
+      .map((field,index)=>({
+        label: labels[index],
+        value: field.value.trim()
+      }))
+      .filter(item=>item.value.length > 0);
+
+    const finalPrompt = parts
+      .map(item=>item.value.replace(/[.!?]+$/,""))
+      .join(". ") + ".";
+
+    document.getElementById("battleResult").textContent = finalPrompt;
+    document.getElementById("battleResultCard").style.display = "block";
+
+    feedback.textContent = `🔥 Отлично! Собрано ${filled}/5 элементов. Твой POWER PROMPT готов.`;
+
+    document.getElementById("battleResultCard").scrollIntoView({
+      behavior:"smooth",
+      block:"center"
+    });
+  }
+
+  function copyBattlePrompt(){
+    const text = document.getElementById("battleResult").textContent.trim();
+
+    if(!text){
+      toast("Сначала собери prompt");
+      return;
+    }
+
+    if(navigator.clipboard && window.isSecureContext){
+      navigator.clipboard.writeText(text)
+        .then(()=>toast("Prompt скопирован! 📋"))
+        .catch(()=>fallbackCopy(text));
+    }else{
+      fallbackCopy(text);
+    }
+  }
+
+  function fallbackCopy(text){
+    const area = document.createElement("textarea");
+    area.value = text;
+    area.style.position = "fixed";
+    area.style.opacity = "0";
+    document.body.appendChild(area);
+    area.focus();
+    area.select();
+
+    try{
+      document.execCommand("copy");
+      toast("Prompt скопирован! 📋");
+    }catch(e){
+      toast("Не удалось скопировать автоматически");
+    }
+
+    area.remove();
+  }
+
+  function checkTestLab(){
+    const checked=[...document.querySelectorAll(".prediction input:checked")].map(x=>x.value);
+    const need=["short","simple","examples"];
+    const ok=need.every(x=>checked.includes(x)) && !checked.includes("random");
+    const f=document.getElementById("testFeedback");
+    if(ok){
+      f.textContent="✓ Верно: уточнения делают результат короче, понятнее и предсказуемее.";
+      completeMission(4,150);
+    } else {
+      f.textContent="Не совсем. Подумай: что именно мы явно попросили в Prompt B?";
+    }
+  }
+
+  function checkBoss(){
+    const text=document.getElementById("bossPrompt").value.trim();
+    const t=text.toLowerCase();
+    let score=0;
+    if(/создай|напиши|придумай|объясни|сделай/.test(t)) score++;
+    if(/пятикласс|дет|учен|для/.test(t)) score++;
+    if(/космос|планет|лун|марс|галакт|звезд|звёзд/.test(t)) score++;
+    if(/пункт|спис|таблиц|предлож|абзац|вопрос|викторин|факт|карточ/.test(t)) score++;
+    if(/\d|корот|прост|интерес|не более|стиль|без/.test(t)) score++;
+    const f=document.getElementById("bossFeedback");
+    if(score>=4 && text.length>=55){
+      f.textContent=`⚡ БОСС ПОБЕЖДЁН! Найдено ${score}/5 типов уточнений.`;
+      confetti();completeMission(5,250);
+    }else{
+      f.textContent=`Сила атаки: ${score}/5. Нужно 4+. Добавь аудиторию, формат, объём или стиль.`;
+    }
+  }
+
+  function finishQuiz(){
+    const qs=[...document.querySelectorAll(".quiz-q")];
+    let score=0,all=true;
+    qs.forEach(q=>{
+      const picked=q.querySelector("input:checked");
+      if(!picked){all=false;return;}
+      if(picked.value===q.dataset.answer) score++;
+      q.querySelectorAll(".option").forEach(o=>{
+        const inp=o.querySelector("input");
+        o.classList.remove("correct","wrong");
+        if(inp.checked) o.classList.add(inp.value===q.dataset.answer?"correct":"wrong");
+      });
+    });
+    if(!all){toast("Ответь на все 3 вопроса");return;}
+
+    if(!state.completed.includes(6)){
+      state.completed.push(6);state.xp+=150;state.current=6;save();confetti();
+    }
+    updateUI();
+
+    const box=document.getElementById("resultBox");
+    const icon=document.getElementById("resultIcon");
+    const title=document.getElementById("resultTitle");
+    const text=document.getElementById("resultText");
+    if(score===3){
+      icon.textContent="🏆";title.textContent="PROMPT ENGINEER";
+      text.textContent="3/3. Ты умеешь замечать слабые prompts, исправлять их и прогнозировать результат.";
+    }else if(score===2){
+      icon.textContent="🛠️";title.textContent="PROMPT BUILDER";
+      text.textContent="2/3. Почти идеально — ещё немного практики.";
+    }else{
+      icon.textContent="🔎";title.textContent="PROMPT EXPLORER";
+      text.textContent=`${score}/3. Главное правило уже рядом: AI не читает мысли — уточняй запрос.`;
+    }
+    document.getElementById("finalXp").textContent=state.xp;
+    box.classList.add("show");
+    box.scrollIntoView({behavior:"smooth",block:"center"});
+  }
+
+  function showChallenge(){
+    document.getElementById("extraChallenge").classList.add("show");
+    document.getElementById("extraChallenge").scrollIntoView({behavior:"smooth"});
+  }
+
+  function checkChallenge(){
+    const vals=[1,2,3].map(i=>document.getElementById("ch"+i).value.trim());
+    const good=vals.filter(v=>v.length>=55).length;
+    const f=document.getElementById("challengeFeedback");
+    if(good===3){
+      if(!state.bonus){state.bonus=true;state.xp+=200;save();updateUI();confetti();}
+      f.textContent="🔥 PROMPT HACKER! +200 BONUS XP";
+      document.getElementById("finalXp").textContent=state.xp;
+    }else{
+      f.textContent=`Готово ${good}/3. Раскрой ответы подробнее, чтобы получить бонус.`;
+    }
+  }
+
+  renderDetector();
+  updateUI();
+  if(state.completed.length>0){
+    document.querySelector(".hero .btn-primary").textContent="ПРОДОЛЖИТЬ →";
+  }
+</script>
+</body>
+</html>
