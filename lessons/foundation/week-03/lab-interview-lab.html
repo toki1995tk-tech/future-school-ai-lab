@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>6 класс — AI Interview Lab</title>
+<style>
+:root{--bg:#f5fff8;--card:#fff;--ink:#14352b;--muted:#668077;--green:#24a86b;--green2:#16794c;--line:#dbece3;--shadow:0 16px 40px rgba(31,105,74,.10)}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:radial-gradient(circle at 10% 0%,#dff7e9 0,transparent 24%),radial-gradient(circle at 90% 8%,#eef8cf 0,transparent 22%),var(--bg);color:var(--ink)}
+.wrap{max-width:1120px;margin:auto;padding:18px 18px 60px}.nav{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px}.nav a{text-decoration:none;color:var(--ink);background:#fff;border:1px solid var(--line);padding:10px 14px;border-radius:14px;font-weight:800;box-shadow:0 5px 18px rgba(0,0,0,.04)}
+.hero{background:linear-gradient(135deg,#176d49,#2eb777);color:#fff;border-radius:28px;padding:28px;box-shadow:var(--shadow)}.eyebrow{font-size:13px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;opacity:.9}h1{font-size:clamp(34px,6vw,62px);line-height:.95;margin:8px 0 10px}.hero p{max-width:800px;font-size:18px;line-height:1.45}.cycle{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}.cycle span{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);padding:9px 12px;border-radius:999px;font-weight:900}
+.statusbar{display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;margin:18px 0;background:#fff;padding:16px 18px;border-radius:20px;border:1px solid var(--line)}.progress{height:12px;background:#eaf3ee;border-radius:999px;overflow:hidden;margin-top:8px}.progress>div{height:100%;width:0;background:linear-gradient(90deg,var(--green),#a8e56a);transition:.4s}.rank{font-weight:1000;background:#effbf4;padding:10px 14px;border-radius:14px}
+.mission{margin-top:18px;background:var(--card);border:1px solid var(--line);border-radius:24px;padding:24px;box-shadow:0 10px 30px rgba(25,100,70,.07)}.mission.locked{opacity:.52;pointer-events:none;position:relative;filter:grayscale(.25)}.mission.locked:after{content:"🔒 Сначала пройди предыдущую миссию";position:absolute;inset:0;display:grid;place-items:center;background:rgba(255,255,255,.86);border-radius:24px;font-size:20px;font-weight:1000;text-align:center;padding:20px}.mission.done{border:2px solid #7bd7a5}.mhead{display:flex;justify-content:space-between;gap:14px;align-items:flex-start}.num{font-size:13px;font-weight:1000;letter-spacing:.1em;text-transform:uppercase;color:var(--green2)}h2{font-size:28px;margin:4px 0 8px}.badge{background:#effaf3;border:1px solid #d8efe1;padding:8px 12px;border-radius:999px;font-weight:900;white-space:nowrap}
+.box{background:#f8fbfa;border:1px solid #e3ece7;border-radius:18px;padding:16px;margin:14px 0;line-height:1.5}.prompt{border-left:5px solid #7a70dd}.answer{border-left:5px solid #5b91ef}.good{border-left:5px solid var(--green);background:#f5fff8}.warn{border-left:5px solid #f0a34c;background:#fffaf2}.label{font-weight:1000;margin:16px 0 8px;display:block}textarea,input[type="text"]{width:100%;border:2px solid #dbeae2;border-radius:16px;padding:14px;background:#fff;outline:none}textarea{min-height:96px;resize:vertical}textarea:focus,input[type="text"]:focus{border-color:#79cfa0;box-shadow:0 0 0 4px rgba(53,183,121,.10)}.small{min-height:70px}.btnrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}.btn{border:0;border-radius:14px;padding:12px 16px;font-weight:1000;cursor:pointer;background:var(--green);color:#fff;box-shadow:0 8px 18px rgba(53,183,121,.22)}.btn.secondary{background:#edf5f0;color:var(--ink);box-shadow:none}.feedback{margin-top:12px;padding:12px 14px;border-radius:14px;font-weight:800;display:none}.feedback.ok{display:block;background:#eafff2;color:#17643f;border:1px solid #bfe8cf}.feedback.no{display:block;background:#fff3ef;color:#8c3a25;border:1px solid #ffd3c7}.feedback.maybe{display:block;background:#fffbe9;color:#70590b;border:1px solid #f4dea0}.selfcheck{display:none;margin-top:12px;padding:14px;border-radius:14px;background:#fffbe9;border:1px solid #f4dea0}
+.sort-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px}.sortcol{background:#fafdfb;border:1px solid var(--line);border-radius:18px;padding:12px;min-height:180px}.sortcol h3{margin:0 0 10px;font-size:16px}.qitem{padding:10px 12px;border-radius:12px;background:#fff;border:1px solid #dfe9e3;margin:8px 0;cursor:grab;user-select:none}.qitem.dragging{opacity:.5}.boss{border:2px solid #8bd5aa;background:linear-gradient(180deg,#fff,#f7fff9)}.final{display:none;margin-top:20px;padding:26px;border-radius:24px;background:#16352b;color:#fff}.final h2{font-size:34px}.choice-row{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0}.choice-btn{border:1px solid var(--line);background:#fff;padding:10px 12px;border-radius:12px;font-weight:800;cursor:pointer}.choice-btn.selected{border-color:var(--green);background:#effbf4}.kv-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}.kv-row textarea{min-height:74px}.hint{font-size:14px;color:var(--muted);margin-top:6px}
+@media(max-width:760px){.sort-grid,.kv-row,.statusbar{grid-template-columns:1fr}.mhead{flex-direction:column}}
+</style>
+</head>
+<body><div style="position:fixed;right:12px;bottom:12px;z-index:9999;padding:7px 10px;border-radius:999px;background:#07111ddd;border:1px solid #24405f;color:#8defff;font:800 10px ui-monospace,monospace;backdrop-filter:blur(10px)">FOUNDATION 5–7 · WEEK 03</div>
+<div class="wrap">
+<nav class="nav"><a href="./index.html">← К неделям</a><a href="./index.html">← К классам</a><a href="./index.html">← К предметам</a></nav>
+<section class="hero"><div class="eyebrow">6 класс · AI Prompt Engineering · Week 03</div><h1>AI INTERVIEW LAB</h1><p><b>Не угадывай — сначала спроси.</b> Сегодня ты проектируешь AI, который умеет собирать недостающую информацию до того, как начнёт отвечать.</p><div class="cycle"><span>ASK</span><span>→ COLLECT</span><span>→ THINK</span><span>→ CREATE</span></div></section>
+<section class="statusbar"><div><b id="progressText">Пройдено: 0 из 6</b><div class="progress"><div id="progressFill"></div></div></div><div class="rank" id="rank">🟢 USER</div></section>
+
+<section class="mission" id="m1"><div class="mhead"><div><div class="num">Миссия 1</div><h2>🔎 Чего AI не знает?</h2></div><div class="badge">Недостающие данные</div></div><div class="box prompt"><b>Пользователь:</b><br>«Помоги выбрать подарок моему другу».</div><label class="label">1. Какой информации AI не хватает? Напиши минимум 5 вещей.</label><textarea id="m1a"></textarea><label class="label">2. Из своих пунктов выбери ТРИ самых важных и объясни, почему без них AI сложнее подобрать подарок.</label><textarea id="m1b"></textarea><div class="btnrow"><button class="btn" onclick="checkM1()">Проверить анализ</button></div><div class="feedback" id="f1"></div><div class="selfcheck" id="sc1"><b>AI не уверен в одном из твоих пунктов.</b><br>Объясни одним предложением, почему эта информация реально влияет на выбор подарка.<textarea id="m1c" class="small"></textarea><div class="btnrow"><button class="btn secondary" onclick="overrideM1()">Объяснить и засчитать</button></div></div></section>
+
+<section class="mission locked" id="m2"><div class="mhead"><div><div class="num">Миссия 2</div><h2>🎤 Теперь ты AI</h2></div><div class="badge">Пять умных вопросов</div></div><div class="box prompt"><b>Пользователь:</b><br>«Помоги мне придумать тему школьного проекта».</div><div class="box warn"><b>Правило:</b> ты НЕ имеешь права сразу предлагать тему. Сначала собери контекст.</div><label class="label">Напиши 5 вопросов. Каждый вопрос должен узнавать новую информацию.</label><textarea id="m2a" placeholder="1. ...&#10;2. ...&#10;3. ...&#10;4. ...&#10;5. ..."></textarea><label class="label">Какой из этих вопросов самый важный? Почему?</label><textarea id="m2b" class="small"></textarea><div class="btnrow"><button class="btn" onclick="checkM2()">Проверить интервью</button></div><div class="feedback" id="f2"></div><div class="selfcheck" id="sc2"><b>Я вижу хорошие вопросы, но один смысл распознан неуверенно.</b><br>Объясни, какую новую информацию даст твой самый необычный вопрос?<textarea id="m2c" class="small"></textarea><div class="btnrow"><button class="btn secondary" onclick="overrideM2()">Объяснить и засчитать</button></div></div></section>
+
+<section class="mission locked" id="m3"><div class="mhead"><div><div class="num">Миссия 3</div><h2>🧹 Допрос или интервью?</h2></div><div class="badge">Отдели нужное от лишнего</div></div><div class="box">AI выбирает идею для школьного проекта. Перетащи вопросы в подходящую колонку.</div><div class="sort-grid"><div class="sortcol" data-cat="need"><h3>✅ НУЖНО УЗНАТЬ</h3></div><div class="sortcol" data-cat="maybe"><h3>🤔 МОЖЕТ БЫТЬ ПОЛЕЗНО</h3></div><div class="sortcol" data-cat="junk"><h3>🗑 НЕ ИМЕЕТ ОТНОШЕНИЯ</h3></div></div><div id="questionBank" class="box"><div class="qitem" draggable="true" data-id="q1">Какой предмет тебе интереснее?</div><div class="qitem" draggable="true" data-id="q2">Сколько времени у тебя есть на проект?</div><div class="qitem" draggable="true" data-id="q3">Работаешь один или в команде?</div><div class="qitem" draggable="true" data-id="q4">Какие материалы или устройства тебе доступны?</div><div class="qitem" draggable="true" data-id="q5">Какого цвета твой телефон?</div><div class="qitem" draggable="true" data-id="q6">В каком классе ты учишься?</div><div class="qitem" draggable="true" data-id="q7">Какую музыку ты слушаешь?</div><div class="qitem" draggable="true" data-id="q8">Проект должен включать эксперимент?</div><div class="qitem" draggable="true" data-id="q9">Какая у тебя цель?</div><div class="qitem" draggable="true" data-id="q10">В каком городе родилась твоя бабушка?</div><div class="qitem" draggable="true" data-id="q11">Какой результат нужно представить?</div><div class="qitem" draggable="true" data-id="q12">Какой у тебя бюджет?</div></div><label class="label">Выбери один лишний вопрос и объясни, почему AI не должен его задавать.</label><textarea id="m3a" class="small"></textarea><label class="label">Можно ли задать слишком много даже полезных вопросов? Почему?</label><textarea id="m3b" class="small"></textarea><div class="btnrow"><button class="btn" onclick="checkM3()">Проверить сортировку</button></div><div class="feedback" id="f3"></div></section>
+
+<section class="mission locked" id="m4"><div class="mhead"><div><div class="num">Миссия 4</div><h2>🧠 Построй интервью</h2></div><div class="badge">Диалоговый алгоритм</div></div><div class="box prompt"><b>Пользователь:</b><br>«Помоги мне подготовиться к контрольной».</div><label class="label">1. Что AI должен узнать обязательно? Напиши минимум 4 пункта.</label><textarea id="m4a"></textarea><label class="label">2. Напиши первые 4 вопроса AI ученику.</label><textarea id="m4b" placeholder="1. ...&#10;2. ...&#10;3. ...&#10;4. ..."></textarea><div class="box answer"><b>Ответ ученика:</b><br>«Я в 6 классе. Контрольная по математике. Тема — дроби. Я вообще ничего не понимаю».</div><label class="label">3. Какой ОДИН следующий вопрос AI должен задать?</label><textarea id="m4c" class="small"></textarea><div class="btnrow"><button class="btn" onclick="checkM4()">Проверить алгоритм</button></div><div class="feedback" id="f4"></div><div class="selfcheck" id="sc4"><b>Твой следующий вопрос необычный, но может быть хорошим.</b><br>Объясни, как ответ на него поможет AI выбрать способ объяснения.<textarea id="m4d" class="small"></textarea><div class="btnrow"><button class="btn secondary" onclick="overrideM4()">Объяснить и засчитать</button></div></div></section>
+
+<section class="mission locked" id="m5"><div class="mhead"><div><div class="num">Миссия 5</div><h2>🛠 Prompt Builder: AI-репетитор</h2></div><div class="badge">Инструкция поведения</div></div><div class="box good">Создай системную инструкцию для AI-репетитора. Он должен сначала провести короткое интервью, а только потом помогать.</div><div class="box"><b>Требования к поведению:</b><br>• не отвечать сразу;<br>• задавать вопросы по одному;<br>• узнать класс, предмет и тему;<br>• понять, что ученик уже знает;<br>• понять, где возникла трудность;<br>• после этого начать объяснять;<br>• подбирать уровень сложности.</div><label class="label">Напиши готовый промпт своими словами.</label><textarea id="m5a" style="min-height:150px"></textarea><div class="btnrow"><button class="btn" onclick="checkM5()">Проверить Prompt Builder</button></div><div class="feedback" id="f5"></div></section>
+
+<section class="mission boss locked" id="m6"><div class="mhead"><div><div class="num">FINAL BOSS · MY AI PROJECT · MODULE 01</div><h2>🔥 Как мой AI знакомится с пользователем?</h2></div><div class="badge">Первый модуль проекта</div></div><label class="label">1. Выбери тип будущего MY AI.</label><div class="choice-row" id="aiTypeChoices"><button type="button" class="choice-btn" data-value="study">📚 AI для учёбы</button><button type="button" class="choice-btn" data-value="projects">🧪 AI для проектов</button><button type="button" class="choice-btn" data-value="languages">🌍 AI для языков</button><button type="button" class="choice-btn" data-value="organizer">📅 AI-организатор</button><button type="button" class="choice-btn" data-value="custom">➕ Свой вариант</button></div><input type="text" id="m6custom" placeholder="Если выбрал(а) свой вариант — напиши его здесь"><label class="label">2. Мой AI создан для...</label><textarea id="m6audience" class="small"></textarea><label class="label">3. Напиши 5–7 вопросов знакомства и объясни, зачем нужен каждый.</label><div id="qaRows"></div><div class="btnrow"><button type="button" class="btn secondary" onclick="addQARow()">+ Добавить вопрос</button></div><div class="box warn"><b>PRIVACY CHECK</b><br>Посмотри на свои вопросы. Есть ли среди них информация, которая не влияет на работу помощника?</div><label class="label">4. Что ты решил(а) после проверки?</label><textarea id="m6privacy" class="small"></textarea><div class="btnrow"><button class="btn" onclick="checkM6()">Завершить Module 01</button></div><div class="feedback" id="f6"></div></section>
+
+<section class="final" id="final"><div class="eyebrow">Week 03 завершена</div><h2>🔥 AI INTERVIEWER</h2><p>Ты научился не угадывать, а собирать контекст. И уже создал первый модуль будущего MY AI.</p></section>
+</div>
+<script>
+const completed=JSON.parse(localStorage.getItem('ai6w3_completed')||'[]');let selectedAIType=localStorage.getItem('ai6w3_type')||'';
+function norm(s){return(s||'').toLowerCase().replace(/ё/g,'е').replace(/[.,!?;:()«»"'—–\-]/g,' ').replace(/\s+/g,' ').trim()}
+function stem(w){let x=norm(w);const endings=['иями','ями','ами','его','ого','ему','ому','ыми','ими','ий','ый','ая','яя','ое','ее','ые','ие','ов','ев','ам','ям','ах','ях','ы','и','а','я','у','ю','е','о'];for(const e of endings){if(x.length>5&&x.endsWith(e))return x.slice(0,-e.length)}return x}
+function tokens(s){return norm(s).split(' ').filter(Boolean).map(stem)}
+function minWords(s,n){return tokens(s).length>=n}
+function looksLikeGibberish(s){
+  const raw=norm(s);
+  if(!raw) return true;
+  if(/(.)\1{4,}/.test(raw)) return true;
+  const t=tokens(s).filter(x=>x.length>1);
+  if(t.length<3) return true;
+  const uniq=new Set(t);
+  if(uniq.size/Math.max(1,t.length)<0.45) return true;
+  const letters=(s.match(/[а-яА-Яa-zA-ZёЁ]/g)||[]).length;
+  const visible=(s.match(/\S/g)||[]).length;
+  if(visible && letters/visible<0.55) return true;
+  return false;
+}
+function hasReasoning(s){
+  return !looksLikeGibberish(s) && fuzzyHas(s,[
+    'потому что','так как','чтобы','поэтому','иначе','это поможет',
+    'это нужно','влияет','зависит','поможет понять','нужно узнать'
+  ]);
+}
+function hasQuestionIntent(s){
+  return !looksLikeGibberish(s) && (
+    s.includes('?') || fuzzyHas(s,[
+      'какой','какая','какие','сколько','когда','где','что','чем','почему',
+      'умеешь','знаешь','нравится','хочешь','есть ли','нужно ли'
+    ])
+  );
+}
+function meaningfulList(text,cats,minCats,minItems){
+  if(looksLikeGibberish(text)) return false;
+  const items=distinctLines(text);
+  const catCount=countSemanticCats(text,cats);
+  return items.length>=minItems && catCount>=minCats;
+}
+function containsNonsenseMarkers(s){
+  const x=norm(s);
+  const bad=[
+    'абракадабра','блабла','бла бла','фигня','ерунда','рандом','рандомные слова',
+    'лалала','лалал','аааа','ыыыы','хз хз','не знаю не знаю'
+  ];
+  return bad.some(w=>x.includes(w));
+}
+function qualityAnswer(s,minTokenCount=5){
+  return minWords(s,minTokenCount) && !looksLikeGibberish(s) && !containsNonsenseMarkers(s);
+}
+
+function fuzzyHas(text,variants){const t=tokens(text);return variants.some(v=>tokens(v).every(part=>t.some(tok=>tok.includes(part)||part.includes(tok))))}
+function distinctLines(text){return text.split(/\n|[;]+/).map(x=>norm(x)).filter(x=>x.length>2)}
+function similarity(a,b){const A=new Set(tokens(a)),B=new Set(tokens(b));if(!A.size||!B.size)return 0;let inter=0;A.forEach(x=>{if(B.has(x))inter++});return inter/Math.min(A.size,B.size)}
+function showFeedback(id,type,msg){const el=document.getElementById(id);el.className='feedback '+type;el.innerHTML=msg}
+function markDone(id){if(!completed.includes(id)){completed.push(id);localStorage.setItem('ai6w3_completed',JSON.stringify(completed))}document.getElementById(id).classList.add('done');const n=Number(id.replace('m',''));const next=document.getElementById('m'+(n+1));if(next)next.classList.remove('locked');updateProgress()}
+function updateProgress(){completed.forEach(id=>{const el=document.getElementById(id);if(el)el.classList.add('done');const n=Number(id.replace('m',''));const next=document.getElementById('m'+(n+1));if(next)next.classList.remove('locked')});const c=completed.length;document.getElementById('progressText').textContent='Пройдено: '+c+' из 6';document.getElementById('progressFill').style.width=(c/6*100)+'%';const ranks=['🟢 USER','🔵 QUESTION BUILDER','🟣 CONTEXT HUNTER','🟠 AI INTERVIEWER','🟠 AI INTERVIEWER','🔥 MY AI BUILDER','🔥 MY AI BUILDER'];document.getElementById('rank').textContent=ranks[c];if(c>=6)document.getElementById('final').style.display='block'}
+function saveInputs(){document.querySelectorAll('textarea,input[type="text"]').forEach(el=>localStorage.setItem('ai6w3_'+el.id,el.value))}
+function restoreInputs(){document.querySelectorAll('textarea,input[type="text"]').forEach(el=>{const v=localStorage.getItem('ai6w3_'+el.id);if(v!==null)el.value=v;el.addEventListener('input',saveInputs)})}
+function countSemanticCats(text,cats){let c=0;cats.forEach(g=>{if(fuzzyHas(text,g))c++});return c}
+const giftCats=[['возраст','сколько лет','лет другу'],['интерес','увлечен','хобби','что любит','чем любит заниматься'],['бюджет','деньги','сколько потратить','стоимость','цена'],['повод','праздник','день рождения','для чего подарок'],['что уже есть','есть у него','уже имеет'],['не любит','не нравится','антипатии'],['отношения','кто он мне','насколько близкий']];
+function checkM1(){
+  const a=m1a.value,b=m1b.value;
+  const catCount=countSemanticCats(a,giftCats);
+  const explanationCats=countSemanticCats(b,giftCats);
+  const listOk=qualityAnswer(a,8)&&catCount>=4;
+  const reasonOk=qualityAnswer(b,12)&&hasReasoning(b)&&explanationCats>=2;
+  if(listOk&&reasonOk){
+    showFeedback('f1','ok','✅ Сильный анализ. Ты назвал разные типы информации и объяснил, как минимум две из них влияют на выбор подарка.');
+    markDone('m1');
+  }else if(listOk&&qualityAnswer(b,10)){
+    showFeedback('f1','maybe','🤔 Список хороший, но в объяснении я пока не вижу связи между информацией и выбором подарка. Объясни один нестандартный пункт конкретно.');
+    sc1.style.display='block';
+  }else{
+    showFeedback('f1','no','🧠 Нужны минимум 4 разные смысловые категории (например возраст, интересы, бюджет, повод и т.п.) и связное объяснение, почему они влияют на выбор.');
+  }
+}
+function overrideM1(){
+  const c=m1c.value;
+  if(qualityAnswer(c,8)&&hasReasoning(c)){
+    showFeedback('f1','ok','✅ Засчитано по объяснению: ты показал причинную связь между информацией и результатом.');
+    sc1.style.display='none'; markDone('m1');
+  }else showFeedback('f1','no','Нужно не просто написать длинный текст, а объяснить: ЧТО узнает AI и КАК это изменит выбор подарка.');
+}
+function checkM2(){
+  const a=m2a.value,b=m2b.value,qs=distinctLines(a);
+  let unique=true;
+  for(let i=0;i<qs.length;i++)for(let j=i+1;j<qs.length;j++)if(similarity(qs[i],qs[j])>.62)unique=false;
+  const semantic=countSemanticCats(a,[
+    ['предмет','тема','область'],
+    ['интерес','увлечен','что нравится'],
+    ['время','срок','когда сдавать'],
+    ['один','команд','группа'],
+    ['формат','что представить','презентац','сайт','макет'],
+    ['ресурс','материал','оборудован','что есть'],
+    ['цель','результат'],
+    ['бюджет','деньги']
+  ]);
+  const fiveQuestions=qs.length>=5 && qs.slice(0,5).every(q=>hasQuestionIntent(q)&&qualityAnswer(q,3));
+  const reasonOk=qualityAnswer(b,8)&&hasReasoning(b);
+  if(fiveQuestions&&unique&&semantic>=4&&reasonOk){
+    showFeedback('f2','ok','✅ Интервью получилось разнообразным: вопросы собирают разные части контекста, а выбор главного вопроса обоснован.');
+    markDone('m2');
+  }else if(fiveQuestions&&unique&&semantic>=3&&qualityAnswer(b,7)){
+    showFeedback('f2','maybe','🤔 Вопросы похожи на осмысленные, но один смысл нестандартный. Объясни, какую новую информацию он даст и зачем она нужна.');
+    sc2.style.display='block';
+  }else{
+    showFeedback('f2','no','🎤 Нужно 5 осмысленных вопросов. Каждый должен реально что-то выяснять, а вопросы не должны повторять одну и ту же мысль.');
+  }
+}
+function overrideM2(){
+  const c=m2c.value;
+  if(qualityAnswer(c,8)&&hasReasoning(c)){
+    showFeedback('f2','ok','✅ Засчитано: ты объяснил, какую новую информацию даёт вопрос и как она поможет выбрать проект.');
+    sc2.style.display='none'; markDone('m2');
+  }else showFeedback('f2','no','Нужно объяснить связь: какую информацию даст вопрос и как она повлияет на подбор проекта.');
+}
+const sortExpected={q1:'need',q2:'need',q3:'maybe',q4:'need',q5:'junk',q6:'maybe',q7:'junk',q8:'maybe',q9:'need',q10:'junk',q11:'need',q12:'maybe'};
+function checkM3(){
+  let placed=0,correct=0;
+  document.querySelectorAll('.sortcol .qitem').forEach(item=>{
+    placed++; if(sortExpected[item.dataset.id]===item.parentElement.dataset.cat)correct++;
+  });
+  const a=m3a.value,b=m3b.value;
+  const reasonA=qualityAnswer(a,7)&&hasReasoning(a)&&fuzzyHas(a,['не влияет','не относится','не нужен','лишний','не помогает','не меняет результат']);
+  const reasonB=qualityAnswer(b,7)&&hasReasoning(b)&&fuzzyHas(b,['устанет','слишком много','долго','лишняя информация','не все нужно','только нужное','перегруз']);
+  if(placed===12&&correct>=9&&reasonA&&reasonB){
+    showFeedback('f3','ok','✅ Отлично. Ты не только отсортировал вопросы, но и объяснил, почему лишние данные вредят интервью.');
+    markDone('m3');
+  }else{
+    showFeedback('f3','no','🧹 Нужна корректная сортировка и два связных объяснения с причиной, а не просто длинный текст.');
+  }
+}
+function checkM4(){
+  const a=m4a.value,b=m4b.value,c=m4c.value;
+  const required=countSemanticCats(a,[
+    ['класс','возраст'],['предмет'],['тема'],
+    ['что знает','знания','уровень'],['что не понимает','трудность','проблема'],
+    ['дата','когда контрольная','время']
+  ]);
+  const qs=distinctLines(b);
+  const questionsOk=qs.length>=4&&qs.slice(0,4).every(q=>hasQuestionIntent(q)&&qualityAnswer(q,3));
+  let unique=true;
+  for(let i=0;i<Math.min(4,qs.length);i++)for(let j=i+1;j<Math.min(4,qs.length);j++)if(similarity(qs[i],qs[j])>.65)unique=false;
+  const nextGood=hasQuestionIntent(c)&&qualityAnswer(c,5)&&fuzzyHas(c,[
+    'что именно не понимаешь','какая часть дробей','с чем проблема','что уже умеешь',
+    'с чего начнем','сложение дробей','знаменатель','числитель','какое действие'
+  ]);
+  if(qualityAnswer(a,8)&&required>=4&&questionsOk&&unique&&nextGood){
+    showFeedback('f4','ok','✅ Алгоритм работает: стартовые вопросы собирают контекст, а следующий вопрос опирается на уже полученный ответ.');
+    markDone('m4');
+  }else if(qualityAnswer(a,8)&&required>=4&&questionsOk&&unique&&hasQuestionIntent(c)&&qualityAnswer(c,5)){
+    showFeedback('f4','maybe','🤔 Следующий вопрос выглядит осмысленным, но он нестандартный. Объясни, как ответ на него поможет выбрать способ объяснения.');
+    sc4.style.display='block';
+  }else{
+    showFeedback('f4','no','🧠 Нужны 4 осмысленных стартовых вопроса без повторов и логичный следующий вопрос, связанный с дробями или уровнем понимания.');
+  }
+}
+function overrideM4(){
+  const d=m4d.value;
+  if(qualityAnswer(d,8)&&hasReasoning(d)){
+    showFeedback('f4','ok','✅ Засчитано: ты объяснил, как ответ на этот вопрос повлияет на дальнейшее объяснение AI.');
+    sc4.style.display='none'; markDone('m4');
+  }else showFeedback('f4','no','Нужно объяснить причинную связь: что узнает AI и как это изменит его следующий шаг.');
+}
+function checkM5(){
+  const p=m5a.value;
+  let score=0;
+  if(fuzzyHas(p,['не отвечай сразу','сначала спроси','сначала задай']))score++;
+  if(fuzzyHas(p,['по одному вопросу','задавай по одному']))score++;
+  if(fuzzyHas(p,['класс','возраст']))score++;
+  if(fuzzyHas(p,['предмет']))score++;
+  if(fuzzyHas(p,['тема']))score++;
+  if(fuzzyHas(p,['что уже знает','уровень знаний','что понимает']))score++;
+  if(fuzzyHas(p,['что непонятно','где трудность','что сложно']))score++;
+  if(fuzzyHas(p,['после этого объясни','затем помоги','только потом']))score++;
+  if(fuzzyHas(p,['уровень сложности','простыми словами','под уровень']))score++;
+  const structureOk=qualityAnswer(p,35)&&!containsNonsenseMarkers(p);
+  if(structureOk&&score>=7){
+    showFeedback('f5','ok','✅ Сильная системная инструкция. Здесь есть порядок действий, сбор контекста и правило адаптации ответа.');
+    markDone('m5');
+  }else{
+    showFeedback('f5','no','🛠 Длинный текст сам по себе не засчитывается. В промпте должны быть минимум 7 смысловых требований к поведению AI.');
+  }
+}
+function addQARow(q='',why=''){const row=document.createElement('div');row.className='kv-row';const idx=document.querySelectorAll('#qaRows .kv-row').length+1;row.innerHTML=`<textarea id="q_${idx}" class="small" placeholder="Вопрос ${idx}">${q}</textarea><textarea id="w_${idx}" class="small" placeholder="Зачем AI это знать?">${why}</textarea>`;qaRows.appendChild(row);row.querySelectorAll('textarea').forEach(el=>el.addEventListener('input',saveProjectRows))}
+function saveProjectRows(){const rows=[...document.querySelectorAll('#qaRows .kv-row')].map(r=>{const t=r.querySelectorAll('textarea');return[t[0].value,t[1].value]});localStorage.setItem('ai6w3_rows',JSON.stringify(rows))}
+function restoreProjectRows(){const saved=JSON.parse(localStorage.getItem('ai6w3_rows')||'null');if(saved&&saved.length)saved.forEach(x=>addQARow(x[0],x[1]));else for(let i=0;i<5;i++)addQARow()}
+function checkM6(){
+  const aud=m6audience.value,privacy=m6privacy.value;
+  const rows=[...document.querySelectorAll('#qaRows .kv-row')].map(r=>{
+    const t=r.querySelectorAll('textarea'); return {q:t[0].value,w:t[1].value}
+  }).filter(x=>minWords(x.q,2)||minWords(x.w,2));
+
+  let valid=0;
+  let semanticKinds=new Set();
+  const semGroups=[
+    ['класс','возраст'],['цель','зачем','результат'],['интерес','увлечен'],
+    ['предмет','тема'],['уровень','что умеет','что знает'],['время','расписание'],
+    ['формат','как удобно','вид помощи'],['язык','уровень языка'],['срок','дедлайн']
+  ];
+
+  rows.forEach(x=>{
+    const qOk=hasQuestionIntent(x.q)&&qualityAnswer(x.q,3);
+    const wOk=qualityAnswer(x.w,6)&&hasReasoning(x.w);
+    if(qOk&&wOk){
+      valid++;
+      semGroups.forEach((g,i)=>{if(fuzzyHas(x.q,g)) semanticKinds.add(i)});
+    }
+  });
+
+  const typeOk=selectedAIType&&(selectedAIType!=='custom'||qualityAnswer(m6custom.value,2));
+  const audienceOk=qualityAnswer(aud,6);
+  const privacyOk=qualityAnswer(privacy,8)&&hasReasoning(privacy);
+
+  if(typeOk&&audienceOk&&valid>=5&&semanticKinds.size>=3&&privacyOk){
+    showFeedback('f6','ok','🏆 MODULE 01 ГОТОВ. У тебя минимум 5 осмысленных вопросов, каждый имеет объяснение, а вопросы собирают разные типы контекста.');
+    markDone('m6'); final.scrollIntoView({behavior:'smooth'});
+  }else{
+    showFeedback('f6','no','🔥 Нельзя пройти Boss просто длинным текстом. Нужны минимум 5 осмысленных вопросов, объяснение пользы каждого, минимум 3 разных типа информации и обоснованный privacy-check.');
+  }
+}
+document.querySelectorAll('.choice-btn').forEach(btn=>btn.addEventListener('click',()=>{selectedAIType=btn.dataset.value;localStorage.setItem('ai6w3_type',selectedAIType);document.querySelectorAll('.choice-btn').forEach(b=>b.classList.remove('selected'));btn.classList.add('selected')}));if(selectedAIType){const b=document.querySelector(`.choice-btn[data-value="${selectedAIType}"]`);if(b)b.classList.add('selected')}
+let dragged=null;document.addEventListener('dragstart',e=>{if(e.target.classList.contains('qitem')){dragged=e.target;e.target.classList.add('dragging')}});document.addEventListener('dragend',e=>{if(e.target.classList.contains('qitem'))e.target.classList.remove('dragging')});document.querySelectorAll('.sortcol,#questionBank').forEach(zone=>{zone.addEventListener('dragover',e=>e.preventDefault());zone.addEventListener('drop',e=>{e.preventDefault();if(dragged)zone.appendChild(dragged)})});
+restoreProjectRows();restoreInputs();updateProgress();
+</script>
+</body>
+</html>
