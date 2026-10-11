@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Quality Lab — 6 класс</title>
+  <style>
+    :root{
+      --bg:#f4fff8;
+      --card:#ffffff;
+      --ink:#16352b;
+      --muted:#60756d;
+      --green:#35b779;
+      --green2:#1f9360;
+      --lime:#b9ef72;
+      --yellow:#ffd86a;
+      --orange:#ff9f5a;
+      --red:#ef6a6a;
+      --blue:#5d92f4;
+      --purple:#8a73e6;
+      --shadow:0 16px 45px rgba(30,90,65,.13);
+      --border:#dceee5;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      background:
+        radial-gradient(circle at 12% 0%, #dff7e9 0, transparent 25%),
+        radial-gradient(circle at 90% 8%, #eef8c9 0, transparent 23%),
+        var(--bg);
+      color:var(--ink);
+    }
+    button,textarea,input{font:inherit}
+    .wrap{max-width:1120px;margin:auto;padding:18px 18px 60px}
+    .nav{
+      display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px
+    }
+    .nav a{
+      text-decoration:none;color:var(--ink);background:#fff;border:1px solid var(--border);
+      padding:10px 14px;border-radius:14px;font-weight:800;box-shadow:0 5px 18px rgba(0,0,0,.04)
+    }
+    .hero{
+      background:linear-gradient(135deg,#1e7e55,#36b779);
+      color:#fff;border-radius:28px;padding:30px;box-shadow:var(--shadow);position:relative;overflow:hidden
+    }
+    .hero:after{
+      content:"AI";position:absolute;right:24px;top:-12px;font-size:150px;font-weight:1000;opacity:.08
+    }
+    .eyebrow{font-weight:900;letter-spacing:.12em;text-transform:uppercase;font-size:13px;opacity:.85}
+    h1{margin:8px 0 8px;font-size:clamp(34px,6vw,64px);line-height:.95}
+    .hero p{max-width:720px;font-size:18px;margin:14px 0 0;line-height:1.45}
+    .cycle{
+      display:flex;gap:8px;flex-wrap:wrap;margin-top:20px
+    }
+    .cycle span{
+      background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);
+      padding:9px 12px;border-radius:999px;font-weight:900
+    }
+    .statusbar{
+      display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;
+      margin:18px 0;background:#fff;padding:16px 18px;border-radius:20px;border:1px solid var(--border)
+    }
+    .progress{height:12px;background:#eaf3ee;border-radius:999px;overflow:hidden;margin-top:8px}
+    .progress>div{height:100%;width:0;background:linear-gradient(90deg,var(--green),var(--lime));transition:.4s}
+    .rank{font-weight:1000;background:#effbf4;padding:10px 14px;border-radius:14px}
+    .mission{
+      margin-top:18px;background:var(--card);border:1px solid var(--border);border-radius:24px;
+      padding:24px;box-shadow:0 10px 30px rgba(25,100,70,.07)
+    }
+    .mission.locked{opacity:.52;filter:grayscale(.35);pointer-events:none;position:relative}
+    .mission.locked:after{
+      content:"🔒 Сначала пройди предыдущую миссию";
+      position:absolute;inset:0;display:grid;place-items:center;background:rgba(255,255,255,.82);
+      border-radius:24px;font-size:20px;font-weight:1000;text-align:center;padding:20px
+    }
+    .mission.done{border:2px solid #7bd7a5}
+    .mhead{display:flex;justify-content:space-between;gap:14px;align-items:flex-start}
+    .num{font-size:13px;font-weight:1000;letter-spacing:.1em;text-transform:uppercase;color:var(--green2)}
+    h2{font-size:28px;margin:4px 0 8px}
+    .badge{background:#effaf3;border:1px solid #d8efe1;padding:8px 12px;border-radius:999px;font-weight:900;white-space:nowrap}
+    .box{
+      background:#f8fbfa;border:1px solid #e3ece7;border-radius:18px;padding:16px;margin:14px 0;line-height:1.5
+    }
+    .prompt{border-left:5px solid var(--purple)}
+    .answer{border-left:5px solid var(--blue)}
+    .warn{border-left:5px solid var(--orange);background:#fffaf2}
+    .good{border-left:5px solid var(--green);background:#f4fff8}
+    .label{font-weight:1000;margin:16px 0 8px;display:block}
+    textarea{
+      width:100%;min-height:105px;border:2px solid #dbeae2;border-radius:16px;padding:14px;background:#fff;resize:vertical;outline:none
+    }
+    textarea:focus{border-color:#79cfa0;box-shadow:0 0 0 4px rgba(53,183,121,.10)}
+    .small{min-height:72px}
+    .btnrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+    .btn{
+      border:0;border-radius:14px;padding:12px 16px;font-weight:1000;cursor:pointer;
+      background:var(--green);color:#fff;box-shadow:0 8px 18px rgba(53,183,121,.22)
+    }
+    .btn.secondary{background:#eef5f1;color:var(--ink);box-shadow:none}
+    .feedback{margin-top:12px;padding:12px 14px;border-radius:14px;font-weight:800;display:none}
+    .feedback.ok{display:block;background:#eafff2;color:#17643f;border:1px solid #bfe8cf}
+    .feedback.no{display:block;background:#fff3ef;color:#8c3a25;border:1px solid #ffd3c7}
+    .choices{display:grid;gap:10px;margin:12px 0}
+    .choice{
+      display:flex;align-items:flex-start;gap:10px;padding:13px;border:1px solid #dce9e2;border-radius:14px;background:#fff
+    }
+    .choice input{margin-top:4px}
+    .forbidden{
+      display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 14px
+    }
+    .forbidden span{background:#fff0ed;border:1px solid #ffd2c9;color:#8e3d2c;padding:7px 10px;border-radius:999px;font-weight:900}
+    .boss{
+      background:linear-gradient(180deg,#fff,#f7fff9);border:2px solid #8bd5aa
+    }
+    .stars{font-size:22px;letter-spacing:4px}
+    .final{
+      margin-top:20px;padding:26px;border-radius:24px;background:#16352b;color:#fff;display:none
+    }
+    .final h2{font-size:34px}
+    .mini-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    @media(max-width:760px){
+      .mini-grid{grid-template-columns:1fr}
+      .mhead{flex-direction:column}
+      .statusbar{grid-template-columns:1fr}
+    }
+    .hint{font-size:14px;color:var(--muted);margin-top:6px}
+    .counter{font-size:13px;color:var(--muted);text-align:right}
+  </style>
+</head>
+<body><div style="position:fixed;right:12px;bottom:12px;z-index:9999;padding:7px 10px;border-radius:999px;background:#07111ddd;border:1px solid #24405f;color:#8defff;font:800 10px ui-monospace,SFMono-Regular,Menlo,monospace;backdrop-filter:blur(10px)">FOUNDATION 5–7 · WEEK 02</div>
+<div class="wrap">
+  <nav class="nav">
+    <a href="./index.html">← К неделям</a>
+    <a href="../../index.html">AI Prompt Engineering</a>
+    <a href="../../../index.html">К предметам</a>
+  </nav>
+
+  <section class="hero">
+    <div class="eyebrow">6 класс · Week 02</div>
+    <h1>AI QUALITY LAB</h1>
+    <p><b>Плохой AI vs хороший AI.</b> Сегодня ты не просто пользователь. Ты диагностируешь ответы, ремонтируешь промпты и доказываешь, почему новая версия лучше.</p>
+    <div class="cycle">
+      <span>PROMPT</span><span>→ ANSWER</span><span>→ CHECK</span><span>→ IMPROVE</span><span>→ TRY AGAIN</span>
+    </div>
+  </section>
+
+  <section class="statusbar">
+    <div>
+      <b id="progressText">Пройдено: 0 из 6</b>
+      <div class="progress"><div id="progressFill"></div></div>
+    </div>
+    <div class="rank" id="rank">🟢 USER</div>
+  </section>
+
+  <section class="mission" id="m1">
+    <div class="mhead">
+      <div><div class="num">Миссия 1</div><h2>🔎 AI-Детектив</h2></div>
+      <div class="badge">Найди проблему</div>
+    </div>
+    <div class="box prompt"><b>PROMPT:</b><br>Объясни фотосинтез.</div>
+    <div class="box answer"><b>ОТВЕТ AI:</b><br>Фотосинтез представляет собой сложный биохимический процесс преобразования энергии электромагнитного излучения в энергию химических связей органических соединений с участием фотосинтетических пигментов.</div>
+
+    <label class="label">1. Напиши минимум две причины, почему этот ответ может быть плохим для шестиклассника.</label>
+    <textarea id="m1a" placeholder="Мой диагноз..."></textarea>
+    <label class="label">2. Перепиши промпт так, чтобы шанс получить хороший ответ был выше.</label>
+    <textarea id="m1b" placeholder="Моя новая версия промпта..."></textarea>
+    <div class="hint">Подумай: кому отвечает AI? Какими словами? Нужен ли пример, формат или ограничение?</div>
+    <div class="btnrow"><button class="btn" onclick="checkM1()">Проверить расследование</button></div>
+    <div class="feedback" id="f1"></div>
+  </section>
+
+  <section class="mission locked" id="m2">
+    <div class="mhead">
+      <div><div class="num">Миссия 2</div><h2>⚖️ AI-Баттл</h2></div>
+      <div class="badge">Точность ≠ красота</div>
+    </div>
+    <div class="box"><b>Задача:</b> объяснить шестикласснику, почему небо голубое.</div>
+    <div class="mini-grid">
+      <div class="box answer"><b>Ответ A</b><br>Небо голубое, потому что океаны отражают голубой цвет в атмосферу.</div>
+      <div class="box good"><b>Ответ B</b><br>Солнечный свет состоит из разных цветов. В атмосфере короткие голубые волны рассеиваются сильнее остальных, поэтому со всех сторон до наших глаз приходит больше голубого света.</div>
+    </div>
+    <label class="label">Какой ответ лучше для задачи?</label>
+    <div class="choices">
+      <label class="choice"><input type="radio" name="battle" value="A"> <span><b>Ответ A</b> — он короче и проще.</span></label>
+      <label class="choice"><input type="radio" name="battle" value="B"> <span><b>Ответ B</b> — он точнее, хотя его ещё можно улучшить.</span></label>
+    </div>
+    <label class="label">Докажи своё решение. Почему?</label>
+    <textarea id="m2a" class="small" placeholder="Я выбрал(а) этот ответ, потому что..."></textarea>
+    <label class="label">Что именно ты изменил(а) бы в ответе B, чтобы сделать его ещё лучше для шестиклассника?</label>
+    <textarea id="m2b" class="small" placeholder="Я бы изменил(а)..."></textarea>
+    <div class="btnrow"><button class="btn" onclick="checkM2()">Защитить решение</button></div>
+    <div class="feedback" id="f2"></div>
+  </section>
+
+  <section class="mission locked" id="m3">
+    <div class="mhead">
+      <div><div class="num">Миссия 3</div><h2>🧩 Невидимая инструкция</h2></div>
+      <div class="badge">Мышление наоборот</div>
+    </div>
+    <div class="box answer"><b>Ты видишь ТОЛЬКО ответ AI:</b><br><br>
+      🥞 Мини-рецепт<br>
+      1. Смешай яйцо, молоко и муку.<br>
+      2. Добавь немного сахара.<br>
+      3. Выпекай маленькие блинчики на сковороде.<br><br>
+      ⏱ Время: около 15 минут.<br>
+      ⚠️ Попроси взрослого помочь со сковородой.
+    </div>
+    <label class="label">Какой промпт мог получить AI? Восстанови его.</label>
+    <textarea id="m3a" placeholder="Предположительный промпт..."></textarea>
+    <div class="hint">Твой промпт должен объяснять хотя бы: что сделать, для кого, в каком формате и с каким ограничением/условием.</div>
+    <div class="btnrow"><button class="btn" onclick="checkM3()">Проверить гипотезу</button></div>
+    <div class="feedback" id="f3"></div>
+  </section>
+
+  <section class="mission locked" id="m4">
+    <div class="mhead">
+      <div><div class="num">Миссия 4</div><h2>🛠 AI-Ремонт</h2></div>
+      <div class="badge">Запрещённые слова</div>
+    </div>
+    <div class="box warn">
+      <b>USER:</b> Придумай мне идею школьного проекта.<br><br>
+      <b>AI:</b> Создай плакат об экологии.<br><br>
+      <b>USER:</b> Нет, интереснее.<br><br>
+      <b>AI:</b> Создай презентацию об экологии.<br><br>
+      <b>USER:</b> Нет, это скучно.<br><br>
+      <b>AI:</b> Сделай видео об экологии.
+    </div>
+
+    <label class="label">Кто здесь работает плохо — AI, пользователь или оба? Объясни.</label>
+    <textarea id="m4a" class="small" placeholder="Мой разбор..."></textarea>
+
+    <label class="label">Перепиши фразу «Нет, сделай интереснее» так, чтобы AI точно понял, ЧТО изменить.</label>
+    <div class="forbidden">
+      <span>интересный</span><span>крутой</span><span>хороший</span><span>лучший</span><span>красивый</span><span>скучный</span>
+    </div>
+    <textarea id="m4b" placeholder="Конкретное уточнение для AI..."></textarea>
+    <div class="btnrow"><button class="btn" onclick="checkM4()">Проверить ремонт</button></div>
+    <div class="feedback" id="f4"></div>
+  </section>
+
+  <section class="mission locked" id="m5">
+    <div class="mhead">
+      <div><div class="num">Миссия 5</div><h2>🧠 Prompt Surgery</h2></div>
+      <div class="badge">Сначала анализ — потом правка</div>
+    </div>
+    <div class="box prompt"><b>Исходный промпт:</b><br>Ты эксперт. Сделай мне хороший текст о безопасности в интернете для школы. Пусть будет интересно и не очень длинно.</div>
+
+    <div class="mini-grid">
+      <div>
+        <label class="label">Что уже хорошо?</label>
+        <textarea id="m5a" class="small"></textarea>
+      </div>
+      <div>
+        <label class="label">Что непонятно AI?</label>
+        <textarea id="m5b" class="small"></textarea>
+      </div>
+      <div>
+        <label class="label">Что нужно добавить?</label>
+        <textarea id="m5c" class="small"></textarea>
+      </div>
+      <div>
+        <label class="label">Что можно удалить или заменить?</label>
+        <textarea id="m5d" class="small"></textarea>
+      </div>
+    </div>
+    <label class="label">Теперь создай новую версию промпта.</label>
+    <textarea id="m5e" placeholder="Prompt v2..."></textarea>
+    <div class="btnrow"><button class="btn" onclick="checkM5()">Завершить операцию</button></div>
+    <div class="feedback" id="f5"></div>
+  </section>
+
+  <section class="mission boss locked" id="m6">
+    <div class="mhead">
+      <div><div class="num">FINAL BOSS</div><h2>🔥 Prompt Engineer Challenge</h2></div>
+      <div class="stars">★★★★★</div>
+    </div>
+    <div class="box good"><b>Ситуация:</b><br>Твоя школа хочет уменьшить количество пластикового мусора. Нужно попросить AI придумать <b>реальное решение, которое можно внедрить в школе</b>.</div>
+
+    <label class="label">1. Сначала напиши, какой результат ты ХОЧЕШЬ получить от AI.</label>
+    <textarea id="m6goal" class="small" placeholder="Я ожидаю получить..."></textarea>
+
+    <label class="label">2. Создай PROMPT v1 самостоятельно.</label>
+    <textarea id="m6p1" placeholder="PROMPT v1..."></textarea>
+
+    <label class="label">3. Представь, что AI дал слишком общий ответ: «Поставьте контейнеры для пластика и рассказывайте ученикам об экологии». Что именно в ответе тебя не устраивает?</label>
+    <textarea id="m6check" class="small" placeholder="Проблема ответа..."></textarea>
+
+    <label class="label">4. Какую ОДНУ инструкцию ты изменишь сильнее всего?</label>
+    <textarea id="m6change" class="small" placeholder="Главное изменение..."></textarea>
+
+    <label class="label">5. Создай PROMPT v2. Он должен стать заметно сильнее первой версии.</label>
+    <textarea id="m6p2" placeholder="PROMPT v2..."></textarea>
+
+    <label class="label">6. Закончи фразу: «Prompt v2 лучше, потому что…»</label>
+    <textarea id="m6proof" class="small" placeholder="Моё доказательство..."></textarea>
+
+    <div class="btnrow"><button class="btn" onclick="checkM6()">Победить Boss</button></div>
+    <div class="feedback" id="f6"></div>
+  </section>
+
+  <section class="final" id="final">
+    <div class="eyebrow">Лаборатория завершена</div>
+    <h2>🔥 Ты — PROMPT ENGINEER</h2>
+    <p>Ты не просто написал промпт. Ты диагностировал ответы, находил слабые инструкции, улучшал их и доказывал своё решение.</p>
+    <p><b>Главный вывод:</b> плохой ответ AI — это сигнал проверить и AI, и собственную инструкцию.</p>
+  </section>
+</div>
+
+<script>
+const completed = JSON.parse(localStorage.getItem('ai6QualityCompleted') || '[]');
+
+function norm(s){
+  return (s||'').toLowerCase().replace(/ё/g,'е').replace(/[.,!?;:()«»"']/g,' ');
+}
+function words(s){ return norm(s).split(/\s+/).filter(Boolean); }
+function includesAny(text, arr){ const t=norm(text); return arr.some(x=>t.includes(norm(x))); }
+function minWords(text,n){ return words(text).length>=n; }
+
+function saveAll(){
+  document.querySelectorAll('textarea').forEach(el=>{
+    localStorage.setItem('ai6_'+el.id, el.value);
+  });
+}
+function restoreAll(){
+  document.querySelectorAll('textarea').forEach(el=>{
+    el.value = localStorage.getItem('ai6_'+el.id) || '';
+    el.addEventListener('input', saveAll);
+  });
+}
+
+function markDone(id){
+  if(!completed.includes(id)){
+    completed.push(id);
+    localStorage.setItem('ai6QualityCompleted',JSON.stringify(completed));
+  }
+  document.getElementById(id).classList.add('done');
+  const n=Number(id.replace('m',''));
+  const next=document.getElementById('m'+(n+1));
+  if(next) next.classList.remove('locked');
+  updateProgress();
+}
+function feedback(id,ok,msg){
+  const el=document.getElementById(id);
+  el.className='feedback '+(ok?'ok':'no');
+  el.innerHTML=msg;
+}
+function updateProgress(){
+  completed.forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) el.classList.add('done');
+    const n=Number(id.replace('m',''));
+    const next=document.getElementById('m'+(n+1));
+    if(next) next.classList.remove('locked');
+  });
+  const count=completed.length;
+  document.getElementById('progressText').textContent='Пройдено: '+count+' из 6';
+  document.getElementById('progressFill').style.width=(count/6*100)+'%';
+  const ranks=['🟢 USER','🔵 PROMPT BUILDER','🟣 AI DEBUGGER','🟠 AI TRAINER','🟠 AI TRAINER','🔥 PROMPT ENGINEER','🔥 PROMPT ENGINEER'];
+  document.getElementById('rank').textContent=ranks[count];
+  if(count>=6) document.getElementById('final').style.display='block';
+}
+
+function checkM1(){
+  const a=document.getElementById('m1a').value;
+  const b=document.getElementById('m1b').value;
+
+  let diagnosis=0;
+  if(includesAny(a,['сложн','термин','непонят','трудн'])) diagnosis++;
+  if(includesAny(a,['6 класс','шестикласс','возраст','ребен','аудитор','для кого'])) diagnosis++;
+  if(includesAny(a,['пример','аналог','понятн','прост'])) diagnosis++;
+  if(includesAny(a,['длин','структур','формат','объем'])) diagnosis++;
+
+  let prompt=0;
+  if(includesAny(b,['6 класс','шестикласс','11 лет','12 лет','ученик','ребен'])) prompt++;
+  if(includesAny(b,['прост','понятн','без сложн','доступн'])) prompt++;
+  if(includesAny(b,['пример','аналог','сравн','представь'])) prompt++;
+  if(includesAny(b,['пункт','спис','предложен','слов','корот','структур'])) prompt++;
+  if(includesAny(b,['объясни','расскажи','что такое','как работает'])) prompt++;
+
+  const ok=minWords(a,8)&&minWords(b,10)&&diagnosis>=2&&prompt>=3;
+  if(ok){
+    feedback('f1',true,'✅ Отличное расследование. Ты нашёл проблему не только в ответе, но и в исходной инструкции.');
+    markDone('m1');
+  } else {
+    feedback('f1',false,'🧠 Пока диагноз неполный. Нужны минимум <b>2 разные причины</b> и более точный новый промпт. Подумай про аудиторию, язык, пример и формат.');
+  }
+}
+
+function checkM2(){
+  const choice=document.querySelector('input[name="battle"]:checked');
+  const a=document.getElementById('m2a').value;
+  const b=document.getElementById('m2b').value;
+  const reasonOK=includesAny(a,['правиль','точн','ошиб','науч','океан','рассеив','свет']);
+  const improveOK=includesAny(b,['пример','проще','аналог','короч','рисун','сравн','вопрос','шестикласс','понятн']);
+  const ok=choice&&choice.value==='B'&&minWords(a,7)&&minWords(b,5)&&reasonOK&&improveOK;
+  if(ok){
+    feedback('f2',true,'✅ Ты не попался на ловушку «короче = лучше». Хороший ответ должен быть не только удобным, но и точным.');
+    markDone('m2');
+  }else{
+    feedback('f2',false,'⚠️ Проверь ещё раз: один из ответов звучит просто, но содержит фактическую ошибку. Объяснение решения обязательно.');
+  }
+}
+
+function checkM3(){
+  const a=document.getElementById('m3a').value;
+  let score=0;
+  if(includesAny(a,['рецепт','блин','панкейк','приготов'])) score++;
+  if(includesAny(a,['ребен','школьник','6 класс','12 лет','подрост'])) score++;
+  if(includesAny(a,['спис','шаг','пункт','инструкц'])) score++;
+  if(includesAny(a,['15 минут','быстр','время','минут'])) score++;
+  if(includesAny(a,['взросл','безопас','сковород'])) score++;
+  const ok=minWords(a,15)&&score>=4;
+  if(ok){
+    feedback('f3',true,'✅ Сильная гипотеза. Ты восстановил скрытые требования по самому ответу — это уже обратный prompt engineering.');
+    markDone('m3');
+  }else{
+    feedback('f3',false,'🧩 Ответ подсказывает больше, чем кажется. В твоём промпте должны угадываться задача, аудитория, формат и хотя бы одно ограничение/условие.');
+  }
+}
+
+function checkM4(){
+  const a=document.getElementById('m4a').value;
+  const b=document.getElementById('m4b').value;
+  const forbidden=['интересн','крут','хорош','лучш','красив','скучн'];
+  const badword=forbidden.some(w=>norm(b).includes(w));
+  const analysisOK=includesAny(a,['пользоват','оба','не уточ','не конкрет','не объяс','критер','инструкц']);
+  const concreteOK=includesAny(b,['эксперимент','данн','опрос','сайт','прототип','бюджет','команд','измер','реальн','школ','результ','интерактив','исслед']);
+  const ok=minWords(a,8)&&minWords(b,10)&&analysisOK&&concreteOK&&!badword;
+  if(ok){
+    feedback('f4',true,'✅ Ремонт успешен. Вместо субъективного «сделай лучше» ты дал AI наблюдаемые критерии.');
+    markDone('m4');
+  }else{
+    feedback('f4',false,badword?'🚫 Ты использовал одно из запрещённых слов. Замени оценку конкретным критерием.':'🛠 Сделай уточнение конкретнее: что ученик должен делать, какой продукт создать или какой результат получить?');
+  }
+}
+
+function checkM5(){
+  const vals=['m5a','m5b','m5c','m5d','m5e'].map(id=>document.getElementById(id).value);
+  const filled=vals.slice(0,4).every(v=>minWords(v,3));
+  const p=vals[4];
+  let score=0;
+  if(includesAny(p,['6 класс','шестикласс','ученик','подрост','школьник'])) score++;
+  if(includesAny(p,['безопасност','интернет','сеть'])) score++;
+  if(includesAny(p,['памятк','спис','пункт','пост','сценар','таблиц','карточ'])) score++;
+  if(includesAny(p,['слов','предложен','корот','до ','не более','5 ','6 ','7 '])) score++;
+  if(includesAny(p,['прост','понятн','пример','ситуац'])) score++;
+  const ok=filled&&minWords(p,18)&&score>=4;
+  if(ok){
+    feedback('f5',true,'✅ Операция прошла успешно. Ты сначала проанализировал промпт, а потом изменил его осознанно.');
+    markDone('m5');
+  }else{
+    feedback('f5',false,'🧠 Не спеши переписывать. Заполни все четыре части анализа, а в Prompt v2 добавь аудиторию, конкретную задачу, формат и ограничения.');
+  }
+}
+
+function checkM6(){
+  const goal=document.getElementById('m6goal').value;
+  const p1=document.getElementById('m6p1').value;
+  const check=document.getElementById('m6check').value;
+  const change=document.getElementById('m6change').value;
+  const p2=document.getElementById('m6p2').value;
+  const proof=document.getElementById('m6proof').value;
+
+  let p2score=0;
+  if(includesAny(p2,['школ','ученик','администрац','учител'])) p2score++;
+  if(includesAny(p2,['пластик','мусор','отход'])) p2score++;
+  if(includesAny(p2,['бюджет','реальн','доступн','недорог','ресурс'])) p2score++;
+  if(includesAny(p2,['шаг','план','этап','таблиц','спис','вариант'])) p2score++;
+  if(includesAny(p2,['измер','метрик','результ','процент','кг','количеств','недел','месяц'])) p2score++;
+  if(includesAny(p2,['роль','эксперт','консультант','эколог','аналитик'])) p2score++;
+
+  const p2Stronger = words(p2).length >= Math.max(18, words(p1).length);
+  const reflective = minWords(check,7)&&minWords(change,5)&&minWords(proof,7);
+  const ok=minWords(goal,7)&&minWords(p1,12)&&reflective&&p2score>=4&&p2Stronger;
+
+  if(ok){
+    feedback('f6',true,'🏆 BOSS ПОБЕЖДЁН. Ты задал критерий успеха, нашёл слабость результата и создал более управляемую вторую версию.');
+    markDone('m6');
+    document.getElementById('final').scrollIntoView({behavior:'smooth'});
+  }else{
+    feedback('f6',false,'🔥 Boss ещё держится. Prompt v2 должен заметно отличаться от v1: добавь конкретные условия, формат результата и критерий, по которому можно понять, что решение реально работает.');
+  }
+}
+
+restoreAll();
+updateProgress();
+</script>
+</body>
+</html>
