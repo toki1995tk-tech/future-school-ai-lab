@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>5 класс • Week 05 — AI Personality Lab</title>
+<style>
+:root{--ink:#0b2853;--muted:#6b7e9c;--blue:#1479ff;--cyan:#20c8ff;--navy:#071c43;--green:#16ad68;--red:#e94d5c;--amber:#f2a71f;--line:#d7e9fb;--soft:#f3f9ff;--shadow:0 16px 45px rgba(11,55,112,.12)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Inter,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;color:var(--ink);background:radial-gradient(circle at 12% 0,#def3ff 0,transparent 25%),radial-gradient(circle at 90% 0,#e3eaff 0,transparent 24%),#f8fbff}
+button,textarea,input{font:inherit}.wrap{width:min(1160px,calc(100% - 22px));margin:auto}.top{position:sticky;top:8px;z-index:30;margin:10px 0;background:rgba(255,255,255,.92);backdrop-filter:blur(12px);border:1px solid var(--line);border-radius:18px;padding:10px 13px;display:flex;justify-content:space-between;align-items:center;gap:10px;box-shadow:0 8px 25px rgba(8,46,100,.08)}.brand{font-weight:1000;display:flex;align-items:center;gap:9px}.logo{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,var(--blue),var(--cyan));display:grid;place-items:center}.toplinks{display:flex;gap:8px;flex-wrap:wrap}.pill,.top a{padding:9px 12px;background:#fff;border:1px solid var(--line);border-radius:999px;font-weight:900;text-decoration:none;color:var(--ink)}.reset{padding:9px 12px;border-radius:999px;border:1px solid #f1c7c1;background:#fff4f2;color:#9f4335;font-weight:900;cursor:pointer}
+.hero{margin:16px 0 18px;padding:34px;border-radius:30px;color:#fff;background:linear-gradient(135deg,#071e4a,#0e58b2 60%,#13b4e7);box-shadow:0 25px 70px rgba(8,62,135,.24);display:grid;grid-template-columns:1.35fr .65fr;gap:20px;align-items:center;overflow:hidden;position:relative}.hero:after{content:"";position:absolute;width:360px;height:360px;border-radius:50%;background:rgba(255,255,255,.08);right:-70px;top:-100px}.hero>*{position:relative;z-index:1}.eyebrow{text-transform:uppercase;letter-spacing:.12em;font-size:13px;font-weight:1000;color:#b9efff}.hero h1{font-size:clamp(44px,7vw,74px);line-height:.94;margin:8px 0 12px;letter-spacing:-.04em}.hero p{font-size:19px;line-height:1.5;color:#e9f8ff;max-width:760px}.formula{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}.formula span{padding:9px 11px;border-radius:999px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.24);font-weight:900}.hero-emoji{text-align:center;font-size:95px}.hero-note{text-align:center;font-size:20px;font-weight:1000}
+.status{background:#fff;border:1px solid var(--line);border-radius:20px;padding:15px 17px;box-shadow:var(--shadow);display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center}.bar{height:12px;background:#e8f2ff;border-radius:999px;overflow:hidden;margin-top:8px}.bar>div{height:100%;width:0;background:linear-gradient(90deg,var(--blue),var(--cyan));transition:.3s}.rank{font-weight:1000;padding:10px 13px;border-radius:14px;background:#edf6ff}
+.mission{margin-top:18px;background:#fff;border:1px solid var(--line);border-radius:25px;padding:24px;box-shadow:var(--shadow)}.mission.locked{opacity:.5;filter:grayscale(.25);pointer-events:none;position:relative}.mission.locked:after{content:"🔒 Сначала пройди предыдущую миссию";position:absolute;inset:0;background:rgba(255,255,255,.9);border-radius:25px;display:grid;place-items:center;font-size:20px;font-weight:1000;text-align:center;padding:20px}.mission.done{border:2px solid #76daa4}.mhead{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.num{font-size:13px;text-transform:uppercase;letter-spacing:.12em;font-weight:1000;color:#0a72df}.mission h2{font-size:30px;margin:4px 0 7px}.sub{color:var(--muted);line-height:1.5}.badge{white-space:nowrap;padding:8px 11px;border-radius:999px;background:#edf6ff;border:1px solid #cfe6ff;font-weight:900}.box{padding:16px;border-radius:17px;background:#f7fbff;border:1px solid #dfedfb;margin:14px 0}.prompt{background:var(--navy);color:#fff;font-weight:900}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}.options{display:grid;gap:9px;margin-top:10px}.choice,.opt{border:2px solid #dcecff;background:#fff;border-radius:14px;padding:13px 14px;text-align:left;font-weight:850;cursor:pointer;color:var(--ink)}.choice:hover,.opt:hover{border-color:#97caff}.selected{border-color:var(--blue)!important;background:#edf5ff!important}.correct{border-color:var(--green)!important;background:#eafff2!important;color:#08673d!important}.wrong{border-color:var(--red)!important;background:#fff0f2!important;color:#9b1d2c!important}
+.label{display:block;font-weight:1000;margin:14px 0 7px}textarea,input[type=text]{width:100%;border:2px solid #d8e9fa;border-radius:16px;padding:14px;outline:none;background:#fff;color:var(--ink)}textarea{min-height:115px;resize:vertical}textarea:focus,input[type=text]:focus{border-color:#7cbaff;box-shadow:0 0 0 4px rgba(20,121,255,.09)}.small{min-height:76px}
+.btnrow{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}.btn{border:0;border-radius:13px;padding:12px 16px;font-weight:1000;cursor:pointer}.primary{background:linear-gradient(135deg,var(--blue),#0aa4e9);color:#fff}.secondary{background:#edf6ff;color:#0d5ebc}.feedback{display:none;margin-top:12px;padding:12px 14px;border-radius:13px;font-weight:850}.feedback.ok{display:block;background:#eafff2;border:1px solid #bfe9d0;color:#12653f}.feedback.no{display:block;background:#fff0f2;border:1px solid #ffd0d6;color:#9d2432}.feedback.hint{display:block;background:#fff8df;border:1px solid #f2d88b;color:#7d5c08}.ai-chip{display:inline-flex;gap:7px;align-items:center;background:#dff3ff;border:1px solid #b4ddff;padding:7px 10px;border-radius:999px;font-weight:1000;color:#0b5fad}.thinking{display:none;margin-top:8px;color:#0b5fad;font-weight:900}.thinking.show{display:block}.boss{background:linear-gradient(145deg,#071e4c,#0e58ad 66%,#11b6e8);color:#fff;border:none}.boss .sub{color:#e1f4ff}.boss .box{color:var(--ink)}.boss .badge{color:var(--ink)}.final{display:none;margin:20px 0;padding:34px;border-radius:28px;background:#fff;border:1px solid var(--line);box-shadow:var(--shadow);text-align:center}.final.show{display:block}.footer{text-align:center;color:#7287a2;padding:30px 0 50px}
+@media(max-width:850px){.hero,.grid2,.status{grid-template-columns:1fr}.mhead{flex-direction:column}.top{position:static}}@media(max-width:560px){.hero,.mission{padding:19px}.hero h1{font-size:48px}.pill{display:none}}
+</style>
+</head>
+<body><div style="position:fixed;right:12px;bottom:12px;z-index:9999;padding:7px 10px;border-radius:999px;background:#07111ddd;border:1px solid #24405f;color:#8defff;font:800 10px ui-monospace,monospace;backdrop-filter:blur(10px)">FOUNDATION 5–7 · WEEK 05</div>
+<div class="wrap">
+<div class="top"><div class="brand"><div class="logo">🤖</div>AI Prompt Engineering</div><div class="toplinks"><span class="pill">5 класс • Week 05</span><span class="pill">⚡ <b id="xp">0</b> XP</span><a href="./index.html">← К неделям</a><a href="./index.html">← К предметам</a><button class="reset" onclick="resetAll()">↺ Сбросить</button></div></div>
+
+<section class="hero"><div><div class="eyebrow">AI PERSONALITY LAB • PRACTICE WEEK</div><h1>КТО ТЫ, AI?</h1><p><b>Сегодня ты проектируешь поведение AI.</b> Учимся задавать роль, характер и правила так, чтобы они были понятными, полезными и не противоречили друг другу.</p><div class="formula"><span>РОЛЬ</span><span>ХАРАКТЕР</span><span>ПРАВИЛА</span><span>БЕЗ ПРОТИВОРЕЧИЙ</span></div></div><div><div class="hero-emoji">🤖🧠</div><div class="hero-note">Характер должен быть виден в поведении.</div></div></section>
+
+<section class="status"><div><b id="progressText">Пройдено: 0 из 8</b><div class="bar"><div id="progress"></div></div></div><div class="rank" id="rank">🔵 AI DESIGNER</div></section>
+
+<section class="mission" id="m1"><div class="mhead"><div><div class="num">Миссия 1</div><h2>Характер или просто красивое слово?</h2><div class="sub">Выбери: описание реально задаёт поведение AI или почти ничего не объясняет.</div></div><div class="badge">+80 XP</div></div><div id="m1cases"></div><div class="btnrow"><button class="btn primary" onclick="checkM1()">Проверить</button></div><div class="feedback" id="f1"></div></section>
+
+<section class="mission locked" id="m2"><div class="mhead"><div><div class="num">Миссия 2</div><h2>Найди конфликт</h2><div class="sub">В каждом профиле найди, что противоречит друг другу.</div></div><div class="badge">+100 XP</div></div><div id="m2cases"></div><div class="btnrow"><button class="btn primary" onclick="checkM2()">Проверить</button></div><div class="feedback" id="f2"></div></section>
+
+<section class="mission locked" id="m3"><div class="mhead"><div><div class="num">Миссия 3 • AI CHECK</div><h2>Опиши характер</h2><div class="sub">Напиши характер AI-помощника для ученика 5 класса. Не просто назови качества — покажи, как они проявляются.</div></div><div class="badge">+140 XP</div></div><span class="ai-chip">🤖 Проверяет искусственный интеллект</span><label class="label">Опиши характер в 2–4 предложениях.</label><textarea id="m3text" placeholder="Например: Он спокойный и терпеливый. Если ученик ошибается..."></textarea><div class="btnrow"><button class="btn primary" onclick="aiCheck('g5w5_m3','m3text',3,140)">🤖 Проверить характер</button></div><div class="thinking" id="think3">AI проверяет, нет ли размытости и противоречий...</div><div class="feedback" id="f3"></div></section>
+
+<section class="mission locked" id="m4"><div class="mhead"><div><div class="num">Миссия 4 • AI CHECK</div><h2>Назначь роль</h2><div class="sub">Роль должна отвечать на два вопроса: кому помогает AI и с какими задачами.</div></div><div class="badge">+140 XP</div></div><div class="box">Выбери идею: AI-репетитор, помощник по проектам, помощник по английскому, организатор или свой вариант.</div><label class="label">Опиши роль своего AI.</label><textarea id="m4text" placeholder="Это AI-помощник для... Он помогает..."></textarea><div class="btnrow"><button class="btn primary" onclick="aiCheck('g5w5_m4','m4text',4,140)">🤖 Проверить роль</button></div><div class="thinking" id="think4">AI проверяет конкретность роли...</div><div class="feedback" id="f4"></div></section>
+
+<section class="mission locked" id="m5"><div class="mhead"><div><div class="num">Миссия 5 • AI CHECK</div><h2>Напиши правила поведения</h2><div class="sub">Правила должны быть конкретными, выполнимыми и не конфликтовать друг с другом.</div></div><div class="badge">+170 XP</div></div><div class="box"><b>Напиши минимум 4 правила.</b><br>Хорошее правило отвечает: <b>когда?</b> → <b>что AI делает?</b> → <b>как?</b></div><textarea id="m5text" placeholder="1. Если пользователь ошибается, ...&#10;2. Перед сложным объяснением, ...&#10;3. ...&#10;4. ..."></textarea><div class="btnrow"><button class="btn primary" onclick="aiCheck('g5w5_m5','m5text',5,170)">🤖 Проверить правила</button></div><div class="thinking" id="think5">AI ищет размытые, повторяющиеся и конфликтующие правила...</div><div class="feedback" id="f5"></div></section>
+
+<section class="mission locked" id="m6"><div class="mhead"><div><div class="num">Миссия 6</div><h2>Rules Debugger</h2><div class="sub">Выбери конфликтующие пары правил.</div></div><div class="badge">+110 XP</div></div><div id="m6cases"></div><div class="btnrow"><button class="btn primary" onclick="checkM6()">Проверить</button></div><div class="feedback" id="f6"></div></section>
+
+<section class="mission locked" id="m7"><div class="mhead"><div><div class="num">Миссия 7 • AI CHECK</div><h2>Personality Card</h2><div class="sub">Собери профиль AI целиком. Здесь AI проверит уже связь между всеми элементами.</div></div><div class="badge">+180 XP</div></div>
+<label class="label">Имя AI</label><input type="text" id="m7name" placeholder="Например: ByteBuddy">
+<label class="label">Роль</label><textarea class="small" id="m7role"></textarea>
+<label class="label">Для кого он работает?</label><textarea class="small" id="m7audience"></textarea>
+<label class="label">Характер</label><textarea class="small" id="m7character"></textarea>
+<label class="label">Правила поведения</label><textarea id="m7rules" placeholder="Минимум 4 правила"></textarea>
+<div class="btnrow"><button class="btn primary" onclick="checkCard()">🤖 Проверить моего AI</button></div><div class="thinking" id="think7">AI проверяет согласованность всего профиля...</div><div class="feedback" id="f7"></div></section>
+
+<section class="mission boss locked" id="m8"><div class="mhead"><div><div class="num">FINAL BOSS • MY AI v0.1</div><h2>Системная инструкция</h2><div class="sub">Напиши одну цельную инструкцию, которая полностью задаёт личность и поведение твоего AI.</div></div><div class="badge">+220 XP</div></div><div class="box"><b>В инструкции должны быть:</b><br>имя • роль • для кого • минимум 2 черты характера • минимум 4 правила • без противоречий.</div><span class="ai-chip">🤖 Финальную инструкцию проверит искусственный интеллект</span><textarea id="bossText" style="min-height:180px" placeholder="Ты — ... Твоя роль — ... Ты общаешься ... Твои правила: ..."></textarea><div class="btnrow"><button class="btn primary" onclick="aiCheck('g5w5_boss','bossText',8,220)">🤖 Проверить MY AI v0.1</button></div><div class="thinking" id="think8">AI анализирует всю инструкцию...</div><div class="feedback" id="f8"></div></section>
+
+<section class="final" id="final"><div style="font-size:76px">🏆</div><div class="eyebrow" style="color:#0d6fd8">WEEK 05 COMPLETE</div><h2>AI PERSONALITY DESIGNER</h2><p>Сегодня ты тренировался проектировать роль, характер и правила. На следующей неделе начнём собирать настоящий MY AI уже на основной платформе.</p></section>
+<div class="footer">AI Prompt Engineering • 5 класс • Week 05</div>
+</div>
+<script>
+const KEY='aiclassfs_prompt5_week05_v1';
+const AI='https://ovjpqjnjceuloakqnwsm.supabase.co/functions/v1/ai-grade';
+let state={done:[],xp:0};
+try{state=JSON.parse(localStorage.getItem(KEY)||'{"done":[],"xp":0}')}catch(e){}
+const $=id=>document.getElementById(id);
+const done=n=>state.done.includes(n);
+function save(){localStorage.setItem(KEY,JSON.stringify(state))}
+function feedback(n,type,msg){const e=$('f'+n);e.className='feedback '+type;e.textContent=msg}
+function clearMarks(root){root.querySelectorAll('.correct,.wrong').forEach(x=>x.classList.remove('correct','wrong'))}
+function finish(n,x){if(!done(n)){state.done.push(n);state.xp+=x;save()}update()}
+function update(){
+ $('xp').textContent=state.xp;$('progressText').textContent='Пройдено: '+state.done.length+' из 8';$('progress').style.width=(state.done.length/8*100)+'%';
+ for(let i=1;i<=8;i++){const e=$('m'+i);e.classList.toggle('locked',i>1&&!done(i-1));e.classList.toggle('done',done(i))}
+ $('rank').textContent=state.done.length<3?'🔵 AI DESIGNER':state.done.length<6?'🟣 PERSONALITY BUILDER':state.done.length<8?'🟠 AI BEHAVIOR ENGINEER':'🔥 AI PERSONALITY DESIGNER';
+ if(done(8))$('final').classList.add('show');
+}
+function one(box,b){box.querySelectorAll('.choice,.opt').forEach(x=>x.classList.remove('selected'));b.classList.add('selected')}
+function resetAll(){if(confirm('Сбросить прогресс Week 05?')){localStorage.removeItem(KEY);location.reload()}}
+
+const m1data=[
+ ['Дружелюбный и терпеливый. Если ученик ошибается, объясняет спокойно.','good'],
+ ['Самый лучший AI в мире.','bad'],
+ ['Строгий, но уважительный: требует попытаться самому и не высмеивает ошибки.','good'],
+ ['Очень умный и классный.','bad'],
+ ['Спокойный и краткий: объясняет без лишних слов и не торопит пользователя.','good'],
+ ['Всегда смешной и никогда не шутит.','bad']
+];
+m1data.forEach((x,i)=>{const d=document.createElement('div');d.className='box';d.innerHTML='<div class="prompt">'+(i+1)+'. '+x[0]+'</div><div class="options"><button type="button" class="opt" data-v="good">✅ Полезное описание</button><button type="button" class="opt" data-v="bad">⚠️ Размыто / противоречиво</button></div>';d.querySelectorAll('.opt').forEach(b=>b.onclick=()=>one(d,b));$('m1cases').appendChild(d)});
+function checkM1(){clearMarks($('m1'));let ok=0,miss=false;[...$('m1cases').children].forEach((d,i)=>{const s=d.querySelector('.selected');if(!s){miss=true;return}if(s.dataset.v===m1data[i][1]){s.classList.add('correct');ok++}else s.classList.add('wrong')});if(miss)return feedback(1,'hint','Ответь во всех 6 карточках.');if(ok===m1data.length){feedback(1,'ok','Верно: хороший характер должен описывать поведение.');finish(1,80)}else feedback(1,'no','Есть ошибки. Ищи размытые слова и противоречия.')}
+
+const m2data=[
+ {t:'Характер: спокойный и терпеливый. Правило: если пользователь ошибся — сразу ругай его.',a:1,o:['Всё согласовано','Характер и правило конфликтуют','Нужно добавить имя']},
+ {t:'Роль: AI-репетитор для начинающих. Правило: никогда ничего не объясняй подробно.',a:1,o:['Правило мешает роли','Это хороший профиль','Нужно удалить роль']},
+ {t:'Характер: очень краткий. Правило: каждый ответ должен быть минимум 1000 слов.',a:0,o:['Характер и правило конфликтуют','Никакой проблемы','Нужно добавить шутки']}
+];
+m2data.forEach(c=>{const d=document.createElement('div');d.className='box';d.innerHTML='<div class="prompt">'+c.t+'</div><div class="options"></div>';c.o.forEach((t,i)=>{const b=document.createElement('button');b.type='button';b.className='opt';b.textContent=t;b.dataset.i=i;b.onclick=()=>one(d,b);d.querySelector('.options').appendChild(b)});$('m2cases').appendChild(d)});
+function checkM2(){clearMarks($('m2'));let ok=0,miss=false;[...$('m2cases').children].forEach((d,i)=>{const s=d.querySelector('.selected');if(!s){miss=true;return}if(+s.dataset.i===m2data[i].a){s.classList.add('correct');ok++}else s.classList.add('wrong')});if(miss)return feedback(2,'hint','Выбери ответ в каждом профиле.');if(ok===m2data.length){feedback(2,'ok','Отлично: ты видишь логические конфликты.');finish(2,100)}else feedback(2,'no','Не все конфликты найдены. Сравни роль, характер и правило.')}
+
+const m6data=[
+ {rules:['Всегда давай готовый ответ.','Не давай готовый ответ, пока ученик не попробует сам.','Если ученик ошибся, объясни ошибку.','Никогда не исправляй пользователя.'],pairs:[[0,1],[2,3]]},
+ {rules:['Отвечай кратко.','Каждый ответ должен быть не меньше 800 слов.','Говори уважительно.','Не используй оскорбления.'],pairs:[[0,1]]}
+];
+m6data.forEach((c,ci)=>{const d=document.createElement('div');d.className='box';d.innerHTML='<b>Набор '+(ci+1)+'. Выбери все правила, которые входят в конфликтующие пары.</b><div class="grid2"></div>';c.rules.forEach((t,i)=>{const b=document.createElement('button');b.type='button';b.className='choice';b.textContent=(i+1)+'. '+t;b.dataset.i=i;b.onclick=()=>b.classList.toggle('selected');d.querySelector('.grid2').appendChild(b)});$('m6cases').appendChild(d)});
+function checkM6(){clearMarks($('m6'));let all=true;[...$('m6cases').children].forEach((d,ci)=>{const chosen=[...d.querySelectorAll('.selected')].map(x=>+x.dataset.i);const need=[...new Set(m6data[ci].pairs.flat())];if(chosen.length!==need.length||!need.every(x=>chosen.includes(x)))all=false;d.querySelectorAll('.selected').forEach(x=>x.classList.add(need.includes(+x.dataset.i)?'correct':'wrong'))});if(all){feedback(6,'ok','Верно: конфликтующие правила нельзя оставлять вместе.');finish(6,110)}else feedback(6,'no','Есть ошибка. Ищи правила, которые требуют противоположного поведения.')}
+
+async function aiCheck(mission,inputId,n,reward,extraAnswers=[]){
+ const text=$(inputId).value.trim();if(text.length<12)return feedback(n,'no','Ответ слишком короткий. Добавь больше конкретики.');
+ $('think'+n).classList.add('show');feedback(n,'hint','AI проверяет смысл...');
+ try{
+  const r=await fetch(AI,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({mission,answers:[text,...extraAnswers]})});
+  const data=await r.json();if(!r.ok||typeof data.pass!=='boolean')throw new Error('AI');
+  if(data.pass){feedback(n,'ok','✅ '+(data.feedback||'Ответ засчитан.'));finish(n,reward)}else feedback(n,'no','🧠 '+(data.feedback||'Доработай ответ.'));
+ }catch(e){feedback(n,'no','AI-проверка временно недоступна. Попробуй ещё раз.')}finally{$('think'+n).classList.remove('show')}
+}
+async function checkCard(){
+ const vals=[$('m7name').value.trim(),$('m7role').value.trim(),$('m7audience').value.trim(),$('m7character').value.trim(),$('m7rules').value.trim()];
+ if(vals.some(x=>x.length<3))return feedback(7,'no','Заполни все поля Personality Card.');
+ $('think7').classList.add('show');feedback(7,'hint','AI проверяет весь профиль...');
+ try{
+  const r=await fetch(AI,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({mission:'g5w5_m7',answers:vals})});
+  const data=await r.json();if(!r.ok||typeof data.pass!=='boolean')throw new Error('AI');
+  if(data.pass){feedback(7,'ok','✅ '+(data.feedback||'Профиль согласован.'));finish(7,180)}else feedback(7,'no','🧠 '+(data.feedback||'Исправь профиль.'));
+ }catch(e){feedback(7,'no','AI-проверка временно недоступна. Попробуй ещё раз.')}finally{$('think7').classList.remove('show')}
+}
+update();
+</script>
+</body>
+</html>
