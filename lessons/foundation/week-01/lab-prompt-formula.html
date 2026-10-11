@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PROMPT LAB — 6 класс</title>
+<link rel="stylesheet" href="../../../lesson-legacy.css">
+<style>
+  .mission{display:none}.mission.active{display:block}
+  .progress{height:14px;background:#e9f5ec;border-radius:999px;overflow:hidden;margin:14px 0 26px}
+  .progress>div{height:100%;width:0;background:linear-gradient(90deg,#1fb96f,#19c7a8,#2da0ff);transition:.3s}
+  .scorebar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+  .score{font-weight:900;font-size:20px}
+  .compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .prompt-card{background:#fff;border:2px solid #dceee3;border-radius:22px;padding:20px;box-shadow:0 10px 24px rgba(20,90,60,.08)}
+  .prompt-card h3{margin-top:0}
+  .answer-box{background:#f8fffb;border-radius:16px;padding:16px;margin-top:12px;color:#304b3d}
+  .choice-btn{width:100%;margin-top:12px}
+  .parts{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:18px 0}
+  .part{background:#fff;border:2px solid #dceee3;border-radius:18px;padding:16px;font-weight:800;cursor:pointer}
+  .part.selected{border-color:#7b4dff}
+  .buckets4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+  .bucket4{min-height:160px;padding:14px;border-radius:18px;border:2px dashed #a8d9b8;background:#fbfffc}
+  .bucket4 h3{font-size:18px;margin-top:0}
+  select,input,textarea{width:100%;padding:12px 14px;border-radius:14px;border:2px solid #dceee3;font:inherit}
+  textarea{min-height:90px;resize:vertical}
+  .builder{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+  .assembled{margin-top:18px;background:#f1fff6;border:2px solid #a8d9b8;border-radius:18px;padding:18px;font-weight:800}
+  .checks{display:grid;gap:8px;margin-top:14px}
+  .check{padding:10px 12px;border-radius:12px;background:#f6f8fb}
+  .check.good{background:#edfff3;color:#137844}.check.bad{background:#fff0f0;color:#b63c3c}
+  .battle{display:grid;grid-template-columns:1fr 80px 1fr;gap:14px;align-items:center}
+  .vs{text-align:center;font-size:30px;font-weight:900}
+  .finish{display:none;text-align:center;padding:30px}.finish.show{display:block}
+  .xp{font-size:56px;font-weight:900}
+  @media(max-width:900px){
+    .compare-grid,.builder,.buckets4,.battle{grid-template-columns:1fr}
+    .vs{display:none}
+  }
+</style>
+</head>
+<body><div style="position:fixed;right:12px;bottom:12px;z-index:9999;padding:7px 10px;border-radius:999px;background:#07111ddd;border:1px solid #24405f;color:#8defff;font:800 10px ui-monospace,SFMono-Regular,Menlo,monospace;backdrop-filter:blur(10px)">FOUNDATION 5–7 · WEEK 01</div>
+<div class="wrap">
+  <div class="top">
+    <a class="back" href="./index.html">← К неделям</a>
+    <div class="badge">6 класс · Неделя 1</div>
+  </div>
+
+  <section class="panel">
+    <div class="scorebar">
+      <div>
+        <div class="badge">🧪 PROMPT LAB</div>
+        <h1 style="margin-top:16px">Формула эффективного промпта</h1>
+      </div>
+      <div class="score">⚡ XP: <span id="score">0</span>/20</div>
+    </div>
+
+    <p>Пройди 4 уровня и докажи, что умеешь управлять качеством запроса.</p>
+    <div class="progress"><div id="bar"></div></div>
+
+    <!-- LEVEL 1 -->
+    <div class="mission active" id="m1">
+      <h2>LEVEL 1 — Один AI, два разных ответа</h2>
+      <p>Сравни два промпта и два ответа. Какой вариант полезнее?</p>
+
+      <div class="compare-grid">
+        <div class="prompt-card">
+          <h3>Промпт A</h3>
+          <p><strong>Расскажи про динозавров.</strong></p>
+          <div class="answer-box">
+            Динозавры — древние животные, которые жили миллионы лет назад. Они были разными по размеру и образу жизни. Некоторые были хищниками, другие питались растениями.
+          </div>
+          <button class="secondary choice-btn" onclick="chooseCompare('A')">Выбрать A</button>
+        </div>
+
+        <div class="prompt-card">
+          <h3>Промпт B</h3>
+          <p><strong>Ты учитель биологии. Объясни ученику 6 класса, почему динозавры исчезли. Дай 3 основные причины простыми словами.</strong></p>
+          <div class="answer-box">
+            1. После падения крупного астероида в атмосферу попало много пыли.<br>
+            2. Климат резко изменился и стало меньше пищи.<br>
+            3. Многие виды не смогли приспособиться к новым условиям.
+          </div>
+          <button class="secondary choice-btn" onclick="chooseCompare('B')">Выбрать B</button>
+        </div>
+      </div>
+      <div class="result" id="r1"></div>
+      <div class="controls"><button class="primary" id="next1" style="display:none" onclick="goMission(2)">Следующий уровень →</button></div>
+    </div>
+
+    <!-- LEVEL 2 -->
+    <div class="mission" id="m2">
+      <h2>LEVEL 2 — Prompt Anatomy</h2>
+      <p>Разбери промпт на 4 части: Роль, Задача, Контекст, Формат.</p>
+
+      <div class="parts">
+        <div class="part" data-kind="role">Ты спортивный тренер.</div>
+        <div class="part" data-kind="task">Составь лёгкую пятиминутную разминку.</div>
+        <div class="part" data-kind="context">Для ученика 12 лет перед уроком.</div>
+        <div class="part" data-kind="format">Представь её списком из пяти упражнений.</div>
+      </div>
+
+      <div class="buckets4">
+        <div class="bucket4" id="role"><h3>👤 Роль</h3><div class="drop"></div></div>
+        <div class="bucket4" id="task"><h3>🎯 Задача</h3><div class="drop"></div></div>
+        <div class="bucket4" id="context"><h3>🌍 Контекст</h3><div class="drop"></div></div>
+        <div class="bucket4" id="format"><h3>📄 Формат</h3><div class="drop"></div></div>
+      </div>
+
+      <div class="controls">
+        <button class="secondary" onclick="movePart('role')">В Роль</button>
+        <button class="secondary" onclick="movePart('task')">В Задачу</button>
+        <button class="secondary" onclick="movePart('context')">В Контекст</button>
+        <button class="secondary" onclick="movePart('format')">В Формат</button>
+        <button class="primary" onclick="checkParts()">Проверить</button>
+      </div>
+      <div class="result" id="r2"></div>
+    </div>
+
+    <!-- LEVEL 3 -->
+    <div class="mission" id="m3">
+      <h2>LEVEL 3 — Prompt Upgrade</h2>
+      <p>Плохой промпт: <strong>«Расскажи про Казахстан».</strong> Сделай его точнее.</p>
+
+      <div class="builder">
+        <label>Роль
+          <select id="roleSel">
+            <option value="">— выбери —</option>
+            <option>Ты гид по Казахстану.</option>
+            <option>Ты спортивный комментатор.</option>
+            <option>Ты повар.</option>
+          </select>
+        </label>
+        <label>Задача
+          <select id="taskSel">
+            <option value="">— выбери —</option>
+            <option>Расскажи о трёх известных достопримечательностях Казахстана.</option>
+            <option>Напиши любое случайное слово.</option>
+            <option>Составь рецепт супа.</option>
+          </select>
+        </label>
+        <label>Контекст
+          <select id="contextSel">
+            <option value="">— выбери —</option>
+            <option>Объясняй для ученика 6 класса.</option>
+            <option>Пиши только для профессионального историка.</option>
+            <option>Не учитывай аудиторию.</option>
+          </select>
+        </label>
+        <label>Формат
+          <select id="formatSel">
+            <option value="">— выбери —</option>
+            <option>Представь ответ тремя короткими пунктами.</option>
+            <option>Напиши очень длинное эссе без структуры.</option>
+            <option>Ответь одним словом.</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="assembled" id="assembled">Твой улучшенный промпт появится здесь.</div>
+      <div class="controls">
+        <button class="secondary" onclick="buildPrompt()">Собрать промпт</button>
+        <button class="primary" onclick="checkUpgrade()">Проверить улучшение</button>
+      </div>
+      <div class="result" id="r3"></div>
+    </div>
+
+    <!-- LEVEL 4 -->
+    <div class="mission" id="m4">
+      <h2>LEVEL 4 — Build Your Own Prompt</h2>
+      <p>Составь собственный хороший запрос для AI. Выбери одну задачу:</p>
+      <p><strong>1)</strong> подготовиться к контрольной по математике &nbsp; <strong>2)</strong> объяснить фотосинтез &nbsp; <strong>3)</strong> создать план презентации про Астану</p>
+
+      <div class="builder">
+        <label>Роль
+          <input id="ownRole" placeholder="Например: Ты учитель математики">
+        </label>
+        <label>Задача
+          <input id="ownTask" placeholder="Что AI должен сделать?">
+        </label>
+        <label>Контекст
+          <input id="ownContext" placeholder="Для кого? Какие условия?">
+        </label>
+        <label>Формат
+          <input id="ownFormat" placeholder="Список, таблица, 5 пунктов...">
+        </label>
+      </div>
+
+      <div class="assembled" id="ownPrompt">Твой промпт появится здесь.</div>
+      <div class="controls">
+        <button class="secondary" onclick="assembleOwn()">Собрать</button>
+        <button class="primary" onclick="checkOwn()">Проверить структуру</button>
+      </div>
+      <div class="checks" id="checks"></div>
+
+      <hr style="margin:32px 0;border:0;border-top:1px solid #e5eee8">
+
+      <h2>PROMPT BATTLE</h2>
+      <div class="battle">
+        <div class="prompt-card">
+          <h3>A</h3>
+          <p><strong>Напиши про животных.</strong></p>
+          <button class="secondary choice-btn" onclick="battle('A')">Выбрать A</button>
+        </div>
+        <div class="vs">VS</div>
+        <div class="prompt-card">
+          <h3>B</h3>
+          <p><strong>Ты биолог. Назови пять животных пустыни и объясни одним предложением, как каждое приспособилось к жаре. Ответ представь таблицей.</strong></p>
+          <button class="secondary choice-btn" onclick="battle('B')">Выбрать B</button>
+        </div>
+      </div>
+      <div class="result" id="battleResult"></div>
+
+      <div class="controls">
+        <button class="primary" onclick="finishGame()">Завершить PROMPT LAB</button>
+      </div>
+    </div>
+
+    <div class="finish" id="finish">
+      <div class="xp">🏆</div>
+      <h1>PROMPT ENGINEER</h1>
+      <h2>LEVEL 1 COMPLETED</h2>
+      <p id="finalText"></p>
+      <div class="controls" style="justify-content:center">
+        <button class="primary" onclick="location.reload()">Пройти ещё раз</button>
+        <button class="secondary" onclick="location.href='./index.html'">К неделям</button>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+let score=0;
+let compareDone=false, partsDone=false, upgradeDone=false, ownDone=false, battleDone=false;
+let selectedPart=null;
+
+function addScore(v){
+  score+=v;
+  if(score>20) score=20;
+  document.getElementById('score').textContent=score;
+}
+function goMission(n){
+  document.querySelectorAll('.mission').forEach(x=>x.classList.remove('active'));
+  document.getElementById('m'+n).classList.add('active');
+  document.getElementById('bar').style.width=((n-1)/4*100)+'%';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function chooseCompare(v){
+  const r=document.getElementById('r1');
+  if(v==='B'){
+    if(!compareDone){addScore(4);compareDone=true;}
+    r.textContent='✅ Верно! Промпт B точнее: в нём есть роль, конкретная задача, аудитория и ограничения.';
+    document.getElementById('next1').style.display='inline-block';
+  }else{
+    r.textContent='❌ Подумай ещё. Какой запрос даёт AI больше полезных деталей?';
+  }
+}
+
+document.querySelectorAll('.part').forEach(el=>{
+  el.onclick=()=>{
+    document.querySelectorAll('.part').forEach(x=>x.classList.remove('selected'));
+    selectedPart=el; el.classList.add('selected');
+  };
+});
+function movePart(bucket){
+  if(!selectedPart){document.getElementById('r2').textContent='Сначала выбери часть промпта.';return;}
+  document.querySelector('#'+bucket+' .drop').appendChild(selectedPart);
+  selectedPart.dataset.bucket=bucket;
+  selectedPart.classList.remove('selected');
+  selectedPart=null;
+}
+function checkParts(){
+  const parts=[...document.querySelectorAll('.part')];
+  let placed=0, correct=0;
+  parts.forEach(p=>{
+    if(p.dataset.bucket){placed++; if(p.dataset.bucket===p.dataset.kind)correct++;}
+  });
+  const r=document.getElementById('r2');
+  if(placed<4){r.textContent='Распредели все 4 части.';return;}
+  if(correct===4){
+    if(!partsDone){addScore(4);partsDone=true;}
+    r.textContent='✅ Отлично! Все части промпта определены правильно.';
+    setTimeout(()=>goMission(3),900);
+  }else r.textContent='🔎 Правильно: '+correct+' из 4. Исправь и попробуй снова.';
+}
+function buildPrompt(){
+  const vals=['roleSel','taskSel','contextSel','formatSel'].map(id=>document.getElementById(id).value).filter(Boolean);
+  document.getElementById('assembled').textContent=vals.length?vals.join(' '):'Сначала выбери элементы.';
+}
+function checkUpgrade(){
+  const role=document.getElementById('roleSel').selectedIndex;
+  const task=document.getElementById('taskSel').selectedIndex;
+  const context=document.getElementById('contextSel').selectedIndex;
+  const format=document.getElementById('formatSel').selectedIndex;
+  const r=document.getElementById('r3');
+  if(!role||!task||!context||!format){r.textContent='Заполни все четыре элемента.';return;}
+  if(role===1 && task===1 && context===1 && format===1){
+    if(!upgradeDone){addScore(4);upgradeDone=true;}
+    r.textContent='⚡ PROMPT UPGRADED! Ты сделал запрос конкретным и понятным.';
+    setTimeout(()=>goMission(4),900);
+  }else{
+    r.textContent='Промпт стал длиннее, но ещё не обязательно лучше. Выбери варианты, которые действительно подходят к задаче.';
+  }
+}
+function assembleOwn(){
+  const vals=['ownRole','ownTask','ownContext','ownFormat'].map(id=>document.getElementById(id).value.trim()).filter(Boolean);
+  document.getElementById('ownPrompt').textContent=vals.length?vals.join('. ')+'.':'Заполни поля.';
+}
+function checkOwn(){
+  const data=[
+    ['Роль',document.getElementById('ownRole').value.trim()],
+    ['Задача',document.getElementById('ownTask').value.trim()],
+    ['Контекст',document.getElementById('ownContext').value.trim()],
+    ['Формат',document.getElementById('ownFormat').value.trim()]
+  ];
+  const c=document.getElementById('checks'); c.innerHTML='';
+  let good=0;
+  data.forEach(([name,val])=>{
+    const ok=val.length>=6;
+    if(ok) good++;
+    const d=document.createElement('div');
+    d.className='check '+(ok?'good':'bad');
+    d.textContent=(ok?'✅ ':'❌ ')+name+(ok?' — есть':' — слишком коротко или не заполнено');
+    c.appendChild(d);
+  });
+  if(good===4 && !ownDone){addScore(4);ownDone=true;}
+}
+function battle(v){
+  const r=document.getElementById('battleResult');
+  if(v==='B'){
+    if(!battleDone){addScore(4);battleDone=true;}
+    r.textContent='🏆 Побеждает B: запрос конкретный, структурированный и задаёт формат результата.';
+  }else{
+    r.textContent='A слишком общий. В нём непонятно, что именно должен сделать AI.';
+  }
+}
+function finishGame(){
+  if(!ownDone || !battleDone){
+    document.getElementById('battleResult').textContent='Сначала проверь свой промпт и заверши PROMPT BATTLE.';
+    return;
+  }
+  document.getElementById('m4').classList.remove('active');
+  document.getElementById('bar').style.width='100%';
+  document.getElementById('finish').classList.add('show');
+  let msg = score>=18 ? 'Отличный результат! Ты уверенно используешь формулу эффективного промпта.'
+          : score>=14 ? 'Хороший результат! Основная структура промпта уже понятна.'
+          : 'Неплохое начало. Повтори четыре элемента и попробуй пройти лабораторию ещё раз.';
+  document.getElementById('finalText').textContent='Твой результат: '+score+' / 20 XP. '+msg;
+}
+</script>
+</body>
+</html>
