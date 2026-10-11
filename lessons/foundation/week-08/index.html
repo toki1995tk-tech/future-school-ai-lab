@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Week 08 · Prompt Lab: тестируем и улучшаем промпт</title>
+<script>(function(){try{document.documentElement.dataset.theme=localStorage.getItem('aiLabTheme')||'dark'}catch(e){document.documentElement.dataset.theme='dark'}})()</script>
+<style>
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+:root{--bg:#050914;--panel:#0b1422;--line:#1b2d48;--ink:#eaf3ff;--muted:#7488a6;--cyan:#67e8f9;--blue:#3b82f6;--green:#6ee7a5}
+body{color:var(--ink);background:linear-gradient(rgba(56,189,248,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(56,189,248,.055) 1px,transparent 1px),radial-gradient(circle at 10% 0,rgba(59,130,246,.15),transparent 30%),#050914;background-size:34px 34px,34px 34px,auto,auto}
+html[data-theme="light"] body{--bg:#eef4fb;--panel:#fff;--line:#cfdcea;--ink:#132a46;--muted:#647a94;background:linear-gradient(rgba(28,103,153,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(28,103,153,.08) 1px,transparent 1px),radial-gradient(circle at 10% 0,rgba(14,165,233,.10),transparent 30%),#eef4fb;background-size:34px 34px,34px 34px,auto,auto}
+.top{height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;border-bottom:1px solid var(--line);background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(18px)}
+.brand{font:800 13px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.04em}.brand b{color:var(--cyan)}
+.back{color:var(--muted);text-decoration:none;font:800 11px ui-monospace,SFMono-Regular,Menlo,monospace;border:1px solid var(--line);padding:9px 11px;border-radius:10px}
+.shell{max-width:1120px;margin:auto;padding:42px 24px 70px}.eyebrow{font:800 11px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.13em;color:#35d1e6;text-transform:uppercase}
+h1{font-size:clamp(32px,5vw,55px);letter-spacing:-.045em;line-height:1.02;margin:10px 0 12px;max-width:900px} .intro{color:var(--muted);font-size:16px;line-height:1.65;max-width:760px}
+.pipeline{display:flex;gap:8px;flex-wrap:wrap;margin:25px 0}.pipeline span{font:800 10px ui-monospace,SFMono-Regular,Menlo,monospace;color:#7188a4;border:1px solid var(--line);background:var(--panel);padding:7px 9px;border-radius:8px}.pipeline span.active{color:#67e8f9;border-color:#1b647d;background:#0b293d}
+html[data-theme="light"] .pipeline span.active{background:#e7f8fb;color:#08758d}
+.grid{display:grid;grid-template-columns:repeat(1,minmax(0,1fr));gap:14px;margin-top:22px}
+.lab-card{display:block;position:relative;min-height:230px;text-decoration:none;color:var(--ink);border:1px solid var(--line);border-radius:20px;padding:22px;background:linear-gradient(155deg,color-mix(in srgb,var(--panel) 97%,#14335b 3%),var(--panel));transition:.18s transform,.18s border-color,.18s box-shadow}
+.lab-card:hover{transform:translateY(-4px);border-color:#2b718e;box-shadow:0 18px 50px rgba(0,0,0,.18)}.lab-top{display:flex;justify-content:space-between}.level{padding:5px 8px;border-radius:999px;border:1px solid #17516a;background:#0b2b3e;color:#67e8f9;font:800 9px ui-monospace,SFMono-Regular,Menlo,monospace}.level.challenge{border-color:#49378d;background:#1c1738;color:#c4b5fd}
+html[data-theme="light"] .level{background:#e5f7fb;color:#08728a;border-color:#b5e1eb}html[data-theme="light"] .level.challenge{background:#f1edff;color:#6d55bd;border-color:#d7ccff}
+.num{font:800 11px ui-monospace,SFMono-Regular,Menlo,monospace;color:#4e647f}.lab-card h2{font-size:21px;margin:38px 0 8px}.lab-card p{color:var(--muted);line-height:1.55;font-size:13px;max-width:600px}.launch{position:absolute;left:22px;bottom:20px;color:#67e8f9;font:800 11px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.06em}
+html[data-theme="light"] .launch{color:#08758d}.note{margin-top:18px;color:#647a94;font-size:12px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+@media(max-width:720px){.grid{grid-template-columns:1fr}.shell{padding:30px 15px}.top{padding:0 14px}}
+</style></head><body>
+<header class="top"><div class="brand"><b>AI LAB</b> // FOUNDATION 2026–2027</div><a class="back" href="../../../index.html">← DASHBOARD</a></header>
+<main class="shell">
+<div class="eyebrow">WEEK 08 // PRACTICE MODULE</div><h1>Prompt Lab: тестируем и улучшаем промпт</h1>
+<p class="intro">Теорию по теме закрепляем в практической лаборатории. Выполни задания, проверь решения и используй результат в своём MY AI.</p>
+<div class="pipeline"><span>LEARN</span><span class="active">PRACTICE</span><span>BUILD</span><span>TEST</span><span>IMPROVE</span></div>
+<div class="grid">
+    <a class="lab-card" href="./lab-prompt-training.html">
+      <div class="lab-top"><span class="level ">LAB</span><span class="num">01</span></div>
+      <h2>Prompt Training Lab</h2>
+      <p>Большая практическая тренировка: repair, battle, AI-check и Final Boss.</p>
+      <div class="launch">LAUNCH LAB <span>→</span></div>
+    </a></div>
+<div class="note">Все материалы курса едины для 5–7 классов. Сложность регулируется уровнем Core / Challenge.</div>
+</main></body></html>
