@@ -23,6 +23,57 @@ button,input,textarea,select{font:inherit}button{cursor:pointer}
 .modal{position:fixed;inset:0;background:rgba(15,23,42,.65);display:grid;place-items:center;padding:18px;z-index:50}.modal.hidden{display:none}.modalbox{width:min(900px,100%);max-height:92vh;overflow:auto;background:white;border-radius:22px;padding:20px}.modalhead{display:flex;justify-content:space-between;gap:10px}.fn-steps{display:grid;gap:8px;margin:12px 0}.fn-step{border:1px solid var(--line);border-radius:12px;padding:10px;display:flex;gap:8px;align-items:center;justify-content:space-between}.preview{display:grid;grid-template-columns:.9fr 1.1fr;gap:16px}.phone{border:1px solid #cbd5e1;border-radius:24px;padding:16px;background:#0f172a;min-height:520px}.chat{background:white;border-radius:18px;min-height:485px;display:flex;flex-direction:column;overflow:hidden}.chathead{padding:14px;border-bottom:1px solid var(--line);font-weight:900}.messages{flex:1;padding:14px;display:grid;align-content:start;gap:9px;background:#f8fafc}.msg{max-width:82%;padding:10px 12px;border-radius:14px;font-size:14px}.msg.ai{background:white;border:1px solid var(--line)}.msg.user{justify-self:end;background:#2563eb;color:white}.chatinput{display:grid;grid-template-columns:1fr auto;gap:8px;padding:12px;border-top:1px solid var(--line)}.chatinput input{border:1px solid #cbd5e1;border-radius:11px;padding:10px}
 .notice{padding:12px 14px;border-radius:12px;background:#fff7ed;color:#9a3412;font-size:13px;line-height:1.5}.step-nav{display:flex;justify-content:space-between;gap:10px;margin-top:18px}.step-nav .spacer{flex:1}.hidden{display:none!important}
 @media(max-width:1000px){.builder{grid-template-columns:1fr}.palette,.codepane{position:static}.grid2,.preview{grid-template-columns:1fr}.function-list{grid-template-columns:1fr}}
+
+/* ===== MY AI DEVELOPER CONSOLE REDESIGN 2026 ===== */
+:root{--bg:#050914;--card:#0c1423;--ink:#e8f1ff;--muted:#7588a6;--line:#1c2c46;--blue:#38bdf8;--violet:#8b5cf6;--green:#22c55e;--amber:#f59e0b;--red:#ef4444}
+body{
+  background:
+    linear-gradient(rgba(56,189,248,.022) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(56,189,248,.022) 1px,transparent 1px),
+    radial-gradient(circle at 13% 0,rgba(37,99,235,.13),transparent 28%),
+    radial-gradient(circle at 90% 15%,rgba(124,58,237,.10),transparent 25%),
+    #050914;
+  background-size:32px 32px,32px 32px,auto,auto,auto;color:var(--ink)
+}
+.top{background:rgba(5,9,20,.88);border-bottom:1px solid #16253c;backdrop-filter:blur(18px);padding:12px 22px}
+.brand{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;color:#dceaff}.brand b{background:linear-gradient(135deg,#2563eb,#06b6d4);box-shadow:0 0 26px rgba(34,211,238,.20)}
+.btn.primary{background:#0b3048;color:#85efff;border:1px solid #15556d}.btn.light{background:#0b1321;border-color:#243650;color:#90a3bf}.btn.blue{background:linear-gradient(135deg,#0e7490,#2563eb);color:white}
+.shell{max-width:1550px;padding:24px 26px 60px}
+.hero{position:relative;padding:20px;border:1px solid #172942;border-radius:19px;background:linear-gradient(135deg,rgba(13,23,40,.96),rgba(7,13,24,.96));overflow:hidden}
+.hero::after{content:"";position:absolute;right:-70px;top:-90px;width:240px;height:240px;border-radius:50%;background:radial-gradient(circle,rgba(34,211,238,.13),transparent 67%);pointer-events:none}
+.eyebrow{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;color:#5ee7f2;font-size:10px}
+.hero h1{font-size:33px;color:#f1f7ff}.hero p{color:#7387a5}
+.save-state{background:#09251d;color:#71e5a8;border:1px solid #16513b;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.myai-system-strip{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin:12px 0 18px}
+.myai-sys{border:1px solid #172a45;border-radius:13px;padding:11px;background:#09111f}
+.myai-sys span{display:block;color:#526985;font:800 9px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em}
+.myai-sys strong{display:block;color:#d9e7f8;font:800 13px ui-monospace,SFMono-Regular,Menlo,monospace;margin-top:7px}
+.myai-sys strong.ok{color:#6ee7a5}.myai-sys strong.cyan{color:#67e8f9}.myai-sys strong.locked{color:#62728b}
+.tabs{padding:7px;background:#08101d;border:1px solid #17263e;border-radius:14px;gap:5px;position:sticky;top:67px;z-index:15;backdrop-filter:blur(16px)}
+.tab{background:transparent;color:#6f829f;border-color:transparent;border-radius:9px;padding:9px 12px;font:800 11px ui-monospace,SFMono-Regular,Menlo,monospace}
+.tab.active{background:#0c2c42;color:#78e7f8;border-color:#17506a;box-shadow:inset 0 0 20px rgba(34,211,238,.04)}
+.card,.palette,.canvas,.codepane,.modalbox{background:linear-gradient(180deg,#0d1727,#09111e);border-color:#1a2d48;color:#dce8f7;box-shadow:none}
+.card h2,.card h3,.palette h3,.canvas h3,.codepane h3{color:#eef6ff}
+.muted{color:#70839f}
+.field label{color:#a7b9cf;font:800 11px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.02em}
+.field input,.field textarea,.field select,.block-config input,.block-config select,.block-config textarea,.chatinput input{
+  background:#07101c!important;color:#dbe8f8!important;border-color:#223752!important
+}
+.field input:focus,.field textarea:focus,.field select:focus{border-color:#1686a7;box-shadow:0 0 0 3px rgba(34,211,238,.08)}
+.days .day{background:#09111f;border-color:#21334d;color:#7588a6}.days .day.active{background:#0b3048;border-color:#1b647e;color:#8aecfa}
+.notice{background:#17160b;color:#d9bd6a;border:1px solid #3c3412}
+.builder{grid-template-columns:220px minmax(460px,1fr) minmax(390px,.86fr)}
+.block-add{border:1px solid transparent}.b-trigger{background:#21180c;color:#f6bd64;border-color:#3f2e12}.b-data{background:#0b1e33;color:#78bffc;border-color:#153b61}.b-ai{background:#18122d;color:#b9a7ff;border-color:#35265d}.b-logic{background:#0c221b;color:#6ee7a5;border-color:#1d4b38}.b-action{background:#281214;color:#f69a9f;border-color:#532125}
+.flow-empty{border-color:#263851;color:#566a87;background:#07101b}
+.flow-block,.branch-action{background:#09131f;border-color:#20334d}.flow-block:hover,.flow-block.hovered{border-color:#1a7895;box-shadow:0 0 0 3px rgba(34,211,238,.07)}
+.branch-zone{background:#08111d;border-color:#26374d}.branch-zone.true{background:#091d18;border-color:#21533e}.branch-zone.false{background:#211013;border-color:#572329}
+.branch-picker button,.mini{background:#0a1422;color:#8397b2;border-color:#243750}
+.codepane{background:#050b14}.code-line{color:#b6c8df}.code-comment{color:#405571}.code-line.hl{background:#132b38;color:#8ceafa}
+.function-list .fn-card{background:#09121f;border-color:#1d304c;color:#d9e6f5}.pill{background:#101c2d;color:#8094b1}
+.phone{background:#02050b;border-color:#253752;box-shadow:0 30px 80px rgba(0,0,0,.38)}.chat{background:#08101b}.chathead{border-color:#1c2b42;color:#dceaff;background:#0a1422}.messages{background:#07101b}.msg.ai{background:#0e1929;border-color:#21334d;color:#cbd9eb}.msg.user{background:#0d6e8c}
+.step-nav{border-top:1px solid #13233a;padding-top:14px}
+@media(max-width:1000px){.myai-system-strip{grid-template-columns:repeat(2,1fr)}}
+
 </style>
 </head>
 <body>
@@ -37,19 +88,27 @@ button,input,textarea,select{font:inherit}button{cursor:pointer}
 <main class="shell">
   <section class="hero">
     <div>
-      <div class="eyebrow">Персональный AI-проект</div>
+      <div class="eyebrow">AI ENGINEERING WORKSPACE // PERSONAL AGENT</div>
       <h1 id="heroName">My AI</h1>
-      <p id="heroMeta">Создай собственного AI-репетитора: личность, диагностика, функции, workflow и триггеры.</p>
+      <p id="heroMeta">Собирай AI-систему по слоям: identity → diagnostics → functions → workflow → test.</p>
     </div>
     <div id="saveState" class="save-state">Готово к работе</div>
   </section>
 
+  <section class="myai-system-strip">
+    <div class="myai-sys"><span>BUILD</span><strong class="cyan">MY AI v0.1</strong></div>
+    <div class="myai-sys"><span>MODEL ACCESS</span><strong class="ok">SCHOOL API</strong></div>
+    <div class="myai-sys"><span>KNOWLEDGE / RAG</span><strong class="locked">LOCKED</strong></div>
+    <div class="myai-sys"><span>TOOLS</span><strong class="locked">LOCKED</strong></div>
+    <div class="myai-sys"><span>SYSTEM</span><strong class="ok">ONLINE</strong></div>
+  </section>
+
   <nav class="tabs">
-    <button class="tab active" data-tab="profile">1. Профиль AI</button>
-    <button class="tab" data-tab="student">2. Диагностика</button>
-    <button class="tab" data-tab="functions">3. Мои функции</button>
-    <button class="tab" data-tab="workflow">4. Workflow</button>
-    <button class="tab" data-tab="preview">5. Тест</button>
+    <button class="tab active" data-tab="profile">01 // Профиль AI</button>
+    <button class="tab" data-tab="student">02 // Диагностика</button>
+    <button class="tab" data-tab="functions">03 // Функции</button>
+    <button class="tab" data-tab="workflow">04 // Workflow</button>
+    <button class="tab" data-tab="preview">05 // Test Lab</button>
   </nav>
 
   <section id="profile" class="panel active">
@@ -119,13 +178,13 @@ button,input,textarea,select{font:inherit}button{cursor:pointer}
       </aside>
 
       <section class="canvas">
-        <h3>Workflow</h3>
+        <h3>FLOW BUILDER // Workflow</h3>
         <p class="muted">Добавляй только те возможности, до которых ты сам дошёл. Порядок сверху вниз — порядок выполнения.</p>
         <div id="flow" class="flow"></div>
       </section>
 
       <aside class="codepane">
-        <div class="code-toolbar"><h3>🐍 Python View</h3><button class="mini" id="copyCodeBtn">Копировать</button></div>
+        <div class="code-toolbar"><h3>PYTHON // LIVE VIEW</h3><button class="mini" id="copyCodeBtn">Копировать</button></div>
         <p class="muted">Наведи на блок — соответствующая часть Python подсветится.</p>
         <div id="pythonCode"></div>
       </aside>
