@@ -199,7 +199,8 @@ html[data-theme="light"] .msg.ai{background:#fff;border-color:#d4e0ec;color:#294
         <h2>🎭 Поведение</h2>
         <div class="field"><label>Личность</label><textarea id="aiPersonality" placeholder="Дружелюбный, терпеливый, требовательный..."></textarea></div>
         <div class="field"><label>Стиль общения</label><textarea id="aiStyle" placeholder="Коротко, с примерами, задаёт вопросы..."></textarea></div>
-        <div class="field"><label>Правила поведения</label><textarea id="aiRules" placeholder="Например: не давать готовый ответ сразу; сначала дать подсказку..."></textarea></div>
+        <div class="field"><label>Правила поведения</label><textarea id="aiRules" placeholder="Например: отвечать доброжелательно; объяснять понятными словами..."></textarea></div>
+        <div class="field"><label>Примеры диалога (необязательно)</label><p class="muted">Покажи, как должен говорить твой AI. Напиши 1–3 пары реплик: «Пользователь: ...» и «AI: ...». Это примеры стиля, а не готовые ответы на все вопросы.</p><textarea id="aiExamples" rows="6" placeholder="Пользователь: Брат, я не понял дроби!&#10;AI: Братан, ща разберёмся! Представь, что у тебя есть пицца..."></textarea></div>
       </div>
     </div>
     <div class="step-nav"><span class="spacer"></span><button class="btn blue" data-next="student">Сохранить и продолжить →</button></div>
@@ -385,14 +386,18 @@ function renderAll(){
   $('aiAudience').value=project.audience||'';
   $('aiPersonality').value=project.personality||'';
   $('aiStyle').value=project.communication_style||'';
-  $('aiRules').value=project.behavior_rules||'';
+  const savedRules=String(project.behavior_rules||'');
+  const examplesSeparator='\n\n=== ПРИМЕРЫ ДИАЛОГА ===\n';
+  const splitAt=savedRules.indexOf(examplesSeparator);
+  $('aiRules').value=splitAt>=0?savedRules.slice(0,splitAt):savedRules;
+  $('aiExamples').value=splitAt>=0?savedRules.slice(splitAt+examplesSeparator.length):'';
   $('goals').value=studentProfile.goals||'';
   $('weakTopics').value=studentProfile.weak_topics||'';
   $('preferredExplanation').value=studentProfile.preferred_explanation||'';
   $('sessionsPerWeek').value=studentProfile.sessions_per_week||2;
   $('preferredTime').value=(studentProfile.preferred_time||'19:00').slice(0,5);
   $('heroName').textContent=project.name||'My AI';
-  $('heroMeta').textContent=(project.purpose||'Собственный AI-репетитор')+(profile?.full_name?' · Автор: '+profile.full_name:'');
+  $('heroMeta').textContent=(project.purpose||'Собственный AI-помощник')+(profile?.full_name?' · Автор: '+profile.full_name:'');
   renderDays();renderFunctions();renderWorkflow();state('Сохранено');
 }
 async function saveAll(){
@@ -405,7 +410,7 @@ async function saveAll(){
     audience:$('aiAudience').value.trim(),
     personality:$('aiPersonality').value.trim(),
     communication_style:$('aiStyle').value.trim(),
-    behavior_rules:$('aiRules').value.trim(),
+    behavior_rules:[$('aiRules').value.trim(),$('aiExamples').value.trim()?'=== ПРИМЕРЫ ДИАЛОГА ===\n'+$('aiExamples').value.trim():''].filter(Boolean).join('\n\n'),
     updated_at:new Date().toISOString()
   };
   const sp={
