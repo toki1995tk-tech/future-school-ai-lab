@@ -722,6 +722,14 @@ async function sendPreview(){
     return;
   }
   $('messages').insertAdjacentHTML('beforeend','<div class="msg ai">'+esc(data.answer)+'</div>');
+  if(data.usage && Number.isFinite(Number(data.usage.total_tokens))){
+    const u=data.usage;
+    const fmt=n=>Number(n||0).toLocaleString('ru-RU');
+    const note=document.createElement('div');
+    note.style.cssText='font-size:12px;opacity:.75;margin:6px 0 12px;line-height:1.5';
+    note.textContent='Токены API (факт): '+fmt(u.total_tokens)+' · вход '+fmt(u.input_tokens)+' · ответ '+fmt(u.output_tokens)+(u.cached_input_tokens?' · кеш '+fmt(u.cached_input_tokens):'')+' · '+String(u.model||'');
+    $('messages').appendChild(note);
+  }
   $('messages').scrollTop=$('messages').scrollHeight;
 }
 boot();
