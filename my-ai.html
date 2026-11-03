@@ -273,7 +273,17 @@ html[data-theme="light"] .msg.ai{background:#fff;border-color:#d4e0ec;color:#294
         <h2>▶ Проверка проекта</h2>
         <p class="muted">Здесь видно, что именно уже умеет твой продукт.</p>
         <div id="projectSummary"></div>
-        <div class="notice" style="margin-top:14px">Сейчас чат работает как безопасный preview интерфейса. Подключение реальной AI-модели будет выполняться через защищённую Edge Function, чтобы API-ключ никогда не попадал ученику.</div>
+        <div class="notice" style="margin-top:14px">Test Lab подключён к AI через защищённую серверную функцию. Здесь можно проверять и улучшать своего помощника.</div>
+        <div class="card" style="margin-top:14px;padding:16px;border:1px solid var(--line)">
+          <h3>✨ Улучшить моего AI</h3>
+          <p class="muted">Ответ оказался слишком коротким, сложным или скучным? Напиши одно конкретное изменение — оно добавится к правилам твоего AI и будет работать в следующих ответах.</p>
+          <div class="field"><label for="improvementText">Что должен делать мой AI лучше?</label>
+            <textarea id="improvementText" rows="3" maxlength="500" placeholder="Например: если я не понял объяснение, приводи ещё 3 примера из жизни"></textarea>
+          </div>
+          <button type="button" id="applyImprovementBtn" class="btn blue">Сохранить улучшение</button>
+          <div id="improvementStatus" role="status" style="margin-top:8px;font-size:13px"></div>
+          <p class="muted" style="font-size:12px">Улучшения сохраняются в правилах проекта. Изменить или убрать их можно в разделе «Профиль AI → Правила поведения».</p>
+        </div>
       </div>
       <div class="phone">
         <div class="chat">
@@ -713,6 +723,26 @@ async function loadChatHistory(){
   data.forEach(m=>box.insertAdjacentHTML('beforeend',`<div class="msg ${m.role==='user'?'user':'ai'}">${esc(m.content)}</div>`));
   box.scrollTop=box.scrollHeight;
 }
+$('applyImprovementBtn').onclick=async()=>{
+  const improvement=$('improvementText').value.trim();
+  const status=$('improvementStatus');
+  if(!improvement){status.textContent='Напиши, что нужно улучшить.';return;}
+  if(!project){status.textContent='Сначала открой свой проект.';return;}
+  const button=$('applyImprovementBtn');
+  button.disabled=true;status.textContent='Сохраняем улучшение...';
+  const existing=$('aiRules').value.trim();
+  const improved=[existing,'Улучшение: '+improvement].filter(Boolean).join('\n');
+  const combined=[improved,$('aiExamples').value.trim()?'=== ПРИМЕРЫ ДИАЛОГА ===\n'+$('aiExamples').value.trim():''].filter(Boolean).join('\n\n');
+  try{
+    const {data,error}=await db.from('ai_projects').update({behavior_rules:combined,updated_at:new Date().toISOString()}).eq('id',project.id).eq('user_id',user.id).select().single();
+    if(error||!data){throw error||new Error('Не удалось сохранить');}
+    project=data;
+    $('aiRules').value=improved;
+    $('improvementText').value='';
+    status.textContent='✓ Улучшение сохранено! Отправь новый вопрос в чат, чтобы проверить изменение.';
+  }catch(err){console.error(err);status.textContent='Ошибка сохранения. Попробуй снова.';}
+  finally{button.disabled=false;}
+};
 $('sendBtn').onclick=sendPreview;$('chatInput').onkeydown=e=>{if(e.key==='Enter')sendPreview()};
 async function sendPreview(){
   const text=$('chatInput').value.trim();if(!text)return;
