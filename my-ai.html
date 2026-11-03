@@ -752,8 +752,13 @@ async function sendPreview(){
   const {data,error}=await db.functions.invoke('my-ai-run',{body:{message:text}});
   pending.remove();$('sendBtn').disabled=false;$('sendBtn').textContent='Отправить';
   if(error||!data?.answer){
-    console.error(error,data);
-    $('messages').insertAdjacentHTML('beforeend','<div class="msg ai">Не удалось получить ответ AI. Проверь настройки проекта и попробуй ещё раз.</div>');
+    console.error('My AI server request failed',error,data);
+    const failed=document.createElement('div');
+    failed.className='msg ai';
+    failed.textContent='Сервис AI временно не ответил. Это не означает, что ты неправильно настроил помощника. Попробуй отправить вопрос ещё раз.';
+    $('messages').appendChild(failed);
+    $('chatInput').value=text;
+    $('messages').scrollTop=$('messages').scrollHeight;
     return;
   }
   $('messages').insertAdjacentHTML('beforeend','<div class="msg ai">'+esc(data.answer)+'</div>');
