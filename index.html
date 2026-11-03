@@ -1689,9 +1689,9 @@ html[data-theme="light"] .dev-resource-value span{color:#6f839c}
       </div>
       <div class="dev-metrics">
         <div class="dev-metric"><div class="dev-metric-label">MY AI VERSION</div><div class="dev-metric-value cyan">v0.1</div><div class="dev-metric-sub">FOUNDATION BUILD</div></div>
-        <div class="dev-metric"><div class="dev-metric-label">TOKENS USED</div><div class="dev-metric-value" id="devTokens">0</div><div class="dev-metric-sub">USAGE METER READY</div></div>
+        <div class="dev-metric"><div class="dev-metric-label">TOKENS USED</div><div class="dev-metric-value" id="devTokens">0</div><div class="dev-metric-sub">FACTUAL API USAGE</div></div>
         <div class="dev-metric"><div class="dev-metric-label">REQUESTS</div><div class="dev-metric-value green" id="devRequests">0</div><div class="dev-metric-sub">AI CALLS</div></div>
-        <div class="dev-metric"><div class="dev-metric-label">EST. COST</div><div class="dev-metric-value amber" id="devCost">$0.0000</div><div class="dev-metric-sub">SCHOOL API MODE</div></div>
+        <div class="dev-metric"><div class="dev-metric-label">EST. COST</div><div class="dev-metric-value amber" id="devCost">$0.0000</div><div class="dev-metric-sub">ESTIMATE · TRACKING SINCE NOV 3</div></div>
         <div class="dev-metric"><div class="dev-metric-label">KNOWLEDGE</div><div class="dev-metric-value violet" id="devKnowledge">0</div><div class="dev-metric-sub">FILES / RAG</div></div>
       </div>
     </section>
@@ -4168,6 +4168,230 @@ html[data-theme="light"] .dev-resource-value span{color:#6f839c}
   // =========================================================
   // ОТКРЫТИЕ ЛИЧНОГО КАБИНЕТА
   // =========================================================
+
+  async function refreshAiUsage(){
+    const ids=['devTokens','devRequests','devCost'];
+    try {
+      const {data,error}=await supabaseClient.from('ai_usage_events')
+        .select('total_tokens,estimated_cost_usd').order('created_at',{ascending:false}).limit(1000);
+      if(error)throw error;
+      const entries=data||[];
+      const tokens=entries.reduce((sum,row)=>sum+Number(row.total_tokens||0),0);
+      const cost=entries.reduce((sum,row)=>sum+Number(row.estimated_cost_usd||0),0);
+      document.getElementById(ids[0]).textContent=tokens.toLocaleString('ru-RU');
+      document.getElementById(ids[1]).textContent=entries.length.toLocaleString('ru-RU')+(entries.length===1000?'+':'');
+      document.getElementById(ids[2]).textContent='
+
+    const { data: profile, error } = await supabaseClient
+      .from('profiles')
+      .select(`
+        *,
+        classes (
+          name
+        )
+      `)
+      .eq('id', user.id)
+      .single();
+
+    if (error || !profile) {
+      console.error('Ошибка профиля:', error);
+
+      await supabaseClient.auth.signOut();
+
+      showLoginError(
+        'Профиль пользователя не найден. Обратитесь к учителю.'
+      );
+
+      loginPage.classList.remove('hidden');
+      dashboardPage.classList.add('hidden');
+      return;
+    }
+
+    currentProfile = profile;
+    studentName.textContent = profile.full_name;
+
+    if (
+      profile.role === 'teacher' ||
+      profile.role === 'super_admin'
+    ) {
+
+      studentClass.textContent =
+        profile.role === 'super_admin'
+          ? 'Супер-админ'
+          : 'Учитель';
+
+      studentClass.classList.toggle(
+        'super-admin-badge',
+        profile.role === 'super_admin'
+      );
+
+      teacherPanel.classList.remove('hidden');
+      await loadClasses();
+      await loadAcademicCalendar();
+
+    } else {
+
+      studentClass.classList.remove('super-admin-badge');
+
+      studentClass.textContent =
+        profile.classes?.name ||
+        profile.class_name ||
+        'Класс не указан';
+
+      teacherPanel.classList.add('hidden');
+    }
+
+    loginPage.classList.add('hidden');
+    dashboardPage.classList.remove('hidden');
+    await refreshAiUsage();
+  }
+
+  // =========================================================
+  // ВХОД
+  // =========================================================
+
+  loginForm.addEventListener('submit', async function(event) {
+
+    event.preventDefault();
+    hideLoginError();
+
+    const login = document
+      .getElementById('login')
+      .value
+      .trim()
+      .toLowerCase();
+
+    const password = document
+      .getElementById('password')
+      .value;
+
+    if (!login || !password) {
+      showLoginError('Введите логин и пароль.');
+      return;
+    }
+
+    loginButton.disabled = true;
+    loginButton.textContent = 'Входим...';
+
+    const email = login.includes('@')
+      ? login
+      : `${login}@students.aiclassfs.kz`;
+
+    const { data, error } = await supabaseClient.auth.signInWithPassword({
+      email,
+      password
+    });
+
+    loginButton.disabled = false;
+    loginButton.textContent = 'Войти';
+
+    if (error) {
+      console.error('Ошибка входа:', error);
+      showLoginError('Неверный логин или пароль.');
+      return;
+    }
+
+    await openDashboard(data.user);
+  });
+
+  // =========================================================
+  // ВЫХОД
+  // =========================================================
+
+  logoutButton.addEventListener('click', async function() {
+
+    await supabaseClient.auth.signOut();
+
+    selectedClassId = null;
+    selectedClassName = null;
+
+    teacherPanel.classList.add('hidden');
+    selectedClassPanel.classList.add('hidden');
+    lessonsPanel.classList.add('hidden');
+
+    dashboardPage.classList.add('hidden');
+    loginPage.classList.remove('hidden');
+
+    document.getElementById('password').value = '';
+  });
+
+  // =========================================================
+  // ВОССТАНОВЛЕНИЕ СЕССИИ
+  // =========================================================
+
+  async function checkSession() {
+
+    const { data } = await supabaseClient.auth.getSession();
+
+    if (data?.session?.user) {
+      await openDashboard(data.session.user);
+    }
+  }
+
+  checkSession();
+</script>
+
+<script>
+(function(){
+  var btn=document.getElementById('themeToggle');
+  if(!btn)return;
+  function apply(theme){
+    document.documentElement.setAttribute('data-theme',theme);
+    try{localStorage.setItem('aiLabTheme',theme);}catch(e){}
+    btn.setAttribute('aria-pressed',theme==='light'?'true':'false');
+  }
+  btn.addEventListener('click',function(){
+    var current=document.documentElement.getAttribute('data-theme')||'dark';
+    apply(current==='dark'?'light':'dark');
+  });
+  apply(document.documentElement.getAttribute('data-theme')||'dark');
+})();
+</script>
+<script>
+(function(){
+const btn=document.getElementById('bulkStudentImport');
+const inp=document.getElementById('bulkStudentFile');
+const info=document.getElementById('bulkStudentStatus');
+if(!btn||!inp||!info)return;
+btn.addEventListener('click',async function(){
+  if(!selectedClassId||!selectedClassName){info.textContent='Сначала выбери класс.';return;}
+  const file=inp.files&&inp.files[0];
+  if(!file){info.textContent='Выбери CSV-файл.';return;}
+  const lines=(await file.text()).replace(/^\uFEFF/,'').trim().split(/\r?\n/).filter(Boolean);
+  if(lines.length<2){info.textContent='Файл пуст.';return;}
+  const separator=lines[0].includes(';')?';':',';
+  const header=lines.shift().split(separator).map(x=>x.trim().replace(/^"|"$/g,''));
+  if(['fullName','login','password'].some(k=>!header.includes(k))){info.textContent='Нужны колонки fullName, login, password.';return;}
+  const records=lines.map(line=>{
+    const cells=line.split(separator).map(x=>x.trim().replace(/^"|"$/g,''));
+    return Object.fromEntries(header.map((key,i)=>[key,cells[i]||'']));
+  });
+  if(records.length>100||records.some(r=>!r.fullName||!r.login||!r.password)){info.textContent='Проверь строки CSV (максимум 100, все поля обязательны).';return;}
+  if(!confirm('Импортировать '+records.length+' учеников в '+selectedClassName+'?'))return;
+  btn.disabled=true;const failures=[];let ok=0;
+  try{
+    for(const [i,r] of records.entries()){
+      info.textContent='Создание аккаунтов: '+(i+1)+' / '+records.length+'; успешно: '+ok;
+      try{
+        const {data,error}=await supabaseClient.functions.invoke('create-student',{body:{fullName:r.fullName,login:r.login,password:r.password,classId:selectedClassId,className:selectedClassName}});
+        if(error||data?.error)failures.push(r.login+': '+(data?.error||error?.message||'ошибка'));
+        else ok++;
+      }catch(e){failures.push(r.login+': '+String(e.message||e));}
+    }
+    info.textContent='Готово: создано '+ok+' из '+records.length+'.'+(failures.length?' Ошибки: '+failures.join(' | '):'');
+    if(typeof loadStudents==='function')await loadStudents();
+  }finally{btn.disabled=false;}
+});
+})();
+</script>
+</body>
+</html>
++cost.toFixed(cost>0&&cost<0.0001?6:4);
+    } catch(e) {
+      console.error('AI usage stats unavailable',e);
+      for(const id of ids)document.getElementById(id).textContent='—';
+    }
+  }
 
   async function openDashboard(user) {
 
