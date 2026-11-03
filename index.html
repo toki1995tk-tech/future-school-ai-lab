@@ -2035,7 +2035,14 @@ html[data-theme="light"] .dev-resource-value span{color:#6f839c}
 
         </div>
 
-        <div id="studentsList" class="students-list">
+        <div style="margin-top:16px;padding:14px;border:1px solid #cbd5e1;border-radius:12px">
+  <strong>Массовое добавление учеников (CSV)</strong>
+  <p style="font-size:13px;color:#64748b">Выбери класс, затем CSV-файл с колонками fullName;login;password. Импорт выполняется через защищённый серверный механизм. Пароли не публикуются на сайте.</p>
+  <input id="bulkStudentFile" type="file" accept=".csv,text/csv" aria-label="CSV со списком учеников">
+  <button type="button" id="bulkStudentImport" class="secondary-button" style="padding:10px 14px;font-size:14px;margin-top:8px">Импортировать учеников</button>
+  <div id="bulkStudentStatus" role="status" style="margin-top:8px;font-size:13px"></div>
+</div>
+<div id="studentsList" class="students-list">
           <div class="loading-text">Выберите класс</div>
         </div>
 
@@ -4326,6 +4333,43 @@ html[data-theme="light"] .dev-resource-value span{color:#6f839c}
     apply(current==='dark'?'light':'dark');
   });
   apply(document.documentElement.getAttribute('data-theme')||'dark');
+})();
+</script>
+<script>
+(function(){
+const btn=document.getElementById('bulkStudentImport');
+const inp=document.getElementById('bulkStudentFile');
+const info=document.getElementById('bulkStudentStatus');
+if(!btn||!inp||!info)return;
+btn.addEventListener('click',async function(){
+  if(!selectedClassId||!selectedClassName){info.textContent='Сначала выбери класс.';return;}
+  const file=inp.files&&inp.files[0];
+  if(!file){info.textContent='Выбери CSV-файл.';return;}
+  const lines=(await file.text()).replace(/^\uFEFF/,'').trim().split(/\r?\n/).filter(Boolean);
+  if(lines.length<2){info.textContent='Файл пуст.';return;}
+  const separator=lines[0].includes(';')?';':',';
+  const header=lines.shift().split(separator).map(x=>x.trim().replace(/^"|"$/g,''));
+  if(['fullName','login','password'].some(k=>!header.includes(k))){info.textContent='Нужны колонки fullName, login, password.';return;}
+  const records=lines.map(line=>{
+    const cells=line.split(separator).map(x=>x.trim().replace(/^"|"$/g,''));
+    return Object.fromEntries(header.map((key,i)=>[key,cells[i]||'']));
+  });
+  if(records.length>100||records.some(r=>!r.fullName||!r.login||!r.password)){info.textContent='Проверь строки CSV (максимум 100, все поля обязательны).';return;}
+  if(!confirm('Импортировать '+records.length+' учеников в '+selectedClassName+'?'))return;
+  btn.disabled=true;const failures=[];let ok=0;
+  try{
+    for(const [i,r] of records.entries()){
+      info.textContent='Создание аккаунтов: '+(i+1)+' / '+records.length+'; успешно: '+ok;
+      try{
+        const {data,error}=await supabaseClient.functions.invoke('create-student',{body:{fullName:r.fullName,login:r.login,password:r.password,classId:selectedClassId,className:selectedClassName}});
+        if(error||data?.error)failures.push(r.login+': '+(data?.error||error?.message||'ошибка'));
+        else ok++;
+      }catch(e){failures.push(r.login+': '+String(e.message||e));}
+    }
+    info.textContent='Готово: создано '+ok+' из '+records.length+'.'+(failures.length?' Ошибки: '+failures.join(' | '):'');
+    if(typeof loadStudents==='function')await loadStudents();
+  }finally{btn.disabled=false;}
+});
 })();
 </script>
 </body>
