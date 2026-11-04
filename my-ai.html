@@ -217,7 +217,7 @@ html[data-theme="light"] .msg.ai{background:#fff;border-color:#d4e0ec;color:#294
       </div>
       <div class="card">
         <h2>⏰ Расписание занятий</h2>
-        <div class="field"><label>Сколько занятий в неделю?</label><input id="sessionsPerWeek" type="number" min="1" max="7" value="2"></div>
+        <div class="field"><label>Сколько занятий в неделю?</label><input id="sessionsPerWeek" type="number" min="1" max="35" step="1" value="2"></div>
         <div class="field"><label>Дни</label><div class="days" id="dayButtons">
           <button class="day" data-day="1">Пн</button><button class="day" data-day="2">Вт</button><button class="day" data-day="3">Ср</button><button class="day" data-day="4">Чт</button><button class="day" data-day="5">Пт</button><button class="day" data-day="6">Сб</button><button class="day" data-day="7">Вс</button>
         </div></div>
@@ -411,7 +411,13 @@ function renderAll(){
   renderDays();renderFunctions();renderWorkflow();state('Сохранено');
 }
 async function saveAll(){
-  if(!project)return;
+  if(!project){state('Проект не загружен',false);return false;}
+  const rawSessions=$('sessionsPerWeek').value.trim();
+  const sessions=rawSessions===''?null:Number(rawSessions);
+  if(sessions!==null&&(!Number.isInteger(sessions)||sessions<1||sessions>35)){
+    state('Количество занятий должно быть от 1 до 35',false);
+    $('sessionsPerWeek').focus();return false;
+  }
   state('Сохраняем...');
   const proj={
     name:$('aiName').value.trim()||'My AI',
@@ -420,7 +426,7 @@ async function saveAll(){
     audience:$('aiAudience').value.trim(),
     personality:$('aiPersonality').value.trim(),
     communication_style:$('aiStyle').value.trim(),
-    behavior_rules:[$('aiRules').value.trim(),$('aiExamples').value.trim()?'=== ПРИМЕРЫ ДИАЛОГА ===\n'+$('aiExamples').value.trim():''].filter(Boolean).join('\n\n'),
+    behavior_rules:[$('aiRules').value.trim(),$('aiExamples').value.trim()?'=== ПРИМЕРЫ ДИАЛОГА ===\\n'+$('aiExamples').value.trim():''].filter(Boolean).join('\\n\\n'),
     updated_at:new Date().toISOString()
   };
   const sp={
@@ -428,23 +434,32 @@ async function saveAll(){
     goals:$('goals').value.trim(),
     weak_topics:$('weakTopics').value.trim(),
     preferred_explanation:$('preferredExplanation').value.trim(),
-    sessions_per_week:Number($('sessionsPerWeek').value)||null,
+    sessions_per_week:sessions,
     preferred_days:selectedDays,
     preferred_time:$('preferredTime').value||null,
     onboarding_completed:Boolean($('goals').value.trim()||$('weakTopics').value.trim()),
     updated_at:new Date().toISOString()
   };
   const wf={project_id:project.id,blocks:workflowBlocks,connections:[],updated_at:new Date().toISOString()};
-  const [a,b,c]=await Promise.all([
-    db.from('ai_projects').update(proj).eq('id',project.id).select().single(),
-    db.from('ai_student_profiles').upsert(sp,{onConflict:'project_id'}),
-    db.from('ai_project_workflows').upsert(wf,{onConflict:'project_id'})
-  ]);
-  if(a.error||b.error||c.error){console.error(a.error,b.error,c.error);state('Ошибка сохранения',false);return}
-  await syncScheduleTrigger();
-  project=a.data;renderAll();state('Сохранено ✓');
+  try{
+    // Save in sequence to avoid partially acknowledged writes from concurrent operations.
+    const b=await db.from('ai_student_profiles').upsert(sp,{onConflict:'project_id'});
+    if(b.error)throw new Error('Диагностика: '+b.error.message);
+    const c=await db.from('ai_project_workflows').upsert(wf,{onConflict:'project_id'});
+    if(c.error)throw new Error('Workflow: '+c.error.message);
+    const a=await db.from('ai_projects').update(proj).eq('id',project.id).eq('user_id',user.id).select().single();
+    if(a.error)throw new Error('Профиль AI: '+a.error.message);
+    project=a.data;
+    renderAll();
+    state('Сохранено ✓');
+    try{await syncScheduleTrigger();}catch(triggerError){console.warn('Schedule trigger not saved',triggerError);}
+    return true;
+  }catch(err){
+    console.error('Ошибка сохранения My AI',err);
+    state('Ошибка сохранения: '+String(err.message||err),false);
+    return false;
+  }
 }
-
 async function syncScheduleTrigger(){
   const config={
     days:selectedDays,
