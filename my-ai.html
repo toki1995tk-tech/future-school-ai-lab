@@ -426,7 +426,7 @@ async function saveAll(){
     audience:$('aiAudience').value.trim(),
     personality:$('aiPersonality').value.trim(),
     communication_style:$('aiStyle').value.trim(),
-    behavior_rules:[$('aiRules').value.trim(),$('aiExamples').value.trim()?'=== ПРИМЕРЫ ДИАЛОГА ===\\n'+$('aiExamples').value.trim():''].filter(Boolean).join('\\n\\n'),
+    behavior_rules:[$('aiRules').value.trim(),$('aiExamples').value.trim()?'=== ПРИМЕРЫ ДИАЛОГА ===\n'+$('aiExamples').value.trim():''].filter(Boolean).join('\n\n'),
     updated_at:new Date().toISOString()
   };
   const sp={
