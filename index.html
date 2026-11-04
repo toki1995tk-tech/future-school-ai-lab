@@ -4169,18 +4169,36 @@ html[data-theme="light"] .dev-resource-value span{color:#6f839c}
   // ОТКРЫТИЕ ЛИЧНОГО КАБИНЕТА
   // =========================================================
 
-  async function refreshAiUsage(){
-    const ids=['devTokens','devRequests','devCost'];
+  async function refreshAiUsage() {
+    const tokensEl = document.getElementById('devTokens');
+    const requestsEl = document.getElementById('devRequests');
+    const costEl = document.getElementById('devCost');
     try {
-      const {data,error}=await supabaseClient.from('ai_usage_events')
-        .select('total_tokens,estimated_cost_usd').order('created_at',{ascending:false}).limit(1000);
-      if(error)throw error;
-      const entries=data||[];
-      const tokens=entries.reduce((sum,row)=>sum+Number(row.total_tokens||0),0);
-      const cost=entries.reduce((sum,row)=>sum+Number(row.estimated_cost_usd||0),0);
-      document.getElementById(ids[0]).textContent=tokens.toLocaleString('ru-RU');
-      document.getElementById(ids[1]).textContent=entries.length.toLocaleString('ru-RU')+(entries.length===1000?'+':'');
-      document.getElementById(ids[2]).textContent='
+      const { data, error } = await supabaseClient
+        .from('ai_usage_events')
+        .select('total_tokens,estimated_cost_usd')
+        .order('created_at', { ascending: false })
+        .limit(1000);
+      if (error) throw error;
+      const entries = data || [];
+      const tokens = entries.reduce((sum, row) => sum + Number(row.total_tokens || 0), 0);
+      const cost = entries.reduce((sum, row) => sum + Number(row.estimated_cost_usd || 0), 0);
+      if (tokensEl) tokensEl.textContent = tokens.toLocaleString('ru-RU');
+      if (requestsEl) requestsEl.textContent = entries.length.toLocaleString('ru-RU') + (entries.length === 1000 ? '+' : '');
+      if (costEl) costEl.textContent = '$' + cost.toFixed(4);
+    } catch (error) {
+      console.warn('Не удалось загрузить статистику AI:', error);
+      if (tokensEl) tokensEl.textContent = '—';
+      if (requestsEl) requestsEl.textContent = '—';
+      if (costEl) costEl.textContent = '—';
+    }
+  }
+
+  async function openDashboard(user) {
+    if (!user) {
+      showLoginError('Не удалось получить данные пользователя.');
+      return;
+    }
 
     const { data: profile, error } = await supabaseClient
       .from('profiles')
